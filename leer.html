@@ -1,0 +1,3990 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>NÉMESIS · Lectura</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+:root{
+
+    --bg:#040709;
+    --bg2:#070c10;
+
+    --panel:#0a1116;
+    --panel2:#0d171d;
+
+    --border:#1b2a32;
+
+    --text:#e4e9eb;
+    --text2:#b6c1c6;
+    --muted:#73838b;
+
+    --red:#b3262e;
+    --red2:#d63842;
+
+    --blue:#183a48;
+    --blue2:#285568;
+
+    --green:#2d805b;
+
+    --yellow:#b99b3e;
+
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+*{
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+
+    margin:0;
+
+    min-height:100vh;
+
+    background:
+        radial-gradient(
+            circle at 50% -10%,
+            #11252f 0%,
+            transparent 38%
+        ),
+        linear-gradient(
+            180deg,
+            #040709 0%,
+            #070c10 45%,
+            #040709 100%
+        );
+
+    color:var(--text);
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+}
+
+
+/* =========================================================
+   TOPBAR
+========================================================= */
+
+.topbar{
+
+    height:72px;
+
+    position:sticky;
+
+    top:0;
+
+    z-index:100;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 28px;
+
+    background:
+        rgba(4,7,9,.94);
+
+    border-bottom:
+        1px solid var(--border);
+
+    backdrop-filter:
+        blur(12px);
+
+}
+
+
+.brand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:13px;
+
+}
+
+
+.brand-symbol{
+
+    width:38px;
+
+    height:38px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border:
+        1px solid #344850;
+
+    color:
+        var(--red2);
+
+    font-family:Arial,sans-serif;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    letter-spacing:2px;
+
+}
+
+
+.brand-info{
+
+    line-height:1.1;
+
+}
+
+
+.brand-title{
+
+    font-family:Arial,sans-serif;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    letter-spacing:4px;
+
+}
+
+
+.brand-sub{
+
+    margin-top:5px;
+
+    color:var(--muted);
+
+    font-family:Arial,sans-serif;
+
+    font-size:9px;
+
+    letter-spacing:2px;
+
+}
+
+
+.back-btn{
+
+    padding:10px 15px;
+
+    border:
+        1px solid var(--border);
+
+    background:
+        #091015;
+
+    color:
+        #9eabb0;
+
+    cursor:pointer;
+
+    font-family:Arial,sans-serif;
+
+    font-size:10px;
+
+    letter-spacing:1px;
+
+    transition:.2s;
+
+}
+
+
+.back-btn:hover{
+
+    border-color:#4c616b;
+
+    color:white;
+
+    background:#101a20;
+
+}
+
+
+/* =========================================================
+   LOADING / ERROR
+========================================================= */
+
+.center-screen{
+
+    min-height:
+        calc(100vh - 72px);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:30px;
+
+}
+
+
+.system-box{
+
+    width:
+        min(520px,100%);
+
+    padding:38px;
+
+    border:
+        1px solid var(--border);
+
+    background:
+        #091015;
+
+    text-align:center;
+
+}
+
+
+.system-symbol{
+
+    width:50px;
+
+    height:50px;
+
+    margin:
+        0 auto 20px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border:
+        1px solid #344850;
+
+    color:
+        var(--red2);
+
+    font-family:Arial,sans-serif;
+
+    font-weight:bold;
+
+}
+
+
+.system-title{
+
+    font-family:Arial,sans-serif;
+
+    font-size:14px;
+
+    letter-spacing:3px;
+
+}
+
+
+.system-text{
+
+    margin-top:13px;
+
+    color:var(--muted);
+
+    font-family:Arial,sans-serif;
+
+    font-size:11px;
+
+    line-height:1.7;
+
+}
+
+
+.hidden{
+    display:none!important;
+}
+
+
+/* =========================================================
+   MAIN READER
+========================================================= */
+
+.reader{
+
+    width:
+        min(920px,calc(100% - 32px));
+
+    margin:
+        0 auto;
+
+    padding:
+        55px 0 100px;
+
+}
+
+
+/* =========================================================
+   CHAPTER HEADER
+========================================================= */
+
+.chapter-header{
+
+    padding-bottom:40px;
+
+    border-bottom:
+        1px solid var(--border);
+
+}
+
+
+.chapter-number{
+
+    color:
+        var(--red2);
+
+    font-family:Arial,sans-serif;
+
+    font-size:10px;
+
+    font-weight:bold;
+
+    letter-spacing:4px;
+
+    margin-bottom:15px;
+
+}
+
+
+.chapter-title{
+
+    margin:0;
+
+    color:
+        #f1f3f4;
+
+    font-size:
+        clamp(32px,6vw,55px);
+
+    font-weight:normal;
+
+    line-height:1.05;
+
+    letter-spacing:2px;
+
+}
+
+
+.chapter-subtitle{
+
+    margin-top:16px;
+
+    color:
+        #84939a;
+
+    font-size:17px;
+
+    font-style:italic;
+
+    line-height:1.5;
+
+}
+
+
+.chapter-description{
+
+    max-width:760px;
+
+    margin-top:22px;
+
+    color:
+        #65757d;
+
+    font-family:Arial,sans-serif;
+
+    font-size:11px;
+
+    line-height:1.8;
+
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.content{
+
+    padding-top:38px;
+
+}
+
+
+/* =========================================================
+   TEXT BLOCK
+========================================================= */
+
+.block-text{
+
+    margin:
+        0 0 28px;
+
+    color:
+        #d6dcdf;
+
+    font-size:18px;
+
+    line-height:1.9;
+
+    white-space:pre-wrap;
+
+}
+
+
+.block-text:first-letter{
+    color:#f0f2f3;
+}
+
+
+/* =========================================================
+   IMAGE
+========================================================= */
+
+.block-image{
+
+    margin:
+        36px 0;
+
+}
+
+
+.block-image img{
+
+    display:block;
+
+    width:100%;
+
+    max-height:700px;
+
+    object-fit:contain;
+
+    background:#020405;
+
+    border:
+        1px solid var(--border);
+
+}
+
+
+.image-caption{
+
+    margin-top:9px;
+
+    color:#687980;
+
+    font-family:Arial,sans-serif;
+
+    font-size:9px;
+
+    line-height:1.5;
+
+    letter-spacing:.5px;
+
+}
+
+
+/* =========================================================
+   VIDEO
+========================================================= */
+
+.block-video{
+
+    margin:
+        36px 0;
+
+    padding:
+        18px;
+
+    border:
+        1px solid var(--border);
+
+    background:
+        #080e12;
+
+}
+
+
+.block-video iframe{
+
+    display:block;
+
+    width:100%;
+
+    min-height:460px;
+
+    border:0;
+
+    background:#000;
+
+}
+
+
+.video-title{
+
+    margin-bottom:12px;
+
+    color:#aeb9bd;
+
+    font-family:Arial,sans-serif;
+
+    font-size:11px;
+
+    letter-spacing:1px;
+
+}
+
+
+.video-description{
+
+    margin-top:10px;
+
+    color:#697980;
+
+    font-family:Arial,sans-serif;
+
+    font-size:10px;
+
+    line-height:1.6;
+
+}
+
+
+/* =========================================================
+   PISTA
+========================================================= */
+
+.block-pista{
+
+    margin:
+        38px 0;
+
+    padding:
+        20px 22px;
+
+    border-left:
+        3px solid var(--yellow);
+
+    border-top:
+        1px solid #2b2a20;
+
+    border-right:
+        1px solid #2b2a20;
+
+    border-bottom:
+        1px solid #2b2a20;
+
+    background:
+        linear-gradient(
+            90deg,
+            #15130b,
+            #0b0f12
+        );
+
+}
+
+
+.pista-title{
+
+    color:
+        #c7ad56;
+
+    font-family:Arial,sans-serif;
+
+    font-size:9px;
+
+    font-weight:bold;
+
+    letter-spacing:3px;
+
+    margin-bottom:9px;
+
+}
+
+
+.pista-text{
+
+    color:#d0d2ca;
+
+    font-size:16px;
+
+    line-height:1.7;
+
+}
+
+
+/* =========================================================
+   DOCUMENT
+========================================================= */
+
+.block-document{
+
+    margin:
+        35px 0;
+
+    padding:
+        20px;
+
+    border:
+        1px solid var(--border);
+
+    background:#090f13;
+
+}
+
+
+.document-title{
+
+    color:#c5ced2;
+
+    font-family:Arial,sans-serif;
+
+    font-size:12px;
+
+    letter-spacing:1px;
+
+}
+
+
+.document-description{
+
+    margin-top:8px;
+
+    color:#73838b;
+
+    font-family:Arial,sans-serif;
+
+    font-size:10px;
+
+    line-height:1.6;
+
+}
+
+
+.document-link{
+
+    display:inline-block;
+
+    margin-top:15px;
+
+    padding:9px 12px;
+
+    border:
+        1px solid #30434c;
+
+    color:#aab8be;
+
+    background:#0b1419;
+
+    text-decoration:none;
+
+    font-family:Arial,sans-serif;
+
+    font-size:9px;
+
+    letter-spacing:1px;
+
+}
+
+
+.document-link:hover{
+
+    color:white;
+
+    border-color:#526873;
+
+}
+
+
+/* =========================================================
+   DIALOGUE
+========================================================= */
+
+.block-dialogue{
+
+    margin:
+        35px 0;
+
+    padding:
+        20px 23px;
+
+    border:
+        1px solid var(--border);
+
+    background:
+        #091116;
+
+}
+
+
+.dialogue-character{
+
+    color:
+        #89aeb9;
+
+    font-family:Arial,sans-serif;
+
+    font-size:9px;
+
+    font-weight:bold;
+
+    letter-spacing:2px;
+
+    margin-bottom:8px;
+
+}
+
+
+.dialogue-context{
+
+    margin-bottom:9px;
+
+    color:#53636a;
+
+    font-family:Arial,sans-serif;
+
+    font-size:9px;
+
+    font-style:italic;
+
+}
+
+
+.dialogue-text{
+
+    color:#d2d9dc;
+
+    font-size:17px;
+
+    line-height:1.75;
+
+}
+
+
+/* =========================================================
+   QUESTION
+========================================================= */
+
+.block-question{
+
+    margin:
+        45px 0;
+
+    padding:
+        27px;
+
+    border:
+        1px solid #3a2529;
+
+    background:
+        linear-gradient(
+            135deg,
+            #120a0c,
+            #0a1014
+        );
+
+}
+
+
+.question-label{
+
+    color:
+        #c76169;
+
+    font-family:Arial,sans-serif;
+
+    font-size:9px;
+
+    font-weight:bold;
+
+    letter-spacing:3px;
+
+    margin-bottom:13px;
+
+}
+
+
+.question-text{
+
+    color:#e1e5e6;
+
+    font-size:19px;
+
+    line-height:1.6;
+
+}
+
+
+.question-answer{
+
+    display:flex;
+
+    gap:8px;
+
+    margin-top:20px;
+
+}
+
+
+.question-answer input{
+
+    flex:1;
+
+    min-width:0;
+
+    padding:13px;
+
+    border:
+        1px solid #2c3a40;
+
+    outline:none;
+
+    background:#05090c;
+
+    color:white;
+
+    font-family:Arial,sans-serif;
+
+}
+
+
+.question-answer button{
+
+    padding:
+        0 18px;
+
+    border:
+        1px solid #762b32;
+
+    background:
+        #45151a;
+
+    color:#eee;
+
+    cursor:pointer;
+
+    font-family:Arial,sans-serif;
+
+    font-size:9px;
+
+    letter-spacing:1px;
+
+}
+
+
+.question-answer button:hover{
+
+    background:#6d1e25;
+
+}
+
+
+.question-result{
+
+    margin-top:12px;
+
+    font-family:Arial,sans-serif;
+
+    font-size:10px;
+
+    line-height:1.6;
+
+}
+
+
+.question-result.ok{
+    color:#70bc96;
+}
+
+
+.question-result.bad{
+    color:#db7279;
+}
+
+
+/* =========================================================
+   SEPARATOR
+========================================================= */
+
+.block-separator{
+
+    margin:
+        48px 0;
+
+}
+
+
+.separator-line{
+
+    height:1px;
+
+    background:
+        #25353d;
+
+}
+
+
+.separator-space{
+
+    height:45px;
+
+}
+
+
+.separator-alert{
+
+    height:1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #7e2830,
+            transparent
+        );
+
+}
+
+
+/* =========================================================
+   UNLOCK AREA
+========================================================= */
+
+.unlock-section{
+
+    margin-top:65px;
+
+    padding:
+        34px;
+
+    border:
+        1px solid #3a2529;
+
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            #1b1013,
+            #0a0f13 65%
+        );
+
+    text-align:center;
+
+}
+
+
+.unlock-label{
+
+    color:
+        #c35a63;
+
+    font-family:Arial,sans-serif;
+
+    font-size:9px;
+
+    font-weight:bold;
+
+    letter-spacing:4px;
+
+}
+
+
+.unlock-title{
+
+    margin-top:12px;
+
+    color:#edf0f1;
+
+    font-size:23px;
+
+}
+
+
+.unlock-text{
+
+    max-width:570px;
+
+    margin:
+        12px auto 0;
+
+    color:#77878e;
+
+    font-family:Arial,sans-serif;
+
+    font-size:10px;
+
+    line-height:1.7;
+
+}
+
+
+.unlock-form{
+
+    width:
+        min(480px,100%);
+
+    margin:
+        23px auto 0;
+
+    display:flex;
+
+    gap:8px;
+
+}
+
+
+.unlock-form input{
+
+    flex:1;
+
+    min-width:0;
+
+    padding:14px;
+
+    border:
+        1px solid #2d3b42;
+
+    background:#05090c;
+
+    color:white;
+
+    outline:none;
+
+    font-family:Arial,sans-serif;
+
+}
+
+
+.unlock-form button{
+
+    padding:
+        0 20px;
+
+    border:
+        1px solid #822b32;
+
+    background:
+        #50171d;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-family:Arial,sans-serif;
+
+    font-size:9px;
+
+    letter-spacing:1px;
+
+}
+
+
+.unlock-form button:hover{
+
+    background:#702027;
+
+}
+
+
+.unlock-result{
+
+    margin-top:15px;
+
+    min-height:18px;
+
+    font-family:Arial,sans-serif;
+
+    font-size:10px;
+
+}
+
+
+.unlock-result.success{
+    color:#72c19a;
+}
+
+
+.unlock-result.error{
+    color:#df747b;
+}
+
+
+.next-chapter{
+
+    margin-top:25px;
+
+    padding-top:23px;
+
+    border-top:
+        1px solid #202c31;
+
+}
+
+
+.next-label{
+
+    color:#64757d;
+
+    font-family:Arial,sans-serif;
+
+    font-size:8px;
+
+    letter-spacing:2px;
+
+}
+
+
+.next-button{
+
+    margin-top:11px;
+
+    padding:
+        12px 18px;
+
+    border:
+        1px solid #33525e;
+
+    background:
+        #10232b;
+
+    color:#b8c8cd;
+
+    cursor:pointer;
+
+    font-family:Arial,sans-serif;
+
+    font-size:9px;
+
+    letter-spacing:1px;
+
+}
+
+
+.next-button:hover{
+
+    border-color:#547784;
+
+    color:white;
+
+}
+
+
+/* =========================================================
+   COMPLETED
+========================================================= */
+
+.completed{
+
+    margin-top:65px;
+
+    padding:30px;
+
+    border:
+        1px solid #214936;
+
+    background:
+        #09130f;
+
+    text-align:center;
+
+}
+
+
+.completed-label{
+
+    color:#6fbd96;
+
+    font-family:Arial,sans-serif;
+
+    font-size:9px;
+
+    letter-spacing:3px;
+
+}
+
+
+.completed-title{
+
+    margin-top:10px;
+
+    color:#dcebe4;
+
+    font-size:21px;
+
+}
+
+
+.completed-text{
+
+    margin-top:10px;
+
+    color:#70837a;
+
+    font-family:Arial,sans-serif;
+
+    font-size:10px;
+
+    line-height:1.6;
+
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer{
+
+    margin-top:80px;
+
+    padding-top:20px;
+
+    border-top:
+        1px solid #152128;
+
+    color:#44545b;
+
+    font-family:Arial,sans-serif;
+
+    font-size:8px;
+
+    letter-spacing:2px;
+
+    text-align:center;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:700px){
+
+    .topbar{
+        padding:0 14px;
+    }
+
+    .brand-sub{
+        display:none;
+    }
+
+    .reader{
+        width:
+            min(100% - 22px,920px);
+        padding-top:35px;
+    }
+
+    .chapter-title{
+        font-size:34px;
+    }
+
+    .chapter-subtitle{
+        font-size:15px;
+    }
+
+    .block-text{
+        font-size:17px;
+        line-height:1.8;
+    }
+
+    .block-video iframe{
+        min-height:250px;
+    }
+
+    .question-answer{
+        flex-direction:column;
+    }
+
+    .question-answer button{
+        min-height:42px;
+    }
+
+    .unlock-form{
+        flex-direction:column;
+    }
+
+    .unlock-form button{
+        min-height:44px;
+    }
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     TOPBAR
+===================================================== -->
+
+<header class="topbar">
+
+    <div class="brand">
+
+        <div class="brand-symbol">
+            N
+        </div>
+
+        <div class="brand-info">
+
+            <div class="brand-title">
+                NÉMESIS
+            </div>
+
+            <div class="brand-sub">
+                SAGA DE SUSPENSO MÉDICO
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <button
+        class="back-btn"
+        onclick="volverPanel()"
+    >
+        ← VOLVER
+    </button>
+
+</header>
+
+
+
+<!-- =====================================================
+     LOADING
+===================================================== -->
+
+<section
+    id="loadingScreen"
+    class="center-screen"
+>
+
+    <div class="system-box">
+
+        <div class="system-symbol">
+            N
+        </div>
+
+        <div class="system-title">
+            ABRIENDO ARCHIVO
+        </div>
+
+        <div class="system-text">
+            Verificando acceso al capítulo...
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     ERROR
+===================================================== -->
+
+<section
+    id="errorScreen"
+    class="center-screen hidden"
+>
+
+    <div class="system-box">
+
+        <div class="system-symbol">
+            !
+        </div>
+
+        <div
+            id="errorTitle"
+            class="system-title"
+        >
+            ACCESO RESTRINGIDO
+        </div>
+
+        <div
+            id="errorText"
+            class="system-text"
+        >
+            No fue posible abrir este capítulo.
+        </div>
+
+        <div style="margin-top:23px;">
+
+            <button
+                class="back-btn"
+                onclick="volverPanel()"
+            >
+                VOLVER
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     READER
+===================================================== -->
+
+<main
+    id="readerScreen"
+    class="reader hidden"
+>
+
+
+    <!-- CHAPTER HEADER -->
+
+    <section class="chapter-header">
+
+        <div
+            id="chapterNumber"
+            class="chapter-number"
+        >
+            CAPÍTULO
+        </div>
+
+
+        <h1
+            id="chapterTitle"
+            class="chapter-title"
+        >
+            Cargando...
+        </h1>
+
+
+        <div
+            id="chapterSubtitle"
+            class="chapter-subtitle"
+        >
+        </div>
+
+
+        <div
+            id="chapterDescription"
+            class="chapter-description"
+        >
+        </div>
+
+    </section>
+
+
+
+    <!-- CONTENT -->
+
+    <section
+        id="content"
+        class="content"
+    >
+    </section>
+
+
+
+    <!-- UNLOCK -->
+
+    <section
+        id="unlockSection"
+        class="unlock-section hidden"
+    >
+
+        <div class="unlock-label">
+            ARCHIVO RESTRINGIDO
+        </div>
+
+        <div class="unlock-title">
+            La investigación continúa
+        </div>
+
+        <div class="unlock-text">
+            Has llegado al final de este capítulo.
+            La siguiente parte del protocolo permanece
+            protegida. Introduce la clave obtenida
+            durante la investigación.
+        </div>
+
+
+        <div class="unlock-form">
+
+            <input
+                id="unlockInput"
+                type="text"
+                autocomplete="off"
+                placeholder="INGRESA LA CLAVE"
+                onkeydown="manejarEnter(event)"
+            >
+
+
+            <button
+                id="unlockButton"
+                onclick="intentarDesbloquear()"
+            >
+                DESBLOQUEAR
+            </button>
+
+        </div>
+
+
+        <div
+            id="unlockResult"
+            class="unlock-result"
+        >
+        </div>
+
+
+        <div
+            id="nextChapter"
+            class="next-chapter hidden"
+        >
+
+            <div class="next-label">
+                NUEVO ARCHIVO DISPONIBLE
+            </div>
+
+            <button
+                class="next-button"
+                onclick="abrirSiguienteCapitulo()"
+            >
+                CONTINUAR INVESTIGACIÓN →
+            </button>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- COMPLETED -->
+
+    <section
+        id="completedSection"
+        class="completed hidden"
+    >
+
+        <div class="completed-label">
+            ARCHIVO COMPLETADO
+        </div>
+
+        <div class="completed-title">
+            Capítulo completado
+        </div>
+
+        <div class="completed-text">
+            Este capítulo ya fue registrado como
+            completado en tu expediente.
+        </div>
+
+
+        <div
+            id="completedNext"
+            class="next-chapter hidden"
+        >
+
+            <div class="next-label">
+                NUEVO ARCHIVO DISPONIBLE
+            </div>
+
+            <button
+                class="next-button"
+                onclick="abrirSiguienteCapitulo()"
+            >
+                CONTINUAR INVESTIGACIÓN →
+            </button>
+
+        </div>
+
+    </section>
+
+
+
+    <div class="footer">
+        PROTOCOLO NÉMESIS · ARCHIVO DIGITAL
+    </div>
+
+</main>
+
+
+
+<script>
+
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+    "https://qogoayvgkyurzugvbbkj.supabase.co";
+
+
+/*
+ * IMPORTANTE:
+ *
+ * Pega aquí exactamente la misma ANON KEY
+ * que tienes actualmente en index.html
+ */
+
+const SUPABASE_ANON_KEY =
+    "PEGA_AQUI_TU_ANON_KEY";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+
+const chapterId =
+    params.get("id");
+
+
+let usuarioActual = null;
+
+let perfilActual = null;
+
+let capituloActual = null;
+
+let progresoActual = null;
+
+let bloquesActuales = [];
+
+let siguienteCapitulo = null;
+
+
+
+/* =========================================================
+   INICIO
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    iniciarLectura
+);
+
+
+
+/* =========================================================
+   INICIAR LECTURA
+========================================================= */
+
+async function iniciarLectura(){
+
+    try{
+
+        mostrarLoading();
+
+
+        /*
+         * Primero recuperamos la sesión.
+         */
+
+        const {
+            data:sessionData,
+            error:sessionError
+        } =
+            await supabaseClient
+                .auth
+                .getSession();
+
+
+        if(sessionError){
+
+            throw new Error(
+                "No fue posible recuperar la sesión."
+            );
+
+        }
+
+
+        const session =
+            sessionData?.session;
+
+
+        if(!session){
+
+            mostrarError(
+                "NO EXISTE UNA SESIÓN ACTIVA",
+                "Debes iniciar sesión antes de abrir un capítulo."
+            );
+
+            return;
+
+        }
+
+
+        usuarioActual =
+            session.user;
+
+
+        /*
+         * Cargar perfil.
+         */
+
+        const {
+            data:perfil,
+            error:perfilError
+        } =
+            await supabaseClient
+                .from("profiles")
+                .select(
+                    "id,nombre,rol"
+                )
+                .eq(
+                    "id",
+                    usuarioActual.id
+                )
+                .single();
+
+
+        if(perfilError){
+
+            console.error(
+                perfilError
+            );
+
+            throw new Error(
+                "No fue posible cargar tu perfil."
+            );
+
+        }
+
+
+        perfilActual =
+            perfil;
+
+
+        /*
+         * Verificar que exista capítulo.
+         */
+
+        if(!chapterId){
+
+            mostrarError(
+                "CAPÍTULO NO ESPECIFICADO",
+                "No se recibió el identificador del capítulo."
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Cargar capítulo.
+         */
+
+        await cargarCapitulo();
+
+
+        /*
+         * Cargar progreso.
+         */
+
+        await cargarProgreso();
+
+
+        /*
+         * Verificar acceso.
+         */
+
+        const puedeLeer =
+            verificarAcceso();
+
+
+        if(!puedeLeer){
+
+            return;
+
+        }
+
+
+        /*
+         * Cargar bloques.
+         */
+
+        await cargarBloques();
+
+
+        /*
+         * Buscar siguiente capítulo.
+         */
+
+        await cargarSiguienteCapitulo();
+
+
+        /*
+         * Renderizar.
+         */
+
+        renderCapitulo();
+
+
+        renderBloques();
+
+
+        renderEstadoFinal();
+
+
+        ocultarLoading();
+
+
+        document
+            .getElementById(
+                "readerScreen"
+            )
+            .classList.remove(
+                "hidden"
+            );
+
+
+    }
+    catch(error){
+
+        console.error(
+            "ERROR LECTOR:",
+            error
+        );
+
+
+        mostrarError(
+            "ERROR AL ABRIR EL CAPÍTULO",
+            error.message ||
+            "Ocurrió un error inesperado."
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   CARGAR CAPÍTULO
+========================================================= */
+
+async function cargarCapitulo(){
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("chapters")
+            .select(`
+                id,
+                book_id,
+                numero,
+                titulo,
+                subtitulo,
+                descripcion,
+                estado,
+                siguiente_capitulo_id,
+                requiere_clave
+            `)
+            .eq(
+                "id",
+                chapterId
+            )
+            .single();
+
+
+    if(error){
+
+        console.error(error);
+
+        throw new Error(
+            "No fue posible encontrar el capítulo."
+        );
+
+    }
+
+
+    if(!data){
+
+        throw new Error(
+            "El capítulo no existe."
+        );
+
+    }
+
+
+    capituloActual =
+        data;
+
+
+    /*
+     * Solo capítulos publicados
+     * pueden ser leídos.
+     */
+
+    if(
+        capituloActual.estado !==
+        "publicado"
+    ){
+
+        mostrarError(
+            "CAPÍTULO NO DISPONIBLE",
+            "Este capítulo todavía no ha sido publicado."
+        );
+
+        throw new Error(
+            "Capítulo no publicado."
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   CARGAR PROGRESO
+========================================================= */
+
+async function cargarProgreso(){
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from(
+                "user_chapter_progress"
+            )
+            .select(`
+                id,
+                usuario_id,
+                chapter_id,
+                estado,
+                fecha_inicio,
+                fecha_completado,
+                ultimo_bloque_id
+            `)
+            .eq(
+                "usuario_id",
+                usuarioActual.id
+            )
+            .eq(
+                "chapter_id",
+                chapterId
+            )
+            .maybeSingle();
+
+
+    if(error){
+
+        console.error(error);
+
+        throw new Error(
+            "No fue posible comprobar tu progreso."
+        );
+
+    }
+
+
+    progresoActual =
+        data;
+
+}
+
+
+
+/* =========================================================
+   VERIFICAR ACCESO
+========================================================= */
+
+function verificarAcceso(){
+
+    /*
+     * Si no existe registro de progreso,
+     * el capítulo está bloqueado.
+     */
+
+    if(!progresoActual){
+
+        mostrarError(
+            "CAPÍTULO BLOQUEADO",
+            "Debes completar los capítulos anteriores para acceder a este archivo."
+        );
+
+        return false;
+
+    }
+
+
+    const estado =
+        progresoActual.estado;
+
+
+    /*
+     * Estados permitidos:
+     *
+     * disponible
+     * en_progreso
+     * completado
+     */
+
+    if(
+        estado !== "disponible" &&
+        estado !== "en_progreso" &&
+        estado !== "completado"
+    ){
+
+        mostrarError(
+            "CAPÍTULO BLOQUEADO",
+            "Este capítulo todavía no está disponible para tu investigación."
+        );
+
+        return false;
+
+    }
+
+
+    return true;
+
+}
+
+
+
+/* =========================================================
+   CARGAR BLOQUES
+========================================================= */
+
+async function cargarBloques(){
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("chapter_blocks")
+            .select(`
+                id,
+                chapter_id,
+                tipo,
+                orden,
+                contenido,
+                visible
+            `)
+            .eq(
+                "chapter_id",
+                chapterId
+            )
+            .eq(
+                "visible",
+                true
+            )
+            .order(
+                "orden",
+                {
+                    ascending:true
+                }
+            );
+
+
+    if(error){
+
+        console.error(error);
+
+        throw new Error(
+            "No fue posible cargar el contenido del capítulo."
+        );
+
+    }
+
+
+    bloquesActuales =
+        data || [];
+
+}
+
+
+
+/* =========================================================
+   SIGUIENTE CAPÍTULO
+========================================================= */
+
+async function cargarSiguienteCapitulo(){
+
+    siguienteCapitulo =
+        null;
+
+
+    /*
+     * Primero intentamos usar el campo
+     * siguiente_capitulo_id.
+     */
+
+    if(
+        capituloActual.siguiente_capitulo_id
+    ){
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("chapters")
+                .select(`
+                    id,
+                    numero,
+                    titulo,
+                    estado
+                `)
+                .eq(
+                    "id",
+                    capituloActual.siguiente_capitulo_id
+                )
+                .maybeSingle();
+
+
+        if(!error && data){
+
+            siguienteCapitulo =
+                data;
+
+            return;
+
+        }
+
+    }
+
+
+    /*
+     * Si no existe, buscamos el siguiente
+     * número dentro del mismo libro.
+     */
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("chapters")
+            .select(`
+                id,
+                numero,
+                titulo,
+                estado
+            `)
+            .eq(
+                "book_id",
+                capituloActual.book_id
+            )
+            .eq(
+                "numero",
+                capituloActual.numero + 1
+            )
+            .maybeSingle();
+
+
+    if(!error && data){
+
+        siguienteCapitulo =
+            data;
+
+    }
+
+}
+
+
+
+/* =========================================================
+   RENDER HEADER
+========================================================= */
+
+function renderCapitulo(){
+
+    document
+        .getElementById(
+            "chapterNumber"
+        )
+        .textContent =
+            "CAPÍTULO " +
+            capituloActual.numero;
+
+
+    document
+        .getElementById(
+            "chapterTitle"
+        )
+        .textContent =
+            capituloActual.titulo ||
+            "Sin título";
+
+
+    document
+        .getElementById(
+            "chapterSubtitle"
+        )
+        .textContent =
+            capituloActual.subtitulo ||
+            "";
+
+
+    document
+        .getElementById(
+            "chapterDescription"
+        )
+        .textContent =
+            capituloActual.descripcion ||
+            "";
+
+}
+
+
+
+/* =========================================================
+   RENDER BLOQUES
+========================================================= */
+
+function renderBloques(){
+
+    const container =
+        document.getElementById(
+            "content"
+        );
+
+
+    container.innerHTML = "";
+
+
+    if(
+        bloquesActuales.length === 0
+    ){
+
+        container.innerHTML = `
+
+            <div style="
+                padding:45px 0;
+                color:#64757d;
+                text-align:center;
+                font-family:Arial,sans-serif;
+                font-size:11px;
+                letter-spacing:1px;
+            ">
+
+                ESTE CAPÍTULO AÚN NO TIENE CONTENIDO.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    bloquesActuales.forEach(
+        (bloque,index) => {
+
+            const elemento =
+                crearBloqueLector(
+                    bloque,
+                    index
+                );
+
+
+            if(elemento){
+
+                container.appendChild(
+                    elemento
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+
+/* =========================================================
+   CREAR BLOQUE
+========================================================= */
+
+function crearBloqueLector(
+    bloque,
+    index
+){
+
+    const contenido =
+        bloque.contenido || {};
+
+
+    /* =====================================================
+       TEXTO
+    ===================================================== */
+
+    if(
+        bloque.tipo === "texto"
+    ){
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        div.className =
+            "block-text";
+
+
+        div.textContent =
+            contenido.texto ||
+            "";
+
+
+        return div;
+
+    }
+
+
+    /* =====================================================
+       IMAGEN
+    ===================================================== */
+
+    if(
+        bloque.tipo === "imagen"
+    ){
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        div.className =
+            "block-image";
+
+
+        if(contenido.url){
+
+            const img =
+                document.createElement(
+                    "img"
+                );
+
+
+            img.src =
+                contenido.url;
+
+
+            img.alt =
+                contenido.alt ||
+                "";
+
+
+            img.loading =
+                "lazy";
+
+
+            div.appendChild(
+                img
+            );
+
+        }
+
+
+        if(contenido.caption){
+
+            const caption =
+                document.createElement(
+                    "div"
+                );
+
+
+            caption.className =
+                "image-caption";
+
+
+            caption.textContent =
+                contenido.caption;
+
+
+            div.appendChild(
+                caption
+            );
+
+        }
+
+
+        return div;
+
+    }
+
+
+    /* =====================================================
+       VIDEO
+    ===================================================== */
+
+    if(
+        bloque.tipo === "video"
+    ){
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        div.className =
+            "block-video";
+
+
+        if(contenido.titulo){
+
+            const title =
+                document.createElement(
+                    "div"
+                );
+
+
+            title.className =
+                "video-title";
+
+
+            title.textContent =
+                contenido.titulo;
+
+
+            div.appendChild(
+                title
+            );
+
+        }
+
+
+        if(contenido.url){
+
+            const iframe =
+                document.createElement(
+                    "iframe"
+                );
+
+
+            iframe.src =
+                convertirVideoURL(
+                    contenido.url
+                );
+
+
+            iframe.allow =
+                "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+
+
+            iframe.allowFullscreen =
+                true;
+
+
+            div.appendChild(
+                iframe
+            );
+
+        }
+
+
+        if(
+            contenido.descripcion
+        ){
+
+            const description =
+                document.createElement(
+                    "div"
+                );
+
+
+            description.className =
+                "video-description";
+
+
+            description.textContent =
+                contenido.descripcion;
+
+
+            div.appendChild(
+                description
+            );
+
+        }
+
+
+        return div;
+
+    }
+
+
+    /* =====================================================
+       PISTA
+    ===================================================== */
+
+    if(
+        bloque.tipo === "pista"
+    ){
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        div.className =
+            "block-pista";
+
+
+        const title =
+            document.createElement(
+                "div"
+            );
+
+
+        title.className =
+            "pista-title";
+
+
+        title.textContent =
+            contenido.titulo ||
+            "PISTA";
+
+
+        const text =
+            document.createElement(
+                "div"
+            );
+
+
+        text.className =
+            "pista-text";
+
+
+        text.textContent =
+            contenido.texto ||
+            "";
+
+
+        div.appendChild(
+            title
+        );
+
+
+        div.appendChild(
+            text
+        );
+
+
+        return div;
+
+    }
+
+
+    /* =====================================================
+       DOCUMENTO
+    ===================================================== */
+
+    if(
+        bloque.tipo === "documento"
+    ){
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        div.className =
+            "block-document";
+
+
+        const title =
+            document.createElement(
+                "div"
+            );
+
+
+        title.className =
+            "document-title";
+
+
+        title.textContent =
+            contenido.titulo ||
+            "Documento";
+
+
+        div.appendChild(
+            title
+        );
+
+
+        if(
+            contenido.descripcion
+        ){
+
+            const desc =
+                document.createElement(
+                    "div"
+                );
+
+
+            desc.className =
+                "document-description";
+
+
+            desc.textContent =
+                contenido.descripcion;
+
+
+            div.appendChild(
+                desc
+            );
+
+        }
+
+
+        if(contenido.url){
+
+            const link =
+                document.createElement(
+                    "a"
+                );
+
+
+            link.className =
+                "document-link";
+
+
+            link.href =
+                contenido.url;
+
+
+            link.target =
+                "_blank";
+
+
+            link.rel =
+                "noopener noreferrer";
+
+
+            link.textContent =
+                "ABRIR DOCUMENTO →";
+
+
+            div.appendChild(
+                link
+            );
+
+        }
+
+
+        return div;
+
+    }
+
+
+    /* =====================================================
+       DIÁLOGO
+    ===================================================== */
+
+    if(
+        bloque.tipo === "dialogo"
+    ){
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        div.className =
+            "block-dialogue";
+
+
+        if(
+            contenido.personaje
+        ){
+
+            const character =
+                document.createElement(
+                    "div"
+                );
+
+
+            character.className =
+                "dialogue-character";
+
+
+            character.textContent =
+                contenido.personaje;
+
+
+            div.appendChild(
+                character
+            );
+
+        }
+
+
+        if(
+            contenido.contexto
+        ){
+
+            const context =
+                document.createElement(
+                    "div"
+                );
+
+
+            context.className =
+                "dialogue-context";
+
+
+            context.textContent =
+                contenido.contexto;
+
+
+            div.appendChild(
+                context
+            );
+
+        }
+
+
+        const text =
+            document.createElement(
+                "div"
+            );
+
+
+        text.className =
+            "dialogue-text";
+
+
+        text.textContent =
+            contenido.texto ||
+            "";
+
+
+        div.appendChild(
+            text
+        );
+
+
+        return div;
+
+    }
+
+
+    /* =====================================================
+       PREGUNTA
+    ===================================================== */
+
+    if(
+        bloque.tipo === "pregunta"
+    ){
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        div.className =
+            "block-question";
+
+
+        const label =
+            document.createElement(
+                "div"
+            );
+
+
+        label.className =
+            "question-label";
+
+
+        label.textContent =
+            "PREGUNTA";
+
+
+        div.appendChild(
+            label
+        );
+
+
+        const question =
+            document.createElement(
+                "div"
+            );
+
+
+        question.className =
+            "question-text";
+
+
+        question.textContent =
+            contenido.pregunta ||
+            "";
+
+
+        div.appendChild(
+            question
+        );
+
+
+        const answer =
+            document.createElement(
+                "div"
+            );
+
+
+        answer.className =
+            "question-answer";
+
+
+        const input =
+            document.createElement(
+                "input"
+            );
+
+
+        input.type =
+            "text";
+
+
+        input.placeholder =
+            "Escribe tu respuesta...";
+
+
+        const button =
+            document.createElement(
+                "button"
+            );
+
+
+        button.textContent =
+            "COMPROBAR";
+
+
+        const result =
+            document.createElement(
+                "div"
+            );
+
+
+        result.className =
+            "question-result";
+
+
+        button.onclick =
+            function(){
+
+                comprobarPregunta(
+                    input,
+                    result,
+                    contenido
+                );
+
+            };
+
+
+        answer.appendChild(
+            input
+        );
+
+
+        answer.appendChild(
+            button
+        );
+
+
+        div.appendChild(
+            answer
+        );
+
+
+        div.appendChild(
+            result
+        );
+
+
+        return div;
+
+    }
+
+
+    /* =====================================================
+       SEPARADOR
+    ===================================================== */
+
+    if(
+        bloque.tipo === "separador"
+    ){
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        div.className =
+            "block-separator";
+
+
+        const estilo =
+            contenido.estilo ||
+            "linea";
+
+
+        const line =
+            document.createElement(
+                "div"
+            );
+
+
+        if(estilo === "espacio"){
+
+            line.className =
+                "separator-space";
+
+        }
+        else if(
+            estilo === "alerta"
+        ){
+
+            line.className =
+                "separator-alert";
+
+        }
+        else{
+
+            line.className =
+                "separator-line";
+
+        }
+
+
+        div.appendChild(
+            line
+        );
+
+
+        return div;
+
+    }
+
+
+    return null;
+
+}
+
+
+
+/* =========================================================
+   CONVERTIR VIDEO URL
+========================================================= */
+
+function convertirVideoURL(url){
+
+    if(!url){
+        return "";
+    }
+
+
+    /*
+     * YouTube normal:
+     *
+     * https://www.youtube.com/watch?v=XXXXX
+     */
+
+    try{
+
+        const parsed =
+            new URL(url);
+
+
+        if(
+            parsed.hostname.includes(
+                "youtube.com"
+            )
+        ){
+
+            const videoId =
+                parsed.searchParams.get(
+                    "v"
+                );
+
+
+            if(videoId){
+
+                return:
+                    "https://www.youtube.com/embed/" +
+                    videoId;
+
+            }
+
+        }
+
+
+        /*
+         * YouTube corto:
+         *
+         * https://youtu.be/XXXXX
+         */
+
+        if(
+            parsed.hostname ===
+            "youtu.be"
+        ){
+
+            const id =
+                parsed.pathname
+                    .replace("/","");
+
+
+            if(id){
+
+                return:
+                    "https://www.youtube.com/embed/" +
+                    id;
+
+            }
+
+        }
+
+
+        /*
+         * Vimeo básico.
+         */
+
+        if(
+            parsed.hostname.includes(
+                "vimeo.com"
+            )
+        ){
+
+            const id =
+                parsed.pathname
+                    .split("/")
+                    .filter(Boolean)
+                    .pop();
+
+
+            if(id){
+
+                return:
+                    "https://player.vimeo.com/video/" +
+                    id;
+
+            }
+
+        }
+
+    }
+    catch(error){
+
+        console.warn(
+            "URL de video no válida:",
+            url
+        );
+
+    }
+
+
+    return url;
+
+}
+
+
+
+/* =========================================================
+   PREGUNTA INTERNA
+========================================================= */
+
+function comprobarPregunta(
+    input,
+    result,
+    contenido
+){
+
+    const respuesta =
+        normalizar(
+            input.value
+        );
+
+
+    const correcta =
+        normalizar(
+            contenido.respuesta ||
+            ""
+        );
+
+
+    if(!respuesta){
+
+        result.className =
+            "question-result bad";
+
+
+        result.textContent =
+            "Ingresa una respuesta.";
+
+        return;
+
+    }
+
+
+    if(
+        respuesta === correcta
+    ){
+
+        result.className =
+            "question-result ok";
+
+
+        result.textContent =
+            contenido.mensaje_correcto ||
+            "Respuesta correcta.";
+
+    }
+    else{
+
+        result.className =
+            "question-result bad";
+
+
+        result.textContent =
+            "Respuesta incorrecta. Continúa investigando.";
+
+    }
+
+}
+
+
+
+/* =========================================================
+   DESBLOQUEO
+========================================================= */
+
+function renderEstadoFinal(){
+
+    const unlock =
+        document.getElementById(
+            "unlockSection"
+        );
+
+
+    const completed =
+        document.getElementById(
+            "completedSection"
+        );
+
+
+    /*
+     * Si ya está completado.
+     */
+
+    if(
+        progresoActual &&
+        progresoActual.estado ===
+        "completado"
+    ){
+
+        completed
+            .classList
+            .remove(
+                "hidden"
+            );
+
+
+        /*
+         * Si hay siguiente capítulo publicado
+         * y el lector ya tiene acceso,
+         * mostramos botón.
+         */
+
+        if(
+            siguienteCapitulo &&
+            siguienteCapitulo.estado ===
+            "publicado"
+        ){
+
+            comprobarAccesoSiguiente(
+                "completedNext"
+            );
+
+        }
+
+
+        return;
+
+    }
+
+
+    /*
+     * Si requiere clave.
+     */
+
+    if(
+        capituloActual.requiere_clave
+    ){
+
+        unlock
+            .classList
+            .remove(
+                "hidden"
+            );
+
+        return;
+
+    }
+
+
+    /*
+     * Capítulo sin clave.
+     *
+     * Mostramos sección especial.
+     */
+
+    if(
+        !capituloActual.requiere_clave
+    ){
+
+        mostrarFinalSinClave();
+
+    }
+
+}
+
+
+
+/* =========================================================
+   CAPÍTULO SIN CLAVE
+========================================================= */
+
+function mostrarFinalSinClave(){
+
+    const content =
+        document.getElementById(
+            "content"
+        );
+
+
+    const section =
+        document.createElement(
+            "section"
+        );
+
+
+    section.className =
+        "completed";
+
+
+    section.innerHTML = `
+
+        <div class="completed-label">
+            ARCHIVO FINALIZADO
+        </div>
+
+        <div class="completed-title">
+            Has llegado al final del capítulo
+        </div>
+
+        <div class="completed-text">
+            Continúa con la investigación cuando
+            el siguiente archivo esté disponible.
+        </div>
+
+    `;
+
+
+    content.appendChild(
+        section
+    );
+
+
+    /*
+     * Capítulo 1 no requiere clave.
+     *
+     * Intentamos marcarlo como completado
+     * mediante la función SQL.
+     */
+
+    completarCapituloSinClave();
+
+}
+
+
+
+/* =========================================================
+   COMPLETAR SIN CLAVE
+========================================================= */
+
+async function completarCapituloSinClave(){
+
+    /*
+     * Si ya estaba completado no hacemos nada.
+     */
+
+    if(
+        progresoActual &&
+        progresoActual.estado ===
+        "completado"
+    ){
+
+        return;
+
+    }
+
+
+    try{
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .rpc(
+                    "intentar_desbloquear_capitulo",
+                    {
+                        p_chapter_id:
+                            chapterId,
+
+                        p_respuesta:""
+                    }
+                );
+
+
+        if(error){
+
+            console.error(
+                "Error completando capítulo sin clave:",
+                error
+            );
+
+            return;
+
+        }
+
+
+        console.log(
+            "Resultado capítulo sin clave:",
+            data
+        );
+
+
+        /*
+         * Recargar progreso.
+         */
+
+        await cargarProgreso();
+
+
+        /*
+         * Buscar nuevamente el siguiente.
+         */
+
+        await cargarSiguienteCapitulo();
+
+
+        /*
+         * Si existe siguiente y está publicado,
+         * comprobamos si ya quedó disponible.
+         */
+
+        if(
+            siguienteCapitulo &&
+            siguienteCapitulo.estado ===
+            "publicado"
+        ){
+
+            comprobarAccesoSiguiente(
+                "content"
+            );
+
+        }
+
+    }
+    catch(error){
+
+        console.error(
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   INTENTAR DESBLOQUEAR
+========================================================= */
+
+async function intentarDesbloquear(){
+
+    const input =
+        document.getElementById(
+            "unlockInput"
+        );
+
+
+    const button =
+        document.getElementById(
+            "unlockButton"
+        );
+
+
+    const result =
+        document.getElementById(
+            "unlockResult"
+        );
+
+
+    const respuesta =
+        input.value.trim();
+
+
+    if(!respuesta){
+
+        result.className =
+            "unlock-result error";
+
+
+        result.textContent =
+            "Debes ingresar una clave.";
+
+        return;
+
+    }
+
+
+    try{
+
+        button.disabled =
+            true;
+
+
+        button.textContent =
+            "VERIFICANDO...";
+
+
+        result.className =
+            "unlock-result";
+
+
+        result.textContent =
+            "Comprobando clave...";
+
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .rpc(
+                    "intentar_desbloquear_capitulo",
+                    {
+                        p_chapter_id:
+                            chapterId,
+
+                        p_respuesta:
+                            respuesta
+                    }
+                );
+
+
+        if(error){
+
+            console.error(
+                error
+            );
+
+            throw new Error(
+                error.message ||
+                "No fue posible comprobar la clave."
+            );
+
+        }
+
+
+        console.log(
+            "Resultado desbloqueo:",
+            data
+        );
+
+
+        /*
+         * La función SQL devuelve JSON.
+         */
+
+        const resultado =
+            Array.isArray(data)
+                ? data[0]
+                : data;
+
+
+        if(
+            resultado &&
+            resultado.correcta === true
+        ){
+
+            result.className =
+                "unlock-result success";
+
+
+            result.textContent =
+                "Clave correcta. El siguiente archivo ha sido desbloqueado.";
+
+
+            /*
+             * Actualizar progreso.
+             */
+
+            await cargarProgreso();
+
+
+            await cargarSiguienteCapitulo();
+
+
+            /*
+             * Mostrar botón siguiente.
+             */
+
+            if(
+                siguienteCapitulo
+            ){
+
+                const next =
+                    document.getElementById(
+                        "nextChapter"
+                    );
+
+
+                next.classList.remove(
+                    "hidden"
+                );
+
+            }
+
+
+        }
+        else{
+
+            result.className =
+                "unlock-result error";
+
+
+            result.textContent =
+                "Clave incorrecta. Continúa investigando.";
+
+        }
+
+
+    }
+    catch(error){
+
+        console.error(
+            error
+        );
+
+
+        result.className =
+            "unlock-result error";
+
+
+        result.textContent =
+            error.message ||
+            "No fue posible comprobar la clave.";
+
+    }
+    finally{
+
+        button.disabled =
+            false;
+
+
+        button.textContent =
+            "DESBLOQUEAR";
+
+    }
+
+}
+
+
+
+/* =========================================================
+   COMPROBAR SIGUIENTE
+========================================================= */
+
+async function comprobarAccesoSiguiente(
+    containerId
+){
+
+    if(
+        !siguienteCapitulo
+    ){
+
+        return;
+
+    }
+
+
+    /*
+     * Si no está publicado todavía,
+     * no mostramos botón.
+     */
+
+    if(
+        siguienteCapitulo.estado !==
+        "publicado"
+    ){
+
+        return;
+
+    }
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from(
+                "user_chapter_progress"
+            )
+            .select(
+                "estado"
+            )
+            .eq(
+                "usuario_id",
+                usuarioActual.id
+            )
+            .eq(
+                "chapter_id",
+                siguienteCapitulo.id
+            )
+            .maybeSingle();
+
+
+    if(error){
+
+        console.error(
+            error
+        );
+
+        return;
+
+    }
+
+
+    if(
+        data &&
+        (
+            data.estado ===
+            "disponible" ||
+            data.estado ===
+            "en_progreso" ||
+            data.estado ===
+            "completado"
+        )
+    ){
+
+        const container =
+            document.getElementById(
+                containerId
+            );
+
+
+        if(!container){
+            return;
+        }
+
+
+        container.classList.remove(
+            "hidden"
+        );
+
+
+        container.innerHTML = `
+
+            <div class="next-label">
+                ARCHIVO DISPONIBLE
+            </div>
+
+            <button
+                class="next-button"
+                onclick="abrirSiguienteCapitulo()"
+            >
+                CAPÍTULO
+                ${siguienteCapitulo.numero}
+                →
+            </button>
+
+        `;
+
+    }
+
+}
+
+
+
+/* =========================================================
+   ABRIR SIGUIENTE
+========================================================= */
+
+function abrirSiguienteCapitulo(){
+
+    if(
+        !siguienteCapitulo
+    ){
+
+        return;
+
+    }
+
+
+    window.location.href =
+        "leer.html?id=" +
+        encodeURIComponent(
+            siguienteCapitulo.id
+        );
+
+}
+
+
+
+/* =========================================================
+   ENTER
+========================================================= */
+
+function manejarEnter(event){
+
+    if(
+        event.key ===
+        "Enter"
+    ){
+
+        event.preventDefault();
+
+        intentarDesbloquear();
+
+    }
+
+}
+
+
+
+/* =========================================================
+   NORMALIZAR
+========================================================= */
+
+function normalizar(valor){
+
+    return String(
+        valor || ""
+    )
+        .trim()
+        .toLowerCase()
+        .replace(
+            /\s+/g,
+            " "
+        );
+
+}
+
+
+
+/* =========================================================
+   VOLVER
+========================================================= */
+
+function volverPanel(){
+
+    window.location.href =
+        "index.html";
+
+}
+
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+function mostrarLoading(){
+
+    document
+        .getElementById(
+            "loadingScreen"
+        )
+        .classList.remove(
+            "hidden"
+        );
+
+
+    document
+        .getElementById(
+            "errorScreen"
+        )
+        .classList.add(
+            "hidden"
+        );
+
+
+    document
+        .getElementById(
+            "readerScreen"
+        )
+        .classList.add(
+            "hidden"
+        );
+
+}
+
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+function mostrarError(
+    titulo,
+    texto
+){
+
+    document
+        .getElementById(
+            "loadingScreen"
+        )
+        .classList.add(
+            "hidden"
+        );
+
+
+    document
+        .getElementById(
+            "readerScreen"
+        )
+        .classList.add(
+            "hidden"
+        );
+
+
+    const errorScreen =
+        document.getElementById(
+            "errorScreen"
+        );
+
+
+    errorScreen
+        .classList
+        .remove(
+            "hidden"
+        );
+
+
+    document
+        .getElementById(
+            "errorTitle"
+        )
+        .textContent =
+            titulo;
+
+
+    document
+        .getElementById(
+            "errorText"
+        )
+        .textContent =
+            texto;
+
+}
+
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+supabaseClient.auth.onAuthStateChange(
+    async (
+        event,
+        session
+    ) => {
+
+        /*
+         * No redireccionamos durante
+         * INITIAL_SESSION.
+         */
+
+        if(
+            event ===
+            "SIGNED_OUT" &&
+            !session
+        ){
+
+            mostrarError(
+                "SESIÓN FINALIZADA",
+                "Tu sesión ha terminado. Vuelve al panel e inicia sesión nuevamente."
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
