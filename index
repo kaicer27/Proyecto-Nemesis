@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Prueba Protocolo Némesis</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 30px;
+            background: #0b1117;
+            color: #e8edf2;
+            font-family: Arial, sans-serif;
+        }
+
+        .contenedor {
+            max-width: 700px;
+            margin: auto;
+        }
+
+        .tarjeta {
+            background: #111a23;
+            border: 1px solid #263746;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #d62828;
+        }
+
+        input,
+        button {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: 1px solid #34495e;
+            font-size: 16px;
+        }
+
+        input {
+            background: #0b1117;
+            color: white;
+        }
+
+        button {
+            background: #d62828;
+            color: white;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .oculto {
+            display: none;
+        }
+
+        .estado {
+            padding: 12px;
+            border-radius: 8px;
+            background: #18232e;
+            margin-top: 15px;
+        }
+
+        .resultado {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #0b1117;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <div class="tarjeta">
+        <h1>PROTOCOLO NÉMESIS</h1>
+        <p>Prueba del motor de desbloqueo</p>
+    </div>
+
+    <!-- LOGIN -->
+
+    <div id="loginBox" class="tarjeta">
+
+        <h2>Iniciar sesión</h2>
+
+        <input
+            type="email"
+            id="email"
+            placeholder="Correo"
+            value="prueba@nemesis.cl"
+        >
+
+        <input
+            type="password"
+            id="password"
+            placeholder="Contraseña"
+            value="Nemesis123!"
+        >
+
+        <button onclick="iniciarSesion()">
+            INICIAR SESIÓN
+        </button>
+
+        <div id="loginResultado" class="resultado"></div>
+
+    </div>
+
+    <!-- CONTENIDO AUTENTICADO -->
+
+    <div id="appBox" class="tarjeta oculto">
+
+        <h2>Sesión activa</h2>
+
+        <div id="usuarioInfo" class="estado"></div>
+
+        <hr>
+
+        <h2>Capítulo 1</h2>
+
+        <div id="capituloInfo" class="estado">
+            Cargando...
+        </div>
+
+        <h3>Respuesta</h3>
+
+        <input
+            type="text"
+            id="respuesta"
+            placeholder="Escribe tu respuesta"
+        >
+
+        <button onclick="enviarRespuesta()">
+            COMPROBAR RESPUESTA
+        </button>
+
+        <div id="respuestaResultado" class="resultado"></div>
+
+        <button onclick="cerrarSesion()">
+            CERRAR SESIÓN
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   CONFIGURACIÓN SUPABASE
+========================================================= */
+
+const SUPABASE_URL = "https://qogoayvgkyurzugvbbkj.supabase.co";
+
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvZ29heXZna3l1cnp1Z3ZiYmtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0ODcxODIsImV4cCI6MjEwNTA2MzE4Mn0.EOViV3jnDCmirsKk1kuD1u-SRjqDA7SUiLxr-J_OOIo";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+
+/* =========================================================
+   DATOS DEL CAPÍTULO 1
+========================================================= */
+
+const CAPITULO_1_ID =
+    "22ed80ad-91c4-49b8-92ed-8ece748e92d1";
+
+
+/* =========================================================
+   INICIAR SESIÓN
+========================================================= */
+
+async function iniciarSesion() {
+
+    const email =
+        document.getElementById("email").value.trim();
+
+    const password =
+        document.getElementById("password").value;
+
+    const resultado =
+        document.getElementById("loginResultado");
+
+    resultado.textContent = "Iniciando sesión...";
+
+    const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+    if (error) {
+
+        resultado.textContent =
+            "ERROR:\n" + error.message;
+
+        return;
+    }
+
+    resultado.textContent =
+        "Sesión iniciada correctamente.";
+
+    document.getElementById("loginBox")
+        .classList.add("oculto");
+
+    document.getElementById("appBox")
+        .classList.remove("oculto");
+
+    await cargarUsuario();
+
+    await cargarProgreso();
+}
+
+
+/* =========================================================
+   CARGAR USUARIO
+========================================================= */
+
+async function cargarUsuario() {
+
+    const { data, error } =
+        await supabaseClient.auth.getUser();
+
+    if (error) {
+
+        document.getElementById("usuarioInfo")
+            .textContent = error.message;
+
+        return;
+    }
+
+    const usuario = data.user;
+
+    document.getElementById("usuarioInfo").textContent =
+        "Usuario autenticado:\n" +
+        usuario.email +
+        "\n\nID:\n" +
+        usuario.id;
+}
+
+
+/* =========================================================
+   CARGAR PROGRESO
+========================================================= */
+
+async function cargarProgreso() {
+
+    const capituloInfo =
+        document.getElementById("capituloInfo");
+
+    capituloInfo.textContent =
+        "Consultando progreso...";
+
+    const { data, error } =
+        await supabaseClient
+            .from("user_chapter_progress")
+            .select(`
+                estado,
+                fecha_inicio,
+                fecha_completado
+            `)
+            .eq("chapter_id", CAPITULO_1_ID)
+            .maybeSingle();
+
+    if (error) {
+
+        capituloInfo.textContent =
+            "ERROR:\n" + error.message;
+
+        return;
+    }
+
+    if (!data) {
+
+        capituloInfo.textContent =
+            "No existe progreso para este capítulo.";
+
+        return;
+    }
+
+    capituloInfo.textContent =
+        "Capítulo 1\n\n" +
+        "Estado: " +
+        data.estado;
+}
+
+
+/* =========================================================
+   ENVIAR RESPUESTA
+========================================================= */
+
+async function enviarRespuesta() {
+
+    const respuesta =
+        document
+            .getElementById("respuesta")
+            .value
+            .trim();
+
+    const resultado =
+        document
+            .getElementById("respuestaResultado");
+
+    if (!respuesta) {
+
+        resultado.textContent =
+            "Escribe una respuesta.";
+
+        return;
+    }
+
+    resultado.textContent =
+        "Comprobando respuesta...";
+
+    const { data, error } =
+        await supabaseClient.rpc(
+            "intentar_desbloquear_capitulo",
+            {
+                p_chapter_id: CAPITULO_1_ID,
+                p_respuesta: respuesta
+            }
+        );
+
+    if (error) {
+
+        resultado.textContent =
+            "ERROR:\n" + error.message;
+
+        return;
+    }
+
+    resultado.textContent =
+        JSON.stringify(data, null, 2);
+
+    await cargarProgreso();
+}
+
+
+/* =========================================================
+   CERRAR SESIÓN
+========================================================= */
+
+async function cerrarSesion() {
+
+    await supabaseClient.auth.signOut();
+
+    location.reload();
+}
+
+</script>
+
+</body>
+</html>
