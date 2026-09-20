@@ -4,81 +4,179 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Prueba Protocolo Némesis</title>
+    <title>PROTOCOLO NÉMESIS</title>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            padding: 30px;
-            background: #0b1117;
-            color: #e8edf2;
-            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top, #10202b 0%, #05090d 45%, #020405 100%);
+            color: #e8edf0;
+            font-family: Arial, Helvetica, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
         .contenedor {
-            max-width: 700px;
-            margin: auto;
+            width: 100%;
+            max-width: 520px;
         }
 
-        .tarjeta {
-            background: #111a23;
-            border: 1px solid #263746;
+        .logo {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .logo h1 {
+            margin: 0;
+            font-size: 38px;
+            letter-spacing: 5px;
+            color: #f1f3f4;
+        }
+
+        .logo p {
+            margin: 10px 0 0;
+            color: #8d9aa3;
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+
+        .panel {
+            background: rgba(10, 17, 22, 0.94);
+            border: 1px solid #29343b;
             border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.55);
         }
 
-        h1 {
-            color: #d62828;
+        .panel h2 {
+            margin-top: 0;
+            font-size: 22px;
+            font-weight: normal;
+            color: #d9e0e4;
         }
 
-        input,
+        .campo {
+            margin-bottom: 18px;
+        }
+
+        .campo label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 13px;
+            color: #89969e;
+        }
+
+        .campo input {
+            width: 100%;
+            padding: 13px;
+            border-radius: 7px;
+            border: 1px solid #36434b;
+            background: #070c10;
+            color: white;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .campo input:focus {
+            border-color: #a32929;
+        }
+
         button {
             width: 100%;
-            box-sizing: border-box;
-            padding: 12px;
-            margin-top: 10px;
-            border-radius: 8px;
-            border: 1px solid #34495e;
-            font-size: 16px;
-        }
-
-        input {
-            background: #0b1117;
+            padding: 14px;
+            border: 0;
+            border-radius: 7px;
+            background: #9e2424;
             color: white;
-        }
-
-        button {
-            background: #d62828;
-            color: white;
-            cursor: pointer;
-            border: none;
+            font-size: 15px;
             font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
         }
 
         button:hover {
-            opacity: 0.9;
+            background: #c02b2b;
         }
 
-        .oculto {
+        button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        #mensaje {
+            margin-top: 18px;
+            padding: 12px;
+            border-radius: 6px;
+            background: #11191e;
+            color: #aeb9bf;
+            font-size: 14px;
+            line-height: 1.5;
             display: none;
         }
 
-        .estado {
-            padding: 12px;
-            border-radius: 8px;
-            background: #18232e;
-            margin-top: 15px;
+        #app {
+            display: none;
         }
 
-        .resultado {
-            margin-top: 15px;
-            padding: 15px;
+        .usuario {
+            padding: 12px;
+            background: #080d11;
+            border: 1px solid #273139;
+            border-radius: 7px;
+            margin-bottom: 20px;
+            color: #aeb9bf;
+            font-size: 13px;
+        }
+
+        .capitulo {
+            padding: 20px;
+            border: 1px solid #29343b;
             border-radius: 8px;
-            background: #0b1117;
-            white-space: pre-wrap;
+            background: #080d11;
+        }
+
+        .capitulo h3 {
+            margin: 0 0 8px;
+            color: #e5eaed;
+        }
+
+        .estado {
+            color: #7fbe8d;
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        .respuesta {
+            margin-bottom: 12px;
+        }
+
+        .respuesta input {
+            width: 100%;
+            padding: 13px;
+            border-radius: 7px;
+            border: 1px solid #36434b;
+            background: #05090c;
+            color: white;
+            font-size: 15px;
+        }
+
+        .salir {
+            margin-top: 12px;
+            background: #252d32;
+        }
+
+        .salir:hover {
+            background: #343e44;
         }
     </style>
 </head>
@@ -87,70 +185,76 @@
 
 <div class="contenedor">
 
-    <div class="tarjeta">
-        <h1>PROTOCOLO NÉMESIS</h1>
-        <p>Prueba del motor de desbloqueo</p>
+    <div class="logo">
+        <h1>NÉMESIS</h1>
+        <p>SAGA DE SUSPENSO MÉDICO E INTERACTIVO</p>
     </div>
 
     <!-- LOGIN -->
+    <div id="login" class="panel">
 
-    <div id="loginBox" class="tarjeta">
+        <h2>Acceso al protocolo</h2>
 
-        <h2>Iniciar sesión</h2>
+        <div class="campo">
+            <label>Correo electrónico</label>
+            <input
+                type="email"
+                id="email"
+                value="prueba@nemesis.cl"
+                placeholder="correo@ejemplo.cl"
+            >
+        </div>
 
-        <input
-            type="email"
-            id="email"
-            placeholder="Correo"
-            value="prueba@nemesis.cl"
-        >
+        <div class="campo">
+            <label>Contraseña</label>
+            <input
+                type="password"
+                id="password"
+                placeholder="Contraseña"
+            >
+        </div>
 
-        <input
-            type="password"
-            id="password"
-            placeholder="Contraseña"
-            value="Nemesis123!"
-        >
-
-        <button onclick="iniciarSesion()">
+        <button id="btnLogin" onclick="iniciarSesion()">
             INICIAR SESIÓN
         </button>
 
-        <div id="loginResultado" class="resultado"></div>
+        <div id="mensaje"></div>
 
     </div>
 
-    <!-- CONTENIDO AUTENTICADO -->
 
-    <div id="appBox" class="tarjeta oculto">
+    <!-- APLICACIÓN -->
+    <div id="app" class="panel">
 
-        <h2>Sesión activa</h2>
+        <h2>PROTOCOLO NÉMESIS</h2>
 
-        <div id="usuarioInfo" class="estado"></div>
+        <div id="usuario" class="usuario"></div>
 
-        <hr>
+        <div class="capitulo">
 
-        <h2>Capítulo 1</h2>
+            <h3>Capítulo 1 — El comienzo</h3>
 
-        <div id="capituloInfo" class="estado">
-            Cargando...
+            <div id="estadoCapitulo" class="estado">
+                Comprobando acceso...
+            </div>
+
+            <div class="respuesta">
+                <input
+                    type="text"
+                    id="respuesta"
+                    placeholder="Ingresa la clave..."
+                >
+            </div>
+
+            <button id="btnResponder" onclick="responder()">
+                VERIFICAR RESPUESTA
+            </button>
+
+            <div id="mensajeCapitulo"></div>
+
         </div>
 
-        <h3>Respuesta</h3>
-
-        <input
-            type="text"
-            id="respuesta"
-            placeholder="Escribe tu respuesta"
-        >
-
-        <button onclick="enviarRespuesta()">
-            COMPROBAR RESPUESTA
-        </button>
-
-        <div id="respuestaResultado" class="resultado"></div>
-
-        <button onclick="cerrarSesion()">
+        <button class="salir" onclick="cerrarSesion()">
             CERRAR SESIÓN
         </button>
 
@@ -161,208 +265,334 @@
 
 <script>
 
-/* =========================================================
-   CONFIGURACIÓN SUPABASE
-========================================================= */
+    /* =========================================================
+       CONFIGURACIÓN SUPABASE
+    ========================================================= */
 
-const SUPABASE_URL = "https://qogoayvgkyurzugvbbkj.supabase.co";
+    const SUPABASE_URL =
+        "https://qogoayvgkyurzugvbbkj.supabase.co";
 
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvZ29heXZna3l1cnp1Z3ZiYmtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0ODcxODIsImV4cCI6MjEwNTA2MzE4Mn0.EOViV3jnDCmirsKk1kuD1u-SRjqDA7SUiLxr-J_OOIo";
-
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-);
+    const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvZ29heXZna3l1cnp1Z3ZiYmtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0ODcxODIsImV4cCI6MjEwNTA2MzE4Mn0.EOViV3jnDCmirsKk1kuD1u-SRjqDA7SUiLxr-J_OOIo";
 
 
-/* =========================================================
-   DATOS DEL CAPÍTULO 1
-========================================================= */
-
-const CAPITULO_1_ID =
-    "22ed80ad-91c4-49b8-92ed-8ece748e92d1";
-
-
-/* =========================================================
-   INICIAR SESIÓN
-========================================================= */
-
-async function iniciarSesion() {
-
-    const email =
-        document.getElementById("email").value.trim();
-
-    const password =
-        document.getElementById("password").value;
-
-    const resultado =
-        document.getElementById("loginResultado");
-
-    resultado.textContent = "Iniciando sesión...";
-
-    const { data, error } =
-        await supabaseClient.auth.signInWithPassword({
-            email: email,
-            password: password
-        });
-
-    if (error) {
-
-        resultado.textContent =
-            "ERROR:\n" + error.message;
-
-        return;
-    }
-
-    resultado.textContent =
-        "Sesión iniciada correctamente.";
-
-    document.getElementById("loginBox")
-        .classList.add("oculto");
-
-    document.getElementById("appBox")
-        .classList.remove("oculto");
-
-    await cargarUsuario();
-
-    await cargarProgreso();
-}
-
-
-/* =========================================================
-   CARGAR USUARIO
-========================================================= */
-
-async function cargarUsuario() {
-
-    const { data, error } =
-        await supabaseClient.auth.getUser();
-
-    if (error) {
-
-        document.getElementById("usuarioInfo")
-            .textContent = error.message;
-
-        return;
-    }
-
-    const usuario = data.user;
-
-    document.getElementById("usuarioInfo").textContent =
-        "Usuario autenticado:\n" +
-        usuario.email +
-        "\n\nID:\n" +
-        usuario.id;
-}
-
-
-/* =========================================================
-   CARGAR PROGRESO
-========================================================= */
-
-async function cargarProgreso() {
-
-    const capituloInfo =
-        document.getElementById("capituloInfo");
-
-    capituloInfo.textContent =
-        "Consultando progreso...";
-
-    const { data, error } =
-        await supabaseClient
-            .from("user_chapter_progress")
-            .select(`
-                estado,
-                fecha_inicio,
-                fecha_completado
-            `)
-            .eq("chapter_id", CAPITULO_1_ID)
-            .maybeSingle();
-
-    if (error) {
-
-        capituloInfo.textContent =
-            "ERROR:\n" + error.message;
-
-        return;
-    }
-
-    if (!data) {
-
-        capituloInfo.textContent =
-            "No existe progreso para este capítulo.";
-
-        return;
-    }
-
-    capituloInfo.textContent =
-        "Capítulo 1\n\n" +
-        "Estado: " +
-        data.estado;
-}
-
-
-/* =========================================================
-   ENVIAR RESPUESTA
-========================================================= */
-
-async function enviarRespuesta() {
-
-    const respuesta =
-        document
-            .getElementById("respuesta")
-            .value
-            .trim();
-
-    const resultado =
-        document
-            .getElementById("respuestaResultado");
-
-    if (!respuesta) {
-
-        resultado.textContent =
-            "Escribe una respuesta.";
-
-        return;
-    }
-
-    resultado.textContent =
-        "Comprobando respuesta...";
-
-    const { data, error } =
-        await supabaseClient.rpc(
-            "intentar_desbloquear_capitulo",
-            {
-                p_chapter_id: CAPITULO_1_ID,
-                p_respuesta: respuesta
-            }
+    const supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_ANON_KEY
         );
 
-    if (error) {
 
-        resultado.textContent =
-            "ERROR:\n" + error.message;
+    /* =========================================================
+       DATOS DE LA PRUEBA
+    ========================================================= */
 
-        return;
+    const CAPITULO_1_ID =
+        "22ed80ad-91c4-49b8-92ed-8ece748e92d1";
+
+
+    /* =========================================================
+       ELEMENTOS
+    ========================================================= */
+
+    const loginBox = document.getElementById("login");
+    const appBox = document.getElementById("app");
+
+    const mensaje = document.getElementById("mensaje");
+
+    const usuarioBox =
+        document.getElementById("usuario");
+
+    const estadoCapitulo =
+        document.getElementById("estadoCapitulo");
+
+    const mensajeCapitulo =
+        document.getElementById("mensajeCapitulo");
+
+
+    /* =========================================================
+       MOSTRAR MENSAJE
+    ========================================================= */
+
+    function mostrarMensaje(texto, elemento = mensaje) {
+
+        elemento.style.display = "block";
+        elemento.textContent = texto;
+
     }
 
-    resultado.textContent =
-        JSON.stringify(data, null, 2);
 
-    await cargarProgreso();
-}
+    /* =========================================================
+       INICIAR SESIÓN
+    ========================================================= */
+
+    async function iniciarSesion() {
+
+        const email =
+            document.getElementById("email").value.trim();
+
+        const password =
+            document.getElementById("password").value;
+
+        const boton =
+            document.getElementById("btnLogin");
+
+        if (!email || !password) {
+
+            mostrarMensaje(
+                "Debes ingresar correo y contraseña."
+            );
+
+            return;
+        }
+
+        boton.disabled = true;
+        boton.textContent = "CONECTANDO...";
+
+        mensaje.style.display = "none";
 
 
-/* =========================================================
-   CERRAR SESIÓN
-========================================================= */
+        const { data, error } =
+            await supabaseClient.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
 
-async function cerrarSesion() {
 
-    await supabaseClient.auth.signOut();
+        if (error) {
 
-    location.reload();
-}
+            console.error(error);
+
+            mostrarMensaje(
+                "Error de inicio de sesión: " +
+                error.message
+            );
+
+            boton.disabled = false;
+            boton.textContent = "INICIAR SESIÓN";
+
+            return;
+        }
+
+
+        console.log("Usuario autenticado:", data.user);
+
+        await mostrarAplicacion(data.user);
+
+        boton.disabled = false;
+        boton.textContent = "INICIAR SESIÓN";
+    }
+
+
+    /* =========================================================
+       MOSTRAR APLICACIÓN
+    ========================================================= */
+
+    async function mostrarAplicacion(user) {
+
+        loginBox.style.display = "none";
+        appBox.style.display = "block";
+
+
+        usuarioBox.textContent =
+            "Sesión iniciada: " + user.email;
+
+
+        await cargarProgreso();
+
+    }
+
+
+    /* =========================================================
+       CARGAR PROGRESO
+    ========================================================= */
+
+    async function cargarProgreso() {
+
+        estadoCapitulo.textContent =
+            "Consultando progreso...";
+
+
+        const {
+            data: { user },
+            error: userError
+        } = await supabaseClient.auth.getUser();
+
+
+        if (userError || !user) {
+
+            estadoCapitulo.textContent =
+                "No se pudo identificar al usuario.";
+
+            return;
+        }
+
+
+        const { data, error } =
+            await supabaseClient
+                .from("user_chapter_progress")
+                .select("estado, fecha_inicio, fecha_completado")
+                .eq("usuario_id", user.id)
+                .eq("chapter_id", CAPITULO_1_ID)
+                .maybeSingle();
+
+
+        if (error) {
+
+            console.error(error);
+
+            estadoCapitulo.textContent =
+                "Error consultando el progreso.";
+
+            mostrarMensaje(
+                "Error de Supabase: " + error.message,
+                mensajeCapitulo
+            );
+
+            return;
+        }
+
+
+        if (!data) {
+
+            estadoCapitulo.textContent =
+                "No existe progreso para este capítulo.";
+
+            return;
+        }
+
+
+        estadoCapitulo.textContent =
+            "Estado del capítulo: " + data.estado;
+
+    }
+
+
+    /* =========================================================
+       RESPONDER
+    ========================================================= */
+
+    async function responder() {
+
+        const respuesta =
+            document
+                .getElementById("respuesta")
+                .value
+                .trim();
+
+
+        if (!respuesta) {
+
+            mostrarMensaje(
+                "Ingresa una respuesta.",
+                mensajeCapitulo
+            );
+
+            return;
+        }
+
+
+        const boton =
+            document.getElementById("btnResponder");
+
+        boton.disabled = true;
+        boton.textContent = "VERIFICANDO...";
+
+        mensajeCapitulo.style.display = "none";
+
+
+        const { data, error } =
+            await supabaseClient.rpc(
+                "intentar_desbloquear_capitulo",
+                {
+                    p_chapter_id: CAPITULO_1_ID,
+                    p_respuesta: respuesta
+                }
+            );
+
+
+        console.log("Resultado RPC:", data);
+
+
+        if (error) {
+
+            console.error(error);
+
+            mostrarMensaje(
+                "Error: " + error.message,
+                mensajeCapitulo
+            );
+
+            boton.disabled = false;
+            boton.textContent = "VERIFICAR RESPUESTA";
+
+            return;
+        }
+
+
+        if (data.correcta) {
+
+            mostrarMensaje(
+                "✓ RESPUESTA CORRECTA. Capítulo completado.",
+                mensajeCapitulo
+            );
+
+        } else {
+
+            mostrarMensaje(
+                "✕ RESPUESTA INCORRECTA.",
+                mensajeCapitulo
+            );
+
+        }
+
+
+        await cargarProgreso();
+
+
+        boton.disabled = false;
+        boton.textContent = "VERIFICAR RESPUESTA";
+
+    }
+
+
+    /* =========================================================
+       CERRAR SESIÓN
+    ========================================================= */
+
+    async function cerrarSesion() {
+
+        await supabaseClient.auth.signOut();
+
+        appBox.style.display = "none";
+        loginBox.style.display = "block";
+
+        document.getElementById("password").value = "";
+
+    }
+
+
+    /* =========================================================
+       COMPROBAR SESIÓN EXISTENTE
+    ========================================================= */
+
+    async function comprobarSesion() {
+
+        const {
+            data: { session }
+        } = await supabaseClient.auth.getSession();
+
+
+        if (session && session.user) {
+
+            await mostrarAplicacion(session.user);
+
+        }
+
+    }
+
+
+    comprobarSesion();
 
 </script>
 
