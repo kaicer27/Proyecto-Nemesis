@@ -1,599 +1,715 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="PROTOCOLO NÉMESIS — Saga de suspenso médico e interactivo">
+  <title>PROTOCOLO NÉMESIS</title>
 
-    <title>PROTOCOLO NÉMESIS</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root{
+      --bg:#03070a;
+      --panel:#0b1217;
+      --panel2:#0f191f;
+      --line:#26343d;
+      --text:#eef2f4;
+      --muted:#8e9ba3;
+      --red:#a82a2a;
+      --red2:#d33a3a;
+      --green:#4fa66a;
+      --blue:#294b61;
+    }
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+    *{box-sizing:border-box}
 
-        body {
-            margin: 0;
-            min-height: 100vh;
-            background:
-                radial-gradient(circle at top, #10202b 0%, #05090d 45%, #020405 100%);
-            color: #e8edf0;
-            font-family: Arial, Helvetica, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+    html,body{
+      margin:0;
+      min-height:100%;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Arial,Helvetica,sans-serif;
+    }
 
-        .contenedor {
-            width: 100%;
-            max-width: 520px;
-        }
+    body{
+      min-height:100vh;
+      background:
+        radial-gradient(circle at 50% -10%, #17303e 0%, #091218 35%, #03070a 72%);
+    }
 
-        .logo {
-            text-align: center;
-            margin-bottom: 25px;
-        }
+    button,input{font:inherit}
 
-        .logo h1 {
-            margin: 0;
-            font-size: 38px;
-            letter-spacing: 5px;
-            color: #f1f3f4;
-        }
+    .screen{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px 16px;
+    }
 
-        .logo p {
-            margin: 10px 0 0;
-            color: #8d9aa3;
-            font-size: 14px;
-            letter-spacing: 2px;
-        }
+    .shell{
+      width:min(100%,760px);
+    }
 
-        .panel {
-            background: rgba(10, 17, 22, 0.94);
-            border: 1px solid #29343b;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.55);
-        }
+    .brand{
+      text-align:center;
+      margin-bottom:26px;
+    }
 
-        .panel h2 {
-            margin-top: 0;
-            font-size: 22px;
-            font-weight: normal;
-            color: #d9e0e4;
-        }
+    .brand-kicker{
+      font-size:11px;
+      letter-spacing:5px;
+      color:#778791;
+      margin-bottom:10px;
+    }
 
-        .campo {
-            margin-bottom: 18px;
-        }
+    .brand h1{
+      margin:0;
+      font-size:clamp(32px,8vw,58px);
+      letter-spacing:7px;
+      font-weight:700;
+    }
 
-        .campo label {
-            display: block;
-            margin-bottom: 7px;
-            font-size: 13px;
-            color: #89969e;
-        }
+    .brand-sub{
+      margin-top:12px;
+      color:#9ba8af;
+      font-size:13px;
+      letter-spacing:2px;
+    }
 
-        .campo input {
-            width: 100%;
-            padding: 13px;
-            border-radius: 7px;
-            border: 1px solid #36434b;
-            background: #070c10;
-            color: white;
-            outline: none;
-            font-size: 15px;
-        }
+    .card{
+      background:rgba(9,15,19,.96);
+      border:1px solid var(--line);
+      border-radius:14px;
+      box-shadow:0 25px 70px rgba(0,0,0,.6);
+      overflow:hidden;
+    }
 
-        .campo input:focus {
-            border-color: #a32929;
-        }
+    .card-head{
+      padding:24px 26px 18px;
+      border-bottom:1px solid #1d2930;
+    }
 
-        button {
-            width: 100%;
-            padding: 14px;
-            border: 0;
-            border-radius: 7px;
-            background: #9e2424;
-            color: white;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+    .card-head h2{
+      margin:0;
+      font-size:21px;
+      font-weight:500;
+    }
 
-        button:hover {
-            background: #c02b2b;
-        }
+    .card-head p{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
 
-        button:disabled {
-            opacity: 0.6;
-            cursor: wait;
-        }
+    .card-body{
+      padding:26px;
+    }
 
-        #mensaje {
-            margin-top: 18px;
-            padding: 12px;
-            border-radius: 6px;
-            background: #11191e;
-            color: #aeb9bf;
-            font-size: 14px;
-            line-height: 1.5;
-            display: none;
-        }
+    .field{margin-bottom:17px}
 
-        #app {
-            display: none;
-        }
+    .field label{
+      display:block;
+      margin-bottom:7px;
+      color:#9aa7ae;
+      font-size:12px;
+      letter-spacing:.5px;
+    }
 
-        .usuario {
-            padding: 12px;
-            background: #080d11;
-            border: 1px solid #273139;
-            border-radius: 7px;
-            margin-bottom: 20px;
-            color: #aeb9bf;
-            font-size: 13px;
-        }
+    .field input{
+      width:100%;
+      padding:13px 14px;
+      color:white;
+      background:#05090c;
+      border:1px solid #34434d;
+      border-radius:7px;
+      outline:none;
+    }
 
-        .capitulo {
-            padding: 20px;
-            border: 1px solid #29343b;
-            border-radius: 8px;
-            background: #080d11;
-        }
+    .field input:focus{
+      border-color:#a82a2a;
+      box-shadow:0 0 0 2px rgba(168,42,42,.12);
+    }
 
-        .capitulo h3 {
-            margin: 0 0 8px;
-            color: #e5eaed;
-        }
+    .btn{
+      width:100%;
+      border:0;
+      border-radius:7px;
+      padding:14px 16px;
+      background:var(--red);
+      color:white;
+      font-weight:700;
+      letter-spacing:.5px;
+      cursor:pointer;
+    }
 
-        .estado {
-            color: #7fbe8d;
-            font-size: 13px;
-            margin-bottom: 18px;
-        }
+    .btn:hover{background:var(--red2)}
+    .btn:disabled{opacity:.55;cursor:wait}
 
-        .respuesta {
-            margin-bottom: 12px;
-        }
+    .message{
+      display:none;
+      margin-top:16px;
+      padding:12px 14px;
+      border:1px solid #303d45;
+      border-radius:7px;
+      background:#0a1115;
+      color:#c6d0d5;
+      font-size:13px;
+      line-height:1.5;
+    }
 
-        .respuesta input {
-            width: 100%;
-            padding: 13px;
-            border-radius: 7px;
-            border: 1px solid #36434b;
-            background: #05090c;
-            color: white;
-            font-size: 15px;
-        }
+    .message.show{display:block}
+    .message.error{border-color:#713030;color:#e7b5b5}
+    .message.success{border-color:#315c3d;color:#a9d8b6}
 
-        .salir {
-            margin-top: 12px;
-            background: #252d32;
-        }
+    .hidden{display:none !important}
 
-        .salir:hover {
-            background: #343e44;
-        }
-    </style>
+    .userbar{
+      padding:12px 14px;
+      background:#070d11;
+      border:1px solid #202d35;
+      border-radius:8px;
+      color:#aeb9bf;
+      font-size:12px;
+      margin-bottom:20px;
+    }
+
+    .chapter{
+      border:1px solid #2b3941;
+      border-radius:10px;
+      overflow:hidden;
+      background:#080e12;
+    }
+
+    .chapter-top{
+      padding:22px;
+      border-bottom:1px solid #202c33;
+    }
+
+    .chapter-number{
+      color:#9b3030;
+      font-size:11px;
+      letter-spacing:3px;
+      margin-bottom:8px;
+    }
+
+    .chapter h3{
+      margin:0;
+      font-size:25px;
+      font-weight:500;
+    }
+
+    .chapter-sub{
+      margin:7px 0 0;
+      color:#8f9ca3;
+      font-size:14px;
+    }
+
+    .chapter-body{
+      padding:22px;
+    }
+
+    .status{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      color:#7fc092;
+      font-size:13px;
+      margin-bottom:20px;
+    }
+
+    .dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:var(--green);
+    }
+
+    .test-note{
+      margin-top:20px;
+      padding:12px 14px;
+      border-left:3px solid #4a6575;
+      background:#0b151b;
+      color:#83929a;
+      font-size:12px;
+      line-height:1.5;
+    }
+
+    .footer{
+      text-align:center;
+      color:#52616a;
+      font-size:11px;
+      margin-top:20px;
+      letter-spacing:1px;
+    }
+
+    @media(max-width:600px){
+      .screen{padding:18px 12px}
+      .card-body,.card-head{padding:20px}
+      .brand h1{letter-spacing:4px}
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="contenedor">
+  <!-- =====================================================
+       LOGIN
+  ====================================================== -->
+  <main id="loginScreen" class="screen">
+    <div class="shell">
 
-    <div class="logo">
-        <h1>NÉMESIS</h1>
-        <p>SAGA DE SUSPENSO MÉDICO E INTERACTIVO</p>
-    </div>
+      <header class="brand">
+        <div class="brand-kicker">ARCHIVO CONFIDENCIAL</div>
+        <h1>PROTOCOLO NÉMESIS</h1>
+        <div class="brand-sub">SAGA DE SUSPENSO MÉDICO E INTERACTIVO</div>
+      </header>
 
-    <!-- LOGIN -->
-    <div id="login" class="panel">
-
-        <h2>Acceso al protocolo</h2>
-
-        <div class="campo">
-            <label>Correo electrónico</label>
-            <input
-                type="email"
-                id="email"
-                value="prueba@nemesis.cl"
-                placeholder="correo@ejemplo.cl"
-            >
+      <section class="card">
+        <div class="card-head">
+          <h2>Acceso al protocolo</h2>
+          <p>Ingresa con tu cuenta para continuar la investigación.</p>
         </div>
 
-        <div class="campo">
-            <label>Contraseña</label>
-            <input
-                type="password"
-                id="password"
-                placeholder="Contraseña"
-            >
-        </div>
+        <div class="card-body">
+          <div class="field">
+            <label for="email">CORREO ELECTRÓNICO</label>
+            <input id="email" type="email" value="prueba@nemesis.cl" autocomplete="email">
+          </div>
 
-        <button id="btnLogin" onclick="iniciarSesion()">
+          <div class="field">
+            <label for="password">CONTRASEÑA</label>
+            <input id="password" type="password" autocomplete="current-password">
+          </div>
+
+          <button id="loginButton" class="btn" type="button">
             INICIAR SESIÓN
-        </button>
+          </button>
 
-        <div id="mensaje"></div>
+          <div id="loginMessage" class="message"></div>
+        </div>
+      </section>
 
+      <div class="footer">R. GALLEGUILLOS · PROYECTO NÉMESIS</div>
     </div>
+  </main>
 
 
-    <!-- APLICACIÓN -->
-    <div id="app" class="panel">
+  <!-- =====================================================
+       APLICACIÓN
+  ====================================================== -->
+  <main id="appScreen" class="screen hidden">
+    <div class="shell">
 
-        <h2>PROTOCOLO NÉMESIS</h2>
+      <header class="brand">
+        <div class="brand-kicker">ARCHIVO CONFIDENCIAL</div>
+        <h1>NÉMESIS</h1>
+        <div class="brand-sub">SAGA DE SUSPENSO MÉDICO E INTERACTIVO</div>
+      </header>
 
-        <div id="usuario" class="usuario"></div>
+      <section class="card">
 
-        <div class="capitulo">
-
-            <h3>Capítulo 1 — El comienzo</h3>
-
-            <div id="estadoCapitulo" class="estado">
-                Comprobando acceso...
-            </div>
-
-            <div class="respuesta">
-                <input
-                    type="text"
-                    id="respuesta"
-                    placeholder="Ingresa la clave..."
-                >
-            </div>
-
-            <button id="btnResponder" onclick="responder()">
-                VERIFICAR RESPUESTA
-            </button>
-
-            <div id="mensajeCapitulo"></div>
-
+        <div class="card-head">
+          <h2>Investigación activa</h2>
+          <p id="userInfo">Sesión iniciada.</p>
         </div>
 
-        <button class="salir" onclick="cerrarSesion()">
+        <div class="card-body">
+
+          <div class="userbar">
+            Estado de conexión: <strong>autenticado</strong>
+          </div>
+
+          <article class="chapter">
+
+            <div class="chapter-top">
+              <div class="chapter-number">CAPÍTULO 01</div>
+              <h3>El comienzo</h3>
+              <div class="chapter-sub">La primera anomalía</div>
+            </div>
+
+            <div class="chapter-body">
+
+              <div class="status">
+                <span class="dot"></span>
+                <span id="chapterStatus">Consultando progreso...</span>
+              </div>
+
+              <div class="field">
+                <label for="answer">CLAVE DE DESBLOQUEO</label>
+                <input id="answer" type="text" placeholder="Ingresa tu respuesta">
+              </div>
+
+              <button id="answerButton" class="btn" type="button">
+                VERIFICAR RESPUESTA
+              </button>
+
+              <div id="answerMessage" class="message"></div>
+
+              <div class="test-note">
+                Esta pantalla es una prueba técnica. Primero verificaremos
+                autenticación, progreso y desbloqueo. Después construiremos
+                la experiencia completa del libro.
+              </div>
+
+            </div>
+          </article>
+
+          <button id="logoutButton" class="btn" type="button"
+                  style="margin-top:14px;background:#252f35;">
             CERRAR SESIÓN
-        </button>
+          </button>
 
+        </div>
+      </section>
+
+      <div class="footer">PROTOCOLO NÉMESIS · SISTEMA DE LECTURA</div>
     </div>
-
-</div>
+  </main>
 
 
 <script>
+  /* =========================================================
+     CONFIGURACIÓN
+  ========================================================= */
 
-    /* =========================================================
-       CONFIGURACIÓN SUPABASE
-    ========================================================= */
+  const SUPABASE_URL =
+    "https://qogoayvgkyurzugvbbkj.supabase.co";
 
-    const SUPABASE_URL =
-        "https://qogoayvgkyurzugvbbkj.supabase.co";
+  const SUPABASE_ANON_KEY =
+    "PEGA_AQUI_TU_ANON_KEY";
 
-    const SUPABASE_ANON_KEY =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvZ29heXZna3l1cnp1Z3ZiYmtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0ODcxODIsImV4cCI6MjEwNTA2MzE4Mn0.EOViV3jnDCmirsKk1kuD1u-SRjqDA7SUiLxr-J_OOIo";
-
-
-    const supabaseClient =
-        window.supabase.createClient(
-            SUPABASE_URL,
-            SUPABASE_ANON_KEY
-        );
+  const CAPITULO_1_ID =
+    "22ed80ad-91c4-49b8-92ed-8ece748e92d1";
 
 
-    /* =========================================================
-       DATOS DE LA PRUEBA
-    ========================================================= */
+  /* =========================================================
+     CLIENTE
+  ========================================================= */
 
-    const CAPITULO_1_ID =
-        "22ed80ad-91c4-49b8-92ed-8ece748e92d1";
-
-
-    /* =========================================================
-       ELEMENTOS
-    ========================================================= */
-
-    const loginBox = document.getElementById("login");
-    const appBox = document.getElementById("app");
-
-    const mensaje = document.getElementById("mensaje");
-
-    const usuarioBox =
-        document.getElementById("usuario");
-
-    const estadoCapitulo =
-        document.getElementById("estadoCapitulo");
-
-    const mensajeCapitulo =
-        document.getElementById("mensajeCapitulo");
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
 
 
-    /* =========================================================
-       MOSTRAR MENSAJE
-    ========================================================= */
+  /* =========================================================
+     ELEMENTOS
+  ========================================================= */
 
-    function mostrarMensaje(texto, elemento = mensaje) {
+  const loginScreen =
+    document.getElementById("loginScreen");
 
-        elemento.style.display = "block";
-        elemento.textContent = texto;
+  const appScreen =
+    document.getElementById("appScreen");
 
+  const loginButton =
+    document.getElementById("loginButton");
+
+  const logoutButton =
+    document.getElementById("logoutButton");
+
+  const answerButton =
+    document.getElementById("answerButton");
+
+  const loginMessage =
+    document.getElementById("loginMessage");
+
+  const answerMessage =
+    document.getElementById("answerMessage");
+
+  const chapterStatus =
+    document.getElementById("chapterStatus");
+
+  const userInfo =
+    document.getElementById("userInfo");
+
+
+  /* =========================================================
+     MENSAJES
+  ========================================================= */
+
+  function showMessage(element, text, type = "") {
+    element.textContent = text;
+    element.className = "message show " + type;
+  }
+
+  function clearMessage(element) {
+    element.textContent = "";
+    element.className = "message";
+  }
+
+
+  /* =========================================================
+     MOSTRAR APLICACIÓN
+  ========================================================= */
+
+  async function showApp(user) {
+
+    loginScreen.classList.add("hidden");
+    appScreen.classList.remove("hidden");
+
+    userInfo.textContent =
+      "Sesión iniciada: " + user.email;
+
+    await loadProgress();
+  }
+
+
+  /* =========================================================
+     CARGAR PROGRESO
+  ========================================================= */
+
+  async function loadProgress() {
+
+    chapterStatus.textContent =
+      "Consultando progreso...";
+
+    const {
+      data: { user },
+      error: userError
+    } = await supabaseClient.auth.getUser();
+
+    if (userError || !user) {
+      chapterStatus.textContent =
+        "No se pudo identificar al usuario.";
+      return;
     }
 
+    const { data, error } =
+      await supabaseClient
+        .from("user_chapter_progress")
+        .select("estado, fecha_inicio, fecha_completado")
+        .eq("usuario_id", user.id)
+        .eq("chapter_id", CAPITULO_1_ID)
+        .maybeSingle();
 
-    /* =========================================================
-       INICIAR SESIÓN
-    ========================================================= */
+    if (error) {
 
-    async function iniciarSesion() {
+      console.error("Error de progreso:", error);
 
-        const email =
-            document.getElementById("email").value.trim();
+      chapterStatus.textContent =
+        "Error al consultar el progreso.";
 
-        const password =
-            document.getElementById("password").value;
+      showMessage(
+        answerMessage,
+        "Supabase respondió: " + error.message,
+        "error"
+      );
 
-        const boton =
-            document.getElementById("btnLogin");
-
-        if (!email || !password) {
-
-            mostrarMensaje(
-                "Debes ingresar correo y contraseña."
-            );
-
-            return;
-        }
-
-        boton.disabled = true;
-        boton.textContent = "CONECTANDO...";
-
-        mensaje.style.display = "none";
-
-
-        const { data, error } =
-            await supabaseClient.auth.signInWithPassword({
-                email: email,
-                password: password
-            });
-
-
-        if (error) {
-
-            console.error(error);
-
-            mostrarMensaje(
-                "Error de inicio de sesión: " +
-                error.message
-            );
-
-            boton.disabled = false;
-            boton.textContent = "INICIAR SESIÓN";
-
-            return;
-        }
-
-
-        console.log("Usuario autenticado:", data.user);
-
-        await mostrarAplicacion(data.user);
-
-        boton.disabled = false;
-        boton.textContent = "INICIAR SESIÓN";
+      return;
     }
 
+    if (!data) {
 
-    /* =========================================================
-       MOSTRAR APLICACIÓN
-    ========================================================= */
+      chapterStatus.textContent =
+        "No existe progreso para este capítulo.";
 
-    async function mostrarAplicacion(user) {
-
-        loginBox.style.display = "none";
-        appBox.style.display = "block";
-
-
-        usuarioBox.textContent =
-            "Sesión iniciada: " + user.email;
-
-
-        await cargarProgreso();
-
+      return;
     }
 
-
-    /* =========================================================
-       CARGAR PROGRESO
-    ========================================================= */
-
-    async function cargarProgreso() {
-
-        estadoCapitulo.textContent =
-            "Consultando progreso...";
+    chapterStatus.textContent =
+      "Estado: " + data.estado;
+  }
 
 
-        const {
-            data: { user },
-            error: userError
-        } = await supabaseClient.auth.getUser();
+  /* =========================================================
+     LOGIN
+  ========================================================= */
 
+  async function login() {
 
-        if (userError || !user) {
+    clearMessage(loginMessage);
 
-            estadoCapitulo.textContent =
-                "No se pudo identificar al usuario.";
+    const email =
+      document.getElementById("email").value.trim();
 
-            return;
-        }
+    const password =
+      document.getElementById("password").value;
 
+    if (!email || !password) {
 
-        const { data, error } =
-            await supabaseClient
-                .from("user_chapter_progress")
-                .select("estado, fecha_inicio, fecha_completado")
-                .eq("usuario_id", user.id)
-                .eq("chapter_id", CAPITULO_1_ID)
-                .maybeSingle();
+      showMessage(
+        loginMessage,
+        "Ingresa tu correo y contraseña.",
+        "error"
+      );
 
-
-        if (error) {
-
-            console.error(error);
-
-            estadoCapitulo.textContent =
-                "Error consultando el progreso.";
-
-            mostrarMensaje(
-                "Error de Supabase: " + error.message,
-                mensajeCapitulo
-            );
-
-            return;
-        }
-
-
-        if (!data) {
-
-            estadoCapitulo.textContent =
-                "No existe progreso para este capítulo.";
-
-            return;
-        }
-
-
-        estadoCapitulo.textContent =
-            "Estado del capítulo: " + data.estado;
-
+      return;
     }
 
+    loginButton.disabled = true;
+    loginButton.textContent = "CONECTANDO...";
 
-    /* =========================================================
-       RESPONDER
-    ========================================================= */
+    const { data, error } =
+      await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
 
-    async function responder() {
+    if (error) {
 
-        const respuesta =
-            document
-                .getElementById("respuesta")
-                .value
-                .trim();
+      console.error("Login error:", error);
 
+      showMessage(
+        loginMessage,
+        "Error de inicio de sesión: " + error.message,
+        "error"
+      );
 
-        if (!respuesta) {
+      loginButton.disabled = false;
+      loginButton.textContent = "INICIAR SESIÓN";
 
-            mostrarMensaje(
-                "Ingresa una respuesta.",
-                mensajeCapitulo
-            );
-
-            return;
-        }
-
-
-        const boton =
-            document.getElementById("btnResponder");
-
-        boton.disabled = true;
-        boton.textContent = "VERIFICANDO...";
-
-        mensajeCapitulo.style.display = "none";
-
-
-        const { data, error } =
-            await supabaseClient.rpc(
-                "intentar_desbloquear_capitulo",
-                {
-                    p_chapter_id: CAPITULO_1_ID,
-                    p_respuesta: respuesta
-                }
-            );
-
-
-        console.log("Resultado RPC:", data);
-
-
-        if (error) {
-
-            console.error(error);
-
-            mostrarMensaje(
-                "Error: " + error.message,
-                mensajeCapitulo
-            );
-
-            boton.disabled = false;
-            boton.textContent = "VERIFICAR RESPUESTA";
-
-            return;
-        }
-
-
-        if (data.correcta) {
-
-            mostrarMensaje(
-                "✓ RESPUESTA CORRECTA. Capítulo completado.",
-                mensajeCapitulo
-            );
-
-        } else {
-
-            mostrarMensaje(
-                "✕ RESPUESTA INCORRECTA.",
-                mensajeCapitulo
-            );
-
-        }
-
-
-        await cargarProgreso();
-
-
-        boton.disabled = false;
-        boton.textContent = "VERIFICAR RESPUESTA";
-
+      return;
     }
 
+    await showApp(data.user);
 
-    /* =========================================================
-       CERRAR SESIÓN
-    ========================================================= */
+    loginButton.disabled = false;
+    loginButton.textContent = "INICIAR SESIÓN";
+  }
 
-    async function cerrarSesion() {
 
-        await supabaseClient.auth.signOut();
+  /* =========================================================
+     RESPONDER
+  ========================================================= */
 
-        appBox.style.display = "none";
-        loginBox.style.display = "block";
+  async function answerChapter() {
 
-        document.getElementById("password").value = "";
+    clearMessage(answerMessage);
 
+    const answer =
+      document.getElementById("answer").value.trim();
+
+    if (!answer) {
+
+      showMessage(
+        answerMessage,
+        "Ingresa una respuesta.",
+        "error"
+      );
+
+      return;
     }
 
+    answerButton.disabled = true;
+    answerButton.textContent = "VERIFICANDO...";
 
-    /* =========================================================
-       COMPROBAR SESIÓN EXISTENTE
-    ========================================================= */
-
-    async function comprobarSesion() {
-
-        const {
-            data: { session }
-        } = await supabaseClient.auth.getSession();
-
-
-        if (session && session.user) {
-
-            await mostrarAplicacion(session.user);
-
+    const { data, error } =
+      await supabaseClient.rpc(
+        "intentar_desbloquear_capitulo",
+        {
+          p_chapter_id: CAPITULO_1_ID,
+          p_respuesta: answer
         }
+      );
 
+    console.log("Resultado RPC:", data);
+
+    if (error) {
+
+      console.error("RPC error:", error);
+
+      showMessage(
+        answerMessage,
+        "Error al verificar: " + error.message,
+        "error"
+      );
+
+      answerButton.disabled = false;
+      answerButton.textContent = "VERIFICAR RESPUESTA";
+
+      return;
     }
 
+    if (data && data.correcta) {
 
-    comprobarSesion();
+      showMessage(
+        answerMessage,
+        data.mensaje || "Respuesta correcta.",
+        "success"
+      );
 
+    } else {
+
+      showMessage(
+        answerMessage,
+        data?.mensaje || "Respuesta incorrecta.",
+        "error"
+      );
+    }
+
+    await loadProgress();
+
+    answerButton.disabled = false;
+    answerButton.textContent = "VERIFICAR RESPUESTA";
+  }
+
+
+  /* =========================================================
+     LOGOUT
+  ========================================================= */
+
+  async function logout() {
+
+    await supabaseClient.auth.signOut();
+
+    appScreen.classList.add("hidden");
+    loginScreen.classList.remove("hidden");
+
+    document.getElementById("password").value = "";
+    clearMessage(loginMessage);
+    clearMessage(answerMessage);
+  }
+
+
+  /* =========================================================
+     EVENTOS
+  ========================================================= */
+
+  loginButton.addEventListener("click", login);
+
+  logoutButton.addEventListener("click", logout);
+
+  answerButton.addEventListener("click", answerChapter);
+
+  document
+    .getElementById("password")
+    .addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        login();
+      }
+    });
+
+  document
+    .getElementById("answer")
+    .addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        answerChapter();
+      }
+    });
+
+
+  /* =========================================================
+     SESIÓN EXISTENTE
+  ========================================================= */
+
+  async function checkSession() {
+
+    const {
+      data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    if (session && session.user) {
+      await showApp(session.user);
+    }
+  }
+
+
+  checkSession();
 </script>
 
 </body>
