@@ -4,893 +4,690 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Escribir capítulo · PROTOCOLO NÉMESIS</title>
+<title>NÉMESIS · Editor de capítulo</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 
 :root{
-  --bg:#03070a;
-  --panel:#0a1115;
-  --panel2:#0e171d;
-  --panel3:#121d23;
-  --line:#26343d;
-  --line2:#34444e;
-
-  --text:#eef2f4;
-  --muted:#8e9ba3;
-  --muted2:#64737c;
-
-  --red:#a82a2a;
-  --red2:#d33a3a;
-
-  --blue:#294b61;
-  --blue2:#3d6c8b;
-
-  --green:#315f40;
-  --green2:#4e895f;
-
-  --danger:#522527;
+    --bg:#05080b;
+    --panel:#0b1116;
+    --panel2:#0e171d;
+    --border:#1c2a32;
+    --text:#e8edf0;
+    --muted:#82919a;
+    --red:#b3262e;
+    --red2:#d63842;
+    --blue:#173642;
+    --green:#2f8f63;
+    --yellow:#b89532;
 }
 
 *{
-  box-sizing:border-box;
+    box-sizing:border-box;
 }
 
-html,
+html,body{
+    margin:0;
+    padding:0;
+    min-height:100%;
+    background:
+        radial-gradient(circle at 50% -10%, #10212a 0%, transparent 42%),
+        linear-gradient(180deg,#05080b,#070b0f 50%,#05080b);
+    color:var(--text);
+    font-family:Arial,Helvetica,sans-serif;
+}
+
 body{
-  margin:0;
-  min-height:100%;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
+    min-height:100vh;
 }
-
-body{
-  min-height:100vh;
-
-  background:
-    radial-gradient(
-      circle at 50% -10%,
-      #17303e 0%,
-      #091218 35%,
-      #03070a 72%
-    );
-}
-
-button,
-input,
-textarea,
-select{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-.hidden{
-  display:none !important;
-}
-
 
 /* =========================================================
-   CONTENEDOR
-========================================================= */
-
-.page{
-  width:min(100%,1200px);
-  margin:auto;
-  padding:22px 16px 60px;
-}
-
-
-/* =========================================================
-   CABECERA
+   HEADER
 ========================================================= */
 
 .topbar{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-
-  gap:15px;
-
-  padding:14px 16px;
-
-  margin-bottom:22px;
-
-  background:#070d11;
-
-  border:1px solid #202d35;
-
-  border-radius:9px;
+    height:74px;
+    border-bottom:1px solid var(--border);
+    background:rgba(5,8,11,.94);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 28px;
+    position:sticky;
+    top:0;
+    z-index:50;
+    backdrop-filter:blur(12px);
 }
-
-.topbar-left{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.topbar-title{
-  color:#dfe6e9;
-  font-size:12px;
-  font-weight:700;
-  letter-spacing:1px;
-}
-
-.back-button{
-  border:1px solid #33434c;
-  background:#1b272e;
-  color:#c9d2d6;
-
-  padding:9px 13px;
-
-  border-radius:6px;
-
-  font-size:11px;
-  font-weight:700;
-
-  transition:.2s;
-}
-
-.back-button:hover{
-  background:#2a3942;
-}
-
-
-/* =========================================================
-   IDENTIDAD
-========================================================= */
 
 .brand{
-  text-align:center;
-  margin:18px 0 30px;
+    display:flex;
+    align-items:center;
+    gap:14px;
 }
 
-.brand-kicker{
-  color:#778791;
-  font-size:10px;
-  letter-spacing:5px;
-  margin-bottom:9px;
+.brand-symbol{
+    width:38px;
+    height:38px;
+    border:1px solid #344953;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--red2);
+    font-weight:bold;
+    font-size:17px;
+    letter-spacing:1px;
 }
 
-.brand h1{
-  margin:0;
+.brand-text{
+    line-height:1.1;
+}
 
-  font-size:clamp(
-    28px,
-    6vw,
-    46px
-  );
-
-  letter-spacing:6px;
+.brand-title{
+    font-size:14px;
+    letter-spacing:4px;
+    font-weight:bold;
 }
 
 .brand-sub{
-  margin-top:9px;
-
-  color:#8e9ba3;
-
-  font-size:12px;
-
-  letter-spacing:2px;
+    color:var(--muted);
+    font-size:10px;
+    letter-spacing:2px;
+    margin-top:4px;
 }
 
+.back-btn{
+    border:1px solid var(--border);
+    background:#0b1116;
+    color:#b7c2c7;
+    padding:10px 15px;
+    cursor:pointer;
+    font-size:11px;
+    letter-spacing:1px;
+    transition:.2s;
+}
+
+.back-btn:hover{
+    border-color:#526771;
+    color:white;
+    background:#101a20;
+}
 
 /* =========================================================
-   INFORMACIÓN DEL CAPÍTULO
+   MAIN
 ========================================================= */
 
-.chapter-header{
-  padding:25px;
-
-  background:rgba(9,15,19,.97);
-
-  border:1px solid var(--line);
-
-  border-radius:12px;
-
-  margin-bottom:20px;
-
-  box-shadow:
-    0 20px 60px rgba(0,0,0,.35);
+.container{
+    width:min(1180px,calc(100% - 32px));
+    margin:0 auto;
+    padding:34px 0 80px;
 }
 
-.chapter-number{
-  color:#a82a2a;
+.eyebrow{
+    color:#71828b;
+    font-size:10px;
+    letter-spacing:4px;
+    margin-bottom:12px;
+}
 
-  font-size:10px;
+h1{
+    margin:0;
+    font-size:31px;
+    letter-spacing:4px;
+    font-weight:600;
+}
 
-  letter-spacing:3px;
+.page-description{
+    color:#71818a;
+    font-size:12px;
+    letter-spacing:1px;
+    margin-top:10px;
+}
 
-  margin-bottom:9px;
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status{
+    margin-top:25px;
+    padding:13px 16px;
+    border:1px solid var(--border);
+    background:#091015;
+    font-size:12px;
+    color:#91a0a7;
+    display:none;
+}
+
+.status.show{
+    display:block;
+}
+
+.status.success{
+    border-color:#245a43;
+    color:#74c29d;
+}
+
+.status.error{
+    border-color:#652a2f;
+    color:#ec858b;
+}
+
+.status.loading{
+    border-color:#254654;
+    color:#86b2c2;
+}
+
+/* =========================================================
+   CHAPTER HEADER
+========================================================= */
+
+.chapter-card{
+    margin-top:28px;
+    border:1px solid var(--border);
+    background:
+        linear-gradient(135deg,rgba(20,37,45,.7),rgba(7,12,16,.95));
+    padding:25px;
+}
+
+.chapter-label{
+    font-size:9px;
+    letter-spacing:3px;
+    color:#71828a;
+    margin-bottom:10px;
 }
 
 .chapter-title{
-  margin:0;
-
-  font-size:29px;
-
-  font-weight:500;
+    font-size:25px;
+    letter-spacing:2px;
+    margin:0;
 }
 
 .chapter-subtitle{
-  margin-top:7px;
-
-  color:#84929a;
-
-  font-size:13px;
+    margin-top:8px;
+    color:#82919a;
+    font-size:12px;
 }
 
-.chapter-status{
-  display:flex;
-
-  flex-wrap:wrap;
-
-  gap:7px;
-
-  margin-top:15px;
+.chapter-meta{
+    margin-top:17px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
 }
 
 .badge{
-  display:inline-flex;
-
-  padding:5px 9px;
-
-  border-radius:5px;
-
-  font-size:9px;
-
-  font-weight:700;
-
-  letter-spacing:.8px;
+    border:1px solid #263740;
+    background:#091116;
+    color:#87979f;
+    padding:6px 9px;
+    font-size:9px;
+    letter-spacing:1px;
 }
 
-.badge-draft{
-  background:#242c30;
-  color:#a7b2b7;
-  border:1px solid #38454b;
+.badge.published{
+    border-color:#245a43;
+    color:#73c19b;
 }
 
-.badge-published{
-  background:#173522;
-  color:#79c891;
-  border:1px solid #285838;
+.badge.draft{
+    border-color:#655323;
+    color:#d4ba62;
 }
-
 
 /* =========================================================
-   BARRA DE EDICIÓN
+   TOOLBAR
 ========================================================= */
 
-.editor-toolbar{
-  display:flex;
-
-  align-items:center;
-
-  justify-content:space-between;
-
-  gap:12px;
-
-  padding:13px 15px;
-
-  margin-bottom:15px;
-
-  background:#070d11;
-
-  border:1px solid #26343d;
-
-  border-radius:8px;
-
-  position:sticky;
-
-  top:10px;
-
-  z-index:50;
+.toolbar{
+    margin-top:20px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+    justify-content:space-between;
 }
 
 .toolbar-left,
 .toolbar-right{
-  display:flex;
-
-  gap:8px;
-
-  flex-wrap:wrap;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
 }
 
 .btn{
-  border:0;
-
-  border-radius:6px;
-
-  padding:11px 14px;
-
-  color:white;
-
-  font-weight:700;
-
-  font-size:11px;
-
-  letter-spacing:.4px;
-
-  transition:.2s;
+    border:1px solid var(--border);
+    background:#0b1217;
+    color:#c4cdd1;
+    padding:10px 14px;
+    cursor:pointer;
+    font-size:10px;
+    letter-spacing:1px;
+    transition:.2s;
 }
 
-.btn-red{
-  background:var(--red);
+.btn:hover{
+    background:#111c22;
+    border-color:#4a5e67;
+    color:white;
 }
 
-.btn-red:hover{
-  background:var(--red2);
+.btn.primary{
+    background:#711b21;
+    border-color:#9c2931;
+    color:#fff;
 }
 
-.btn-blue{
-  background:var(--blue);
+.btn.primary:hover{
+    background:#91242c;
 }
 
-.btn-blue:hover{
-  background:var(--blue2);
+.btn.green{
+    background:#123d2d;
+    border-color:#286a4e;
+    color:#b5e4cf;
 }
 
-.btn-green{
-  background:var(--green);
-}
-
-.btn-green:hover{
-  background:var(--green2);
-}
-
-.btn-secondary{
-  background:#26333b;
-}
-
-.btn-secondary:hover{
-  background:#34444e;
-}
-
-.btn-danger{
-  background:var(--danger);
-}
-
-.btn-danger:hover{
-  background:#713032;
+.btn.danger{
+    background:#291013;
+    border-color:#652a2f;
+    color:#e8898f;
 }
 
 .btn:disabled{
-  opacity:.5;
-  cursor:wait;
+    opacity:.5;
+    cursor:not-allowed;
 }
 
-
 /* =========================================================
-   EDITOR
+   BLOCKS
 ========================================================= */
 
-.editor{
-  display:flex;
-
-  flex-direction:column;
-
-  gap:12px;
+.blocks-title{
+    margin-top:34px;
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+    gap:15px;
 }
 
-.empty-editor{
-  padding:60px 25px;
-
-  text-align:center;
-
-  border:1px dashed #33434c;
-
-  border-radius:10px;
-
-  background:#080e12;
-
-  color:#728089;
-
-  line-height:1.6;
+.blocks-title h2{
+    margin:0;
+    font-size:15px;
+    letter-spacing:2px;
+    font-weight:500;
 }
 
+.blocks-title span{
+    font-size:10px;
+    color:#66767e;
+    letter-spacing:1px;
+}
+
+.blocks{
+    margin-top:14px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
 
 /* =========================================================
-   BLOQUE
+   BLOCK
 ========================================================= */
 
 .block{
-  background:#080e12;
-
-  border:1px solid #2a3942;
-
-  border-radius:10px;
-
-  overflow:hidden;
-
-  transition:.2s;
-}
-
-.block:hover{
-  border-color:#40515b;
+    border:1px solid var(--border);
+    background:#091015;
+    position:relative;
 }
 
 .block-head{
-  display:flex;
-
-  align-items:center;
-
-  justify-content:space-between;
-
-  gap:10px;
-
-  padding:11px 13px;
-
-  background:#0d161b;
-
-  border-bottom:1px solid #25333b;
+    height:45px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:0 13px;
+    border-bottom:1px solid var(--border);
+    background:#0b1419;
 }
 
 .block-left{
-  display:flex;
-
-  align-items:center;
-
-  gap:9px;
-
-  min-width:0;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    min-width:0;
 }
 
 .block-number{
-  color:#9b3030;
-
-  font-size:10px;
-
-  font-weight:700;
-
-  letter-spacing:1px;
+    width:25px;
+    height:25px;
+    border:1px solid #31434b;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#8fa0a7;
+    font-size:10px;
 }
 
 .block-type{
-  color:#c5cfd3;
-
-  font-size:11px;
-
-  font-weight:700;
-
-  letter-spacing:1px;
+    color:#c1cbd0;
+    font-size:10px;
+    letter-spacing:2px;
+    text-transform:uppercase;
 }
 
 .block-actions{
-  display:flex;
-
-  gap:5px;
-
-  flex-shrink:0;
+    display:flex;
+    gap:5px;
 }
 
-.block-action{
-  border:1px solid #34434c;
-
-  background:#172128;
-
-  color:#aebbc1;
-
-  border-radius:5px;
-
-  width:31px;
-  height:29px;
-
-  font-size:13px;
+.icon-btn{
+    width:28px;
+    height:27px;
+    border:1px solid #23343c;
+    background:#0b1216;
+    color:#819198;
+    cursor:pointer;
+    font-size:12px;
 }
 
-.block-action:hover{
-  background:#27363f;
+.icon-btn:hover{
+    border-color:#526872;
+    color:white;
 }
 
-.block-action.delete:hover{
-  background:#522527;
-  border-color:#713032;
+.icon-btn.delete:hover{
+    border-color:#873038;
+    color:#ed858c;
 }
 
 .block-body{
-  padding:17px;
+    padding:17px;
 }
 
-
-/* =========================================================
-   CAMPOS DE BLOQUES
-========================================================= */
-
 .field{
-  margin-bottom:14px;
+    margin-bottom:15px;
 }
 
 .field:last-child{
-  margin-bottom:0;
+    margin-bottom:0;
 }
 
 .field label{
-  display:block;
-
-  margin-bottom:6px;
-
-  color:#89979f;
-
-  font-size:10px;
-
-  letter-spacing:1px;
+    display:block;
+    color:#71818a;
+    font-size:9px;
+    letter-spacing:2px;
+    margin-bottom:7px;
+    text-transform:uppercase;
 }
 
-.field input,
-.field textarea,
-.field select{
-  width:100%;
-
-  padding:11px 12px;
-
-  color:white;
-
-  background:#05090c;
-
-  border:1px solid #34434d;
-
-  border-radius:6px;
-
-  outline:none;
+input,
+textarea,
+select{
+    width:100%;
+    border:1px solid #22333b;
+    background:#060b0e;
+    color:#dce3e6;
+    padding:11px 12px;
+    outline:none;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:12px;
+    transition:.2s;
 }
 
-.field textarea{
-  min-height:140px;
-
-  resize:vertical;
-
-  line-height:1.6;
+input:focus,
+textarea:focus,
+select:focus{
+    border-color:#49606b;
+    box-shadow:0 0 0 2px rgba(63,92,105,.08);
 }
 
-.field input:focus,
-.field textarea:focus,
-.field select:focus{
-  border-color:var(--red);
-
-  box-shadow:
-    0 0 0 2px
-    rgba(168,42,42,.12);
+textarea{
+    min-height:130px;
+    resize:vertical;
+    line-height:1.65;
 }
 
+textarea.small{
+    min-height:85px;
+}
+
+.grid-2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.grid-3{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:12px;
+}
+
+.help{
+    color:#596970;
+    font-size:9px;
+    margin-top:5px;
+    line-height:1.5;
+}
 
 /* =========================================================
-   TEXTO EN VISTA PREVIA
+   TYPE COLORS
 ========================================================= */
 
-.text-preview{
-  color:#d9e0e3;
-
-  line-height:1.8;
-
-  font-size:15px;
-
-  white-space:pre-wrap;
+.type-text .block-number{
+    color:#b6c4ca;
 }
 
+.type-image .block-number{
+    color:#7faebf;
+}
+
+.type-video .block-number{
+    color:#8fa4c7;
+}
+
+.type-pista .block-number{
+    color:#d2b85f;
+}
+
+.type-documento .block-number{
+    color:#a3adb3;
+}
+
+.type-dialogo .block-number{
+    color:#91b8a8;
+}
+
+.type-pregunta .block-number{
+    color:#cf8d94;
+}
+
+.type-separador .block-number{
+    color:#777;
+}
 
 /* =========================================================
-   AGREGAR CONTENIDO
+   ADD BLOCK
 ========================================================= */
 
-.add-area{
-  position:relative;
-
-  margin-top:17px;
-
-  margin-bottom:30px;
+.add-panel{
+    margin-top:16px;
+    border:1px dashed #263941;
+    background:#080e12;
+    padding:18px;
 }
 
-.add-button{
-  width:100%;
-
-  padding:15px;
-
-  border:1px dashed #40515b;
-
-  border-radius:8px;
-
-  background:#080e12;
-
-  color:#aab7bd;
-
-  font-weight:700;
-
-  font-size:12px;
-
-  letter-spacing:.7px;
+.add-panel-title{
+    color:#73848c;
+    font-size:9px;
+    letter-spacing:2px;
+    margin-bottom:12px;
 }
 
-.add-button:hover{
-  background:#0d171c;
-
-  border-color:#657781;
-
-  color:white;
+.add-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
 }
 
+.add-btn{
+    border:1px solid #23353d;
+    background:#0b1318;
+    color:#aab6bb;
+    padding:13px 8px;
+    cursor:pointer;
+    text-align:center;
+    font-size:10px;
+    transition:.2s;
+}
+
+.add-btn:hover{
+    border-color:#536973;
+    color:white;
+    background:#101b21;
+}
+
+.add-btn .symbol{
+    display:block;
+    font-size:18px;
+    margin-bottom:6px;
+    color:#84959c;
+}
 
 /* =========================================================
-   MENÚ DE BLOQUES
+   EMPTY
 ========================================================= */
 
-.block-menu{
-  position:absolute;
-
-  left:0;
-
-  right:0;
-
-  top:calc(100% + 7px);
-
-  z-index:100;
-
-  padding:8px;
-
-  background:#0b1318;
-
-  border:1px solid #3b4d57;
-
-  border-radius:9px;
-
-  box-shadow:
-    0 25px 70px
-    rgba(0,0,0,.7);
-
-  display:grid;
-
-  grid-template-columns:
-    repeat(4,1fr);
-
-  gap:7px;
+.empty{
+    border:1px dashed #263941;
+    padding:50px 20px;
+    text-align:center;
+    color:#65757d;
 }
 
-.block-option{
-  padding:14px 8px;
-
-  border:1px solid #293942;
-
-  border-radius:7px;
-
-  background:#101a20;
-
-  color:#c4ced2;
-
-  text-align:center;
-
-  font-size:11px;
-
-  font-weight:700;
+.empty strong{
+    display:block;
+    color:#9aa7ac;
+    font-size:12px;
+    letter-spacing:2px;
+    margin-bottom:8px;
 }
 
-.block-option:hover{
-  background:#1a2931;
-
-  border-color:#50636d;
-
-  color:white;
+.empty span{
+    font-size:10px;
 }
-
-.block-icon{
-  display:block;
-
-  font-size:21px;
-
-  margin-bottom:6px;
-}
-
 
 /* =========================================================
-   MODAL CONFIRMACIÓN
+   LOGIN / LOADING
 ========================================================= */
 
-.modal{
-  position:fixed;
-
-  inset:0;
-
-  z-index:500;
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:center;
-
-  padding:20px;
-
-  background:rgba(0,0,0,.78);
-
-  backdrop-filter:blur(5px);
+.center-screen{
+    min-height:calc(100vh - 74px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:30px;
 }
 
-.modal-box{
-  width:min(100%,600px);
-
-  background:#0a1115;
-
-  border:1px solid #35454e;
-
-  border-radius:12px;
-
-  box-shadow:
-    0 30px 100px
-    rgba(0,0,0,.8);
+.system-box{
+    width:min(500px,100%);
+    border:1px solid var(--border);
+    background:#091015;
+    padding:35px;
+    text-align:center;
 }
 
-.modal-head{
-  padding:18px 20px;
-
-  border-bottom:1px solid #26343d;
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:space-between;
+.system-icon{
+    width:48px;
+    height:48px;
+    margin:0 auto 20px;
+    border:1px solid #344852;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--red2);
+    font-weight:bold;
 }
 
-.modal-head h3{
-  margin:0;
-
-  font-size:18px;
-
-  font-weight:500;
+.system-title{
+    font-size:15px;
+    letter-spacing:3px;
 }
 
-.modal-close{
-  border:0;
-
-  width:32px;
-  height:32px;
-
-  border-radius:5px;
-
-  background:#202c32;
-
-  color:#b8c4c9;
-
-  font-size:20px;
+.system-text{
+    color:#75858d;
+    font-size:11px;
+    line-height:1.7;
+    margin-top:12px;
 }
 
-.modal-body{
-  padding:20px;
+.hidden{
+    display:none!important;
 }
-
-.modal-footer{
-  padding:15px 20px;
-
-  border-top:1px solid #26343d;
-
-  display:flex;
-
-  justify-content:flex-end;
-
-  gap:8px;
-}
-
-
-/* =========================================================
-   MENSAJES
-========================================================= */
-
-.message{
-  display:none;
-
-  padding:11px 13px;
-
-  margin-bottom:15px;
-
-  border-radius:6px;
-
-  font-size:12px;
-
-  line-height:1.5;
-}
-
-.message.show{
-  display:block;
-}
-
-.message.success{
-  background:#102218;
-
-  border:1px solid #315c3d;
-
-  color:#a9d8b6;
-}
-
-.message.error{
-  background:#241214;
-
-  border:1px solid #713030;
-
-  color:#e7b5b5;
-}
-
-.message.info{
-  background:#101d25;
-
-  border:1px solid #315065;
-
-  color:#aec6d4;
-}
-
-
-/* =========================================================
-   FOOTER
-========================================================= */
-
-.footer{
-  text-align:center;
-
-  color:#52616a;
-
-  font-size:10px;
-
-  margin-top:35px;
-
-  letter-spacing:1px;
-}
-
 
 /* =========================================================
    RESPONSIVE
 ========================================================= */
 
-@media(max-width:750px){
+@media(max-width:800px){
 
-  .editor-toolbar{
-    position:static;
+    .topbar{
+        padding:0 15px;
+    }
 
-    flex-direction:column;
+    .container{
+        width:min(100% - 20px,1180px);
+        padding-top:25px;
+    }
 
-    align-items:stretch;
-  }
+    .grid-2,
+    .grid-3{
+        grid-template-columns:1fr;
+    }
 
-  .toolbar-left,
-  .toolbar-right{
-    width:100%;
-  }
+    .add-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
 
-  .toolbar-left .btn,
-  .toolbar-right .btn{
-    flex:1;
-  }
+    .toolbar{
+        align-items:stretch;
+    }
 
-  .block-menu{
-    grid-template-columns:
-      repeat(2,1fr);
-  }
+    .toolbar-left,
+    .toolbar-right{
+        width:100%;
+    }
 
+    .btn{
+        flex:1;
+    }
 }
 
-@media(max-width:500px){
+@media(max-width:480px){
 
-  .page{
-    padding:12px 9px 40px;
-  }
+    .brand-sub{
+        display:none;
+    }
 
-  .chapter-header{
-    padding:19px;
-  }
+    .brand-title{
+        font-size:12px;
+    }
 
-  .chapter-title{
-    font-size:23px;
-  }
+    .back-btn{
+        padding:9px;
+        font-size:9px;
+    }
 
-  .block-head{
-    align-items:flex-start;
-  }
+    h1{
+        font-size:23px;
+    }
 
-  .block-actions{
-    flex-wrap:wrap;
-  }
-
+    .add-grid{
+        grid-template-columns:1fr 1fr;
+    }
 }
 
 </style>
@@ -898,477 +695,449 @@ button{
 
 <body>
 
-<div class="page">
+<!-- =====================================================
+     HEADER
+===================================================== -->
 
+<header class="topbar">
 
-  <!-- =====================================================
-       BARRA SUPERIOR
-  ====================================================== -->
+    <div class="brand">
 
-  <div class="topbar">
+        <div class="brand-symbol">N</div>
 
-    <div class="topbar-left">
+        <div class="brand-text">
 
-      <button
-        class="back-button"
-        onclick="goBack()">
+            <div class="brand-title">
+                NÉMESIS
+            </div>
+
+            <div class="brand-sub">
+                EDITORIAL · CONTENIDO
+            </div>
+
+        </div>
+
+    </div>
+
+    <button class="back-btn" onclick="volverPanel()">
         ← VOLVER AL PANEL
-      </button>
-
-      <div
-        class="topbar-title">
-        EDITOR DE CAPÍTULO
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- =====================================================
-       MARCA
-  ====================================================== -->
-
-  <header class="brand">
-
-    <div class="brand-kicker">
-      ARCHIVO CONFIDENCIAL
-    </div>
-
-    <h1>NÉMESIS</h1>
-
-    <div class="brand-sub">
-      EDITORIAL · CONTENIDO
-    </div>
-
-  </header>
-
-
-  <!-- =====================================================
-       CABECERA CAPÍTULO
-  ====================================================== -->
-
-  <section
-    id="chapterHeader"
-    class="chapter-header hidden">
-
-    <div
-      id="chapterNumber"
-      class="chapter-number">
-    </div>
-
-    <h2
-      id="chapterTitle"
-      class="chapter-title">
-    </h2>
-
-    <div
-      id="chapterSubtitle"
-      class="chapter-subtitle">
-    </div>
-
-    <div
-      id="chapterStatus"
-      class="chapter-status">
-    </div>
-
-  </section>
-
-
-  <!-- =====================================================
-       TOOLBAR
-  ====================================================== -->
-
-  <div
-    id="editorToolbar"
-    class="editor-toolbar hidden">
-
-    <div class="toolbar-left">
-
-      <button
-        id="addContentToolbar"
-        class="btn btn-red">
-        + AGREGAR CONTENIDO
-      </button>
-
-    </div>
-
-    <div class="toolbar-right">
-
-      <button
-        id="saveAllButton"
-        class="btn btn-green">
-        GUARDAR TODO
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- =====================================================
-       MENSAJE
-  ====================================================== -->
-
-  <div
-    id="pageMessage"
-    class="message">
-  </div>
-
-
-  <!-- =====================================================
-       EDITOR
-  ====================================================== -->
-
-  <section
-    id="editor"
-    class="editor">
-
-    <div class="empty-editor">
-
-      Cargando capítulo...
-
-    </div>
-
-  </section>
-
-
-  <!-- =====================================================
-       AGREGAR CONTENIDO
-  ====================================================== -->
-
-  <div
-    id="addArea"
-    class="add-area hidden">
-
-    <button
-      id="addButton"
-      class="add-button">
-      + AGREGAR CONTENIDO
     </button>
 
-
-    <div
-      id="blockMenu"
-      class="block-menu hidden">
-
-      <button
-        class="block-option"
-        onclick="addBlock('texto')">
-
-        <span class="block-icon">📝</span>
-
-        TEXTO
-
-      </button>
+</header>
 
 
-      <button
-        class="block-option"
-        onclick="addBlock('imagen')">
+<!-- =====================================================
+     LOADING
+===================================================== -->
 
-        <span class="block-icon">🖼</span>
+<section id="loadingScreen" class="center-screen">
 
-        IMAGEN
+    <div class="system-box">
 
-      </button>
+        <div class="system-icon">
+            N
+        </div>
 
+        <div class="system-title">
+            VERIFICANDO ACCESO
+        </div>
 
-      <button
-        class="block-option"
-        onclick="addBlock('video')">
-
-        <span class="block-icon">🎬</span>
-
-        VIDEO
-
-      </button>
-
-
-      <button
-        class="block-option"
-        onclick="addBlock('pista')">
-
-        <span class="block-icon">🔎</span>
-
-        PISTA
-
-      </button>
-
-
-      <button
-        class="block-option"
-        onclick="addBlock('documento')">
-
-        <span class="block-icon">📄</span>
-
-        DOCUMENTO
-
-      </button>
-
-
-      <button
-        class="block-option"
-        onclick="addBlock('dialogo')">
-
-        <span class="block-icon">💬</span>
-
-        DIÁLOGO
-
-      </button>
-
-
-      <button
-        class="block-option"
-        onclick="addBlock('pregunta')">
-
-        <span class="block-icon">❓</span>
-
-        PREGUNTA
-
-      </button>
-
-
-      <button
-        class="block-option"
-        onclick="addBlock('separador')">
-
-        <span class="block-icon">─</span>
-
-        SEPARADOR
-
-      </button>
+        <div class="system-text">
+            Comprobando sesión editorial y permisos de administrador...
+        </div>
 
     </div>
 
-  </div>
+</section>
 
 
-  <div class="footer">
-    PROTOCOLO NÉMESIS · EDITORIAL
-  </div>
+<!-- =====================================================
+     ERROR
+===================================================== -->
 
-</div>
+<section id="errorScreen" class="center-screen hidden">
+
+    <div class="system-box">
+
+        <div class="system-icon">
+            !
+        </div>
+
+        <div id="errorTitle" class="system-title">
+            ACCESO DENEGADO
+        </div>
+
+        <div id="errorText" class="system-text">
+            No fue posible verificar tus permisos.
+        </div>
+
+        <div style="margin-top:22px;">
+
+            <button class="btn" onclick="volverPanel()">
+                VOLVER AL PANEL
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     EDITOR
+===================================================== -->
+
+<main id="editorScreen" class="container hidden">
+
+    <div class="eyebrow">
+        ARCHIVO CONFIDENCIAL
+    </div>
+
+    <h1>
+        EDITOR DE CAPÍTULO
+    </h1>
+
+    <div class="page-description">
+        Construcción editorial por bloques · Protocolo Némesis
+    </div>
+
+
+    <div id="status" class="status"></div>
+
+
+    <!-- CHAPTER -->
+
+    <section class="chapter-card">
+
+        <div class="chapter-label">
+            CAPÍTULO SELECCIONADO
+        </div>
+
+        <h2 id="chapterTitle" class="chapter-title">
+            Cargando...
+        </h2>
+
+        <div id="chapterSubtitle" class="chapter-subtitle">
+        </div>
+
+        <div class="chapter-meta">
+
+            <span id="chapterNumberBadge" class="badge">
+                CAPÍTULO
+            </span>
+
+            <span id="chapterStateBadge" class="badge">
+                ESTADO
+            </span>
+
+            <span id="chapterKeyBadge" class="badge">
+                CLAVE
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- TOOLBAR -->
+
+    <div class="toolbar">
+
+        <div class="toolbar-left">
+
+            <button class="btn" onclick="recargarCapitulo()">
+                ↻ RECARGAR
+            </button>
+
+            <button class="btn" onclick="agregarBloque('texto')">
+                + TEXTO
+            </button>
+
+        </div>
+
+        <div class="toolbar-right">
+
+            <button
+                id="saveButton"
+                class="btn primary"
+                onclick="guardarTodo()"
+            >
+                GUARDAR TODO
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- BLOCK TITLE -->
+
+    <div class="blocks-title">
+
+        <h2>
+            CONTENIDO DEL CAPÍTULO
+        </h2>
+
+        <span id="blockCounter">
+            0 BLOQUES
+        </span>
+
+    </div>
+
+
+    <!-- BLOCKS -->
+
+    <div id="blocksContainer" class="blocks">
+    </div>
+
+
+    <!-- ADD -->
+
+    <div class="add-panel">
+
+        <div class="add-panel-title">
+            AGREGAR CONTENIDO
+        </div>
+
+        <div class="add-grid">
+
+            <button class="add-btn" onclick="agregarBloque('texto')">
+                <span class="symbol">T</span>
+                TEXTO
+            </button>
+
+            <button class="add-btn" onclick="agregarBloque('imagen')">
+                <span class="symbol">▧</span>
+                IMAGEN
+            </button>
+
+            <button class="add-btn" onclick="agregarBloque('video')">
+                <span class="symbol">▶</span>
+                VIDEO
+            </button>
+
+            <button class="add-btn" onclick="agregarBloque('pista')">
+                <span class="symbol">!</span>
+                PISTA
+            </button>
+
+            <button class="add-btn" onclick="agregarBloque('documento')">
+                <span class="symbol">▤</span>
+                DOCUMENTO
+            </button>
+
+            <button class="add-btn" onclick="agregarBloque('dialogo')">
+                <span class="symbol">“</span>
+                DIÁLOGO
+            </button>
+
+            <button class="add-btn" onclick="agregarBloque('pregunta')">
+                <span class="symbol">?</span>
+                PREGUNTA
+            </button>
+
+            <button class="add-btn" onclick="agregarBloque('separador')">
+                <span class="symbol">—</span>
+                SEPARADOR
+            </button>
+
+        </div>
+
+    </div>
+
+</main>
 
 
 <script>
 
 /* =========================================================
-   CONFIGURACIÓN
+   SUPABASE
 ========================================================= */
 
 const SUPABASE_URL =
-  "https://qogoayvgkyurzugvbbkj.supabase.co";
+    "https://qogoayvgkyurzugvbbkj.supabase.co";
 
 const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJxdWdvYXl2Z2t5dXJ6dWd2YmJraiIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzg5NDg3MTgyLCJleHAiOjIxMDUwNjMxODJ9.EOViV3jnDCmirsKk1kuD1u-SRjqDA7SUiLxr-J_OOIo";
-
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvZ29heXZna3l1cnp1Z3ZiYmtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0ODcxODIsImV4cCI6MjEwNTA2MzE4Mn0.EOViV3jnDCmirsKk1kuD1u-SRjqDA7SUiLxr-J_OOIo";
 
 const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
 
 
 /* =========================================================
-   ID DEL CAPÍTULO
+   VARIABLES
 ========================================================= */
 
 const params =
-  new URLSearchParams(
-    window.location.search
-  );
+    new URLSearchParams(window.location.search);
 
 const chapterId =
-  params.get("id");
+    params.get("id");
+
+let usuarioActual = null;
+let perfilActual = null;
+let capituloActual = null;
+let bloques = [];
 
 
 /* =========================================================
-   ESTADO
+   INICIO
 ========================================================= */
 
-let chapter = null;
-
-let blocks = [];
-
-let saving = false;
+document.addEventListener(
+    "DOMContentLoaded",
+    iniciarEditor
+);
 
 
 /* =========================================================
-   ELEMENTOS
+   INICIAR
 ========================================================= */
 
-const chapterHeader =
-  document.getElementById(
-    "chapterHeader"
-  );
+async function iniciarEditor(){
 
-const editorToolbar =
-  document.getElementById(
-    "editorToolbar"
-  );
+    try{
 
-const editor =
-  document.getElementById(
-    "editor"
-  );
+        mostrarLoading();
 
-const addArea =
-  document.getElementById(
-    "addArea"
-  );
+        /*
+         * IMPORTANTE:
+         * getSession() recupera la sesión que ya existe
+         * en el navegador.
+         */
 
-const addButton =
-  document.getElementById(
-    "addButton"
-  );
-
-const blockMenu =
-  document.getElementById(
-    "blockMenu"
-  );
-
-const addContentToolbar =
-  document.getElementById(
-    "addContentToolbar"
-  );
-
-const saveAllButton =
-  document.getElementById(
-    "saveAllButton"
-  );
-
-const pageMessage =
-  document.getElementById(
-    "pageMessage"
-  );
+        const {
+            data: sessionData,
+            error: sessionError
+        } = await supabaseClient.auth.getSession();
 
 
-/* =========================================================
-   UTILIDADES
-========================================================= */
+        if(sessionError){
 
-function escapeHtml(value){
+            throw new Error(
+                "No fue posible recuperar la sesión."
+            );
 
-  if(
-    value === null ||
-    value === undefined
-  ){
-
-    return "";
-
-  }
-
-  return String(value)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-
-}
+        }
 
 
-function showMessage(
-  text,
-  type="info"
-){
-
-  pageMessage.textContent =
-    text;
-
-  pageMessage.className =
-    "message show " + type;
-
-}
+        const session =
+            sessionData?.session;
 
 
-function clearMessage(){
+        if(!session){
 
-  pageMessage.textContent = "";
+            mostrarError(
+                "NO EXISTE UNA SESIÓN ACTIVA",
+                "La sesión de Supabase no está disponible en esta página. Vuelve al panel e inténtalo nuevamente."
+            );
 
-  pageMessage.className =
-    "message";
+            return;
 
-}
-
-
-/* =========================================================
-   VOLVER
-========================================================= */
-
-function goBack(){
-
-  window.location.href =
-    "index.html";
-
-}
+        }
 
 
-/* =========================================================
-   VERIFICAR ADMIN
-========================================================= */
-
-async function verifyAdmin(){
-
-  const {
-    data:{user}
-  } =
-    await supabaseClient.auth.getUser();
+        usuarioActual =
+            session.user;
 
 
-  if(!user){
+        /*
+         * Cargamos el perfil.
+         */
 
-    showMessage(
-      "No existe una sesión activa.",
-      "error"
-    );
-
-    return false;
-
-  }
-
-
-  const {
-    data:profile,
-    error
-  } =
-    await supabaseClient
-      .from("profiles")
-      .select("rol")
-      .eq("id",user.id)
-      .maybeSingle();
+        const {
+            data: perfil,
+            error: perfilError
+        } = await supabaseClient
+            .from("profiles")
+            .select("id,nombre,rol")
+            .eq("id", usuarioActual.id)
+            .single();
 
 
-  if(error){
+        if(perfilError){
 
-    console.error(error);
+            console.error(perfilError);
 
-    showMessage(
-      "No fue posible verificar tu perfil.",
-      "error"
-    );
+            throw new Error(
+                "No fue posible cargar el perfil de usuario."
+            );
 
-    return false;
-  }
+        }
 
 
-  if(
-    !profile ||
-    profile.rol !== "administrador"
-  ){
-
-    showMessage(
-      "No tienes permisos de administrador.",
-      "error"
-    );
-
-    return false;
-  }
+        perfilActual =
+            perfil;
 
 
-  return true;
+        /*
+         * Seguridad adicional.
+         */
+
+        if(perfilActual.rol !== "administrador"){
+
+            mostrarError(
+                "ACCESO DENEGADO",
+                "Tu cuenta no posee permisos de administrador."
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Comprobar ID.
+         */
+
+        if(!chapterId){
+
+            mostrarError(
+                "CAPÍTULO NO ESPECIFICADO",
+                "No se recibió el identificador del capítulo que deseas editar."
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Cargar capítulo.
+         */
+
+        await cargarCapitulo();
+
+
+        /*
+         * Mostrar editor.
+         */
+
+        ocultarLoading();
+
+        document
+            .getElementById("editorScreen")
+            .classList.remove("hidden");
+
+    }
+    catch(error){
+
+        console.error(
+            "ERROR INICIANDO EDITOR:",
+            error
+        );
+
+        mostrarError(
+            "ERROR DE CONEXIÓN",
+            error.message ||
+            "Ocurrió un error inesperado."
+        );
+
+    }
 
 }
 
@@ -1377,125 +1146,125 @@ async function verifyAdmin(){
    CARGAR CAPÍTULO
 ========================================================= */
 
-async function loadChapter(){
+async function cargarCapitulo(){
 
-  if(!chapterId){
-
-    showMessage(
-      "No se indicó un capítulo.",
-      "error"
-    );
-
-    editor.innerHTML = "";
-
-    return;
-  }
-
-
-  const admin =
-    await verifyAdmin();
-
-
-  if(!admin){
-
-    editor.innerHTML = "";
-
-    return;
-  }
+    const {
+        data: chapter,
+        error: chapterError
+    } = await supabaseClient
+        .from("chapters")
+        .select(`
+            id,
+            book_id,
+            numero,
+            titulo,
+            subtitulo,
+            descripcion,
+            estado,
+            requiere_clave
+        `)
+        .eq("id", chapterId)
+        .single();
 
 
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("chapters")
-      .select(`
-        id,
-        book_id,
-        numero,
-        titulo,
-        subtitulo,
-        descripcion,
-        estado,
-        requiere_clave
-      `)
-      .eq("id",chapterId)
-      .single();
+    if(chapterError){
+
+        console.error(chapterError);
+
+        throw new Error(
+            "No fue posible cargar el capítulo."
+        );
+
+    }
 
 
-  if(error){
+    if(!chapter){
 
-    console.error(error);
+        throw new Error(
+            "El capítulo no existe."
+        );
 
-    showMessage(
-      "No fue posible cargar el capítulo: " +
-      error.message,
-      "error"
-    );
-
-    return;
-  }
+    }
 
 
-  chapter = data;
+    capituloActual =
+        chapter;
 
 
-  document.getElementById(
-    "chapterNumber"
-  ).textContent =
-    "CAPÍTULO " +
-    String(chapter.numero)
-      .padStart(2,"0");
+    renderChapterHeader();
 
 
-  document.getElementById(
-    "chapterTitle"
-  ).textContent =
-    chapter.titulo;
+    await cargarBloques();
+
+}
 
 
-  document.getElementById(
-    "chapterSubtitle"
-  ).textContent =
-    chapter.subtitulo || "";
+/* =========================================================
+   HEADER DEL CAPÍTULO
+========================================================= */
+
+function renderChapterHeader(){
+
+    document
+        .getElementById("chapterTitle")
+        .textContent =
+            capituloActual.titulo ||
+            `Capítulo ${capituloActual.numero}`;
 
 
-  document.getElementById(
-    "chapterStatus"
-  ).innerHTML =
-
-    chapter.estado === "publicado"
-
-    ?
-
-    `<span class="badge badge-published">
-      PUBLICADO
-    </span>`
-
-    :
-
-    `<span class="badge badge-draft">
-      ${escapeHtml(
-        chapter.estado.toUpperCase()
-      )}
-    </span>`;
+    document
+        .getElementById("chapterSubtitle")
+        .textContent =
+            capituloActual.subtitulo ||
+            "Sin subtítulo definido";
 
 
-  chapterHeader
-    .classList
-    .remove("hidden");
-
-  editorToolbar
-    .classList
-    .remove("hidden");
-
-  addArea
-    .classList
-    .remove("hidden");
+    document
+        .getElementById("chapterNumberBadge")
+        .textContent =
+            "CAPÍTULO " +
+            capituloActual.numero;
 
 
-  await loadBlocks();
+    const stateBadge =
+        document.getElementById(
+            "chapterStateBadge"
+        );
+
+
+    stateBadge.textContent =
+        String(
+            capituloActual.estado ||
+            ""
+        ).toUpperCase();
+
+
+    stateBadge.className =
+        "badge " +
+        (
+            capituloActual.estado === "publicado"
+                ? "published"
+                : "draft"
+        );
+
+
+    const keyBadge =
+        document.getElementById(
+            "chapterKeyBadge"
+        );
+
+
+    if(capituloActual.requiere_clave){
+
+        keyBadge.textContent =
+            "REQUIERE CLAVE";
+
+    }else{
+
+        keyBadge.textContent =
+            "SIN CLAVE";
+
+    }
 
 }
 
@@ -1504,556 +1273,873 @@ async function loadChapter(){
    CARGAR BLOQUES
 ========================================================= */
 
-async function loadBlocks(){
+async function cargarBloques(){
 
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("chapter_blocks")
-      .select(`
-        id,
-        chapter_id,
-        tipo,
-        orden,
-        contenido,
-        visible,
-        fecha_actualizacion
-      `)
-      .eq("chapter_id",chapterId)
-      .order("orden",{ascending:true});
-
-
-  if(error){
-
-    console.error(error);
-
-    showMessage(
-      "No fue posible cargar los bloques: " +
-      error.message,
-      "error"
-    );
-
-    return;
-  }
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("chapter_blocks")
+        .select(`
+            id,
+            chapter_id,
+            tipo,
+            orden,
+            contenido,
+            visible
+        `)
+        .eq("chapter_id", chapterId)
+        .order("orden", {
+            ascending:true
+        });
 
 
-  blocks =
-    data || [];
+    if(error){
+
+        console.error(error);
+
+        throw new Error(
+            "No fue posible cargar los bloques del capítulo."
+        );
+
+    }
 
 
-  renderBlocks();
+    bloques =
+        (data || []).map(
+            bloque => ({
+                ...bloque,
+                nuevo:false
+            })
+        );
+
+
+    renderBlocks();
 
 }
 
 
 /* =========================================================
-   RENDERIZAR BLOQUES
+   RENDER BLOQUES
 ========================================================= */
 
 function renderBlocks(){
 
-  if(!blocks.length){
-
-    editor.innerHTML = `
-
-      <div class="empty-editor">
-
-        Este capítulo todavía no tiene contenido.
-
-        <br><br>
-
-        Utiliza
-        <strong>+ AGREGAR CONTENIDO</strong>
-        para comenzar a escribir.
-
-      </div>
-
-    `;
-
-    return;
-  }
+    const container =
+        document.getElementById(
+            "blocksContainer"
+        );
 
 
-  editor.innerHTML =
-    blocks
-      .map(
-        (block,index) =>
-          renderBlock(
-            block,
-            index
-          )
-      )
-      .join("");
-
-}
+    container.innerHTML = "";
 
 
-/* =========================================================
-   NOMBRE DEL BLOQUE
-========================================================= */
+    document
+        .getElementById("blockCounter")
+        .textContent =
+            bloques.length +
+            (
+                bloques.length === 1
+                    ? " BLOQUE"
+                    : " BLOQUES"
+            );
 
-function blockTypeName(type){
 
-  const names = {
+    if(bloques.length === 0){
 
-    texto:"TEXTO",
+        container.innerHTML = `
 
-    imagen:"IMAGEN",
+            <div class="empty">
 
-    video:"VIDEO",
+                <strong>
+                    CAPÍTULO SIN CONTENIDO
+                </strong>
 
-    pista:"PISTA",
+                <span>
+                    Agrega el primer bloque utilizando
+                    las opciones inferiores.
+                </span>
 
-    documento:"DOCUMENTO",
+            </div>
 
-    dialogo:"DIÁLOGO",
+        `;
 
-    pregunta:"PREGUNTA",
+        return;
 
-    separador:"SEPARADOR"
+    }
 
-  };
 
-  return names[type] || type;
+    bloques.forEach(
+        (bloque,index) => {
+
+            container.appendChild(
+                crearElementoBloque(
+                    bloque,
+                    index
+                )
+            );
+
+        }
+    );
 
 }
 
 
 /* =========================================================
-   RENDER DE UN BLOQUE
+   CREAR ELEMENTO BLOQUE
 ========================================================= */
 
-function renderBlock(
-  block,
-  index
+function crearElementoBloque(
+    bloque,
+    index
 ){
 
-  const content =
-    block.contenido || {};
+    const article =
+        document.createElement("article");
 
 
-  let body = "";
+    article.className =
+        "block type-" +
+        bloque.tipo;
 
 
-  /* -------------------------------------------------------
-     TEXTO
-  ------------------------------------------------------- */
+    const tipoNombre =
+        obtenerNombreTipo(
+            bloque.tipo
+        );
 
-  if(block.tipo === "texto"){
 
-    body = `
+    article.innerHTML = `
 
-      <div class="field">
+        <div class="block-head">
 
-        <label>
-          CONTENIDO
-        </label>
+            <div class="block-left">
 
-        <textarea
-          data-field="texto"
-          data-id="${block.id}"
-          placeholder="Escribe aquí el contenido del capítulo...">${escapeHtml(
-            content.texto || ""
-          )}</textarea>
+                <div class="block-number">
+                    ${index + 1}
+                </div>
 
-      </div>
+                <div class="block-type">
+                    ${tipoNombre}
+                </div>
 
-    `;
+            </div>
 
-  }
+            <div class="block-actions">
 
+                <button
+                    class="icon-btn"
+                    title="Subir"
+                    ${index === 0 ? "disabled" : ""}
+                    onclick="moverBloque(${index},-1)"
+                >
+                    ↑
+                </button>
 
-  /* -------------------------------------------------------
-     IMAGEN
-  ------------------------------------------------------- */
+                <button
+                    class="icon-btn"
+                    title="Bajar"
+                    ${index === bloques.length - 1 ? "disabled" : ""}
+                    onclick="moverBloque(${index},1)"
+                >
+                    ↓
+                </button>
 
-  else if(block.tipo === "imagen"){
+                <button
+                    class="icon-btn delete"
+                    title="Eliminar"
+                    onclick="eliminarBloque(${index})"
+                >
+                    ×
+                </button>
 
-    body = `
-
-      <div class="field">
-
-        <label>
-          URL DE LA IMAGEN
-        </label>
-
-        <input
-          data-field="url"
-          data-id="${block.id}"
-          value="${escapeHtml(
-            content.url || ""
-          )}"
-          placeholder="https://...">
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          TEXTO ALTERNATIVO
-        </label>
-
-        <input
-          data-field="alt"
-          data-id="${block.id}"
-          value="${escapeHtml(
-            content.alt || ""
-          )}"
-          placeholder="Descripción de la imagen">
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          PIE DE IMAGEN
-        </label>
-
-        <input
-          data-field="caption"
-          data-id="${block.id}"
-          value="${escapeHtml(
-            content.caption || ""
-          )}"
-          placeholder="Texto opcional">
-
-      </div>
-
-    `;
-
-  }
-
-
-  /* -------------------------------------------------------
-     VIDEO
-  ------------------------------------------------------- */
-
-  else if(block.tipo === "video"){
-
-    body = `
-
-      <div class="field">
-
-        <label>
-          URL DEL VIDEO
-        </label>
-
-        <input
-          data-field="url"
-          data-id="${block.id}"
-          value="${escapeHtml(
-            content.url || ""
-          )}"
-          placeholder="https://youtube.com/...">
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          TÍTULO DEL VIDEO
-        </label>
-
-        <input
-          data-field="titulo"
-          data-id="${block.id}"
-          value="${escapeHtml(
-            content.titulo || ""
-          )}"
-          placeholder="Título opcional">
-
-      </div>
-
-    `;
-
-  }
-
-
-  /* -------------------------------------------------------
-     PISTA
-  ------------------------------------------------------- */
-
-  else if(block.tipo === "pista"){
-
-    body = `
-
-      <div class="field">
-
-        <label>
-          TÍTULO DE LA PISTA
-        </label>
-
-        <input
-          data-field="titulo"
-          data-id="${block.id}"
-          value="${escapeHtml(
-            content.titulo || "PISTA"
-          )}">
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          CONTENIDO DE LA PISTA
-        </label>
-
-        <textarea
-          data-field="texto"
-          data-id="${block.id}"
-          placeholder="Escribe la pista...">${escapeHtml(
-            content.texto || ""
-          )}</textarea>
-
-      </div>
-
-    `;
-
-  }
-
-
-  /* -------------------------------------------------------
-     DOCUMENTO
-  ------------------------------------------------------- */
-
-  else if(block.tipo === "documento"){
-
-    body = `
-
-      <div class="field">
-
-        <label>
-          NOMBRE DEL DOCUMENTO
-        </label>
-
-        <input
-          data-field="nombre"
-          data-id="${block.id}"
-          value="${escapeHtml(
-            content.nombre || ""
-          )}"
-          placeholder="Ej: Informe médico">
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          URL DEL DOCUMENTO
-        </label>
-
-        <input
-          data-field="url"
-          data-id="${block.id}"
-          value="${escapeHtml(
-            content.url || ""
-          )}"
-          placeholder="https://...">
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          DESCRIPCIÓN
-        </label>
-
-        <textarea
-          data-field="descripcion"
-          data-id="${block.id}"
-          placeholder="Descripción del documento...">${escapeHtml(
-            content.descripcion || ""
-          )}</textarea>
-
-      </div>
-
-    `;
-
-  }
-
-
-  /* -------------------------------------------------------
-     DIÁLOGO
-  ------------------------------------------------------- */
-
-  else if(block.tipo === "dialogo"){
-
-    body = `
-
-      <div class="field">
-
-        <label>
-          PERSONAJE
-        </label>
-
-        <input
-          data-field="personaje"
-          data-id="${block.id}"
-          value="${escapeHtml(
-            content.personaje || ""
-          )}"
-          placeholder="Nombre del personaje">
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          DIÁLOGO
-        </label>
-
-        <textarea
-          data-field="texto"
-          data-id="${block.id}"
-          placeholder="Escribe lo que dice el personaje...">${escapeHtml(
-            content.texto || ""
-          )}</textarea>
-
-      </div>
-
-    `;
-
-  }
-
-
-  /* -------------------------------------------------------
-     PREGUNTA
-  ------------------------------------------------------- */
-
-  else if(block.tipo === "pregunta"){
-
-    body = `
-
-      <div class="field">
-
-        <label>
-          PREGUNTA
-        </label>
-
-        <textarea
-          data-field="texto"
-          data-id="${block.id}"
-          placeholder="Escribe la pregunta...">${escapeHtml(
-            content.texto || ""
-          )}</textarea>
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          RESPUESTA / CLAVE
-        </label>
-
-        <input
-          data-field="respuesta"
-          data-id="${block.id}"
-          value="${escapeHtml(
-            content.respuesta || ""
-          )}"
-          placeholder="Respuesta correcta">
-
-      </div>
-
-    `;
-
-  }
-
-
-  /* -------------------------------------------------------
-     SEPARADOR
-  ------------------------------------------------------- */
-
-  else if(block.tipo === "separador"){
-
-    body = `
-
-      <div style="
-        text-align:center;
-        color:#52616a;
-        padding:15px 0;
-        letter-spacing:5px;
-      ">
-        • • •
-      </div>
-
-    `;
-
-  }
-
-
-  return `
-
-    <article
-      class="block"
-      data-block-id="${block.id}">
-
-      <div class="block-head">
-
-        <div class="block-left">
-
-          <div class="block-number">
-            ${String(index + 1).padStart(2,"0")}
-          </div>
-
-          <div class="block-type">
-            ${blockTypeName(block.tipo)}
-          </div>
+            </div>
 
         </div>
 
-
-        <div class="block-actions">
-
-          <button
-            class="block-action"
-            title="Subir"
-            onclick="moveBlock(${index},-1)"
-            ${index === 0 ? "disabled" : ""}>
-            ↑
-          </button>
-
-
-          <button
-            class="block-action"
-            title="Bajar"
-            onclick="moveBlock(${index},1)"
-            ${index === blocks.length - 1 ? "disabled" : ""}>
-            ↓
-          </button>
-
-
-          <button
-            class="block-action delete"
-            title="Eliminar"
-            onclick="deleteBlock('${block.id}')">
-            ×
-          </button>
-
+        <div
+            class="block-body"
+            id="block-body-${index}"
+        >
         </div>
 
-      </div>
+    `;
 
 
-      <div class="block-body">
+    const body =
+        article.querySelector(
+            `#block-body-${index}`
+        );
 
-        ${body}
 
-      </div>
+    construirEditorBloque(
+        body,
+        bloque,
+        index
+    );
 
-    </article>
 
-  `;
+    return article;
+
+}
+
+
+/* =========================================================
+   NOMBRE TIPO
+========================================================= */
+
+function obtenerNombreTipo(tipo){
+
+    const nombres = {
+
+        texto:"TEXTO",
+
+        imagen:"IMAGEN",
+
+        video:"VIDEO",
+
+        pista:"PISTA",
+
+        documento:"DOCUMENTO",
+
+        dialogo:"DIÁLOGO",
+
+        pregunta:"PREGUNTA",
+
+        separador:"SEPARADOR"
+
+    };
+
+
+    return nombres[tipo] || tipo;
+
+}
+
+
+/* =========================================================
+   EDITOR DE BLOQUE
+========================================================= */
+
+function construirEditorBloque(
+    body,
+    bloque,
+    index
+){
+
+    const contenido =
+        bloque.contenido || {};
+
+
+    /* TEXTO */
+
+    if(bloque.tipo === "texto"){
+
+        body.innerHTML = `
+
+            <div class="field">
+
+                <label>
+                    CONTENIDO
+                </label>
+
+                <textarea
+                    class="block-input"
+                    data-field="texto"
+                    data-index="${index}"
+                    placeholder="Escribe aquí el contenido del capítulo..."
+                ></textarea>
+
+            </div>
+
+        `;
+
+
+        body.querySelector(
+            "textarea"
+        ).value =
+            contenido.texto || "";
+
+        return;
+
+    }
+
+
+    /* IMAGEN */
+
+    if(bloque.tipo === "imagen"){
+
+        body.innerHTML = `
+
+            <div class="grid-2">
+
+                <div class="field">
+
+                    <label>
+                        URL DE LA IMAGEN
+                    </label>
+
+                    <input
+                        type="text"
+                        class="block-input"
+                        data-field="url"
+                        data-index="${index}"
+                        placeholder="https://..."
+                    >
+
+                    <div class="help">
+                        Puedes utilizar una URL pública de una imagen.
+                    </div>
+
+                </div>
+
+                <div class="field">
+
+                    <label>
+                        TEXTO ALTERNATIVO
+                    </label>
+
+                    <input
+                        type="text"
+                        class="block-input"
+                        data-field="alt"
+                        data-index="${index}"
+                        placeholder="Descripción de la imagen"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    PIE DE IMAGEN
+                </label>
+
+                <input
+                    type="text"
+                    class="block-input"
+                    data-field="caption"
+                    data-index="${index}"
+                    placeholder="Texto opcional"
+                >
+
+            </div>
+
+        `;
+
+
+        body.querySelector(
+            '[data-field="url"]'
+        ).value =
+            contenido.url || "";
+
+
+        body.querySelector(
+            '[data-field="alt"]'
+        ).value =
+            contenido.alt || "";
+
+
+        body.querySelector(
+            '[data-field="caption"]'
+        ).value =
+            contenido.caption || "";
+
+        return;
+
+    }
+
+
+    /* VIDEO */
+
+    if(bloque.tipo === "video"){
+
+        body.innerHTML = `
+
+            <div class="grid-2">
+
+                <div class="field">
+
+                    <label>
+                        URL DEL VIDEO
+                    </label>
+
+                    <input
+                        type="text"
+                        class="block-input"
+                        data-field="url"
+                        data-index="${index}"
+                        placeholder="https://..."
+                    >
+
+                </div>
+
+                <div class="field">
+
+                    <label>
+                        TÍTULO
+                    </label>
+
+                    <input
+                        type="text"
+                        class="block-input"
+                        data-field="titulo"
+                        data-index="${index}"
+                        placeholder="Título del video"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    DESCRIPCIÓN
+                </label>
+
+                <textarea
+                    class="small block-input"
+                    data-field="descripcion"
+                    data-index="${index}"
+                    placeholder="Descripción opcional..."
+                ></textarea>
+
+            </div>
+
+        `;
+
+
+        body.querySelector(
+            '[data-field="url"]'
+        ).value =
+            contenido.url || "";
+
+
+        body.querySelector(
+            '[data-field="titulo"]'
+        ).value =
+            contenido.titulo || "";
+
+
+        body.querySelector(
+            '[data-field="descripcion"]'
+        ).value =
+            contenido.descripcion || "";
+
+        return;
+
+    }
+
+
+    /* PISTA */
+
+    if(bloque.tipo === "pista"){
+
+        body.innerHTML = `
+
+            <div class="field">
+
+                <label>
+                    PISTA
+                </label>
+
+                <textarea
+                    class="block-input"
+                    data-field="texto"
+                    data-index="${index}"
+                    placeholder="Escribe la pista que recibirá el lector..."
+                ></textarea>
+
+            </div>
+
+            <div class="grid-2">
+
+                <div class="field">
+
+                    <label>
+                        TÍTULO
+                    </label>
+
+                    <input
+                        type="text"
+                        class="block-input"
+                        data-field="titulo"
+                        data-index="${index}"
+                        placeholder="Pista"
+                    >
+
+                </div>
+
+                <div class="field">
+
+                    <label>
+                        NIVEL
+                    </label>
+
+                    <select
+                        class="block-input"
+                        data-field="nivel"
+                        data-index="${index}"
+                    >
+
+                        <option value="normal">
+                            Normal
+                        </option>
+
+                        <option value="importante">
+                            Importante
+                        </option>
+
+                        <option value="critica">
+                            Crítica
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        body.querySelector(
+            '[data-field="texto"]'
+        ).value =
+            contenido.texto || "";
+
+
+        body.querySelector(
+            '[data-field="titulo"]'
+        ).value =
+            contenido.titulo || "Pista";
+
+
+        body.querySelector(
+            '[data-field="nivel"]'
+        ).value =
+            contenido.nivel || "normal";
+
+        return;
+
+    }
+
+
+    /* DOCUMENTO */
+
+    if(bloque.tipo === "documento"){
+
+        body.innerHTML = `
+
+            <div class="grid-2">
+
+                <div class="field">
+
+                    <label>
+                        TÍTULO DEL DOCUMENTO
+                    </label>
+
+                    <input
+                        type="text"
+                        class="block-input"
+                        data-field="titulo"
+                        data-index="${index}"
+                        placeholder="Informe médico..."
+                    >
+
+                </div>
+
+                <div class="field">
+
+                    <label>
+                        URL DEL DOCUMENTO
+                    </label>
+
+                    <input
+                        type="text"
+                        class="block-input"
+                        data-field="url"
+                        data-index="${index}"
+                        placeholder="https://..."
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    DESCRIPCIÓN
+                </label>
+
+                <textarea
+                    class="small block-input"
+                    data-field="descripcion"
+                    data-index="${index}"
+                    placeholder="Descripción del documento..."
+                ></textarea>
+
+            </div>
+
+        `;
+
+
+        body.querySelector(
+            '[data-field="titulo"]'
+        ).value =
+            contenido.titulo || "";
+
+
+        body.querySelector(
+            '[data-field="url"]'
+        ).value =
+            contenido.url || "";
+
+
+        body.querySelector(
+            '[data-field="descripcion"]'
+        ).value =
+            contenido.descripcion || "";
+
+        return;
+
+    }
+
+
+    /* DIALOGO */
+
+    if(bloque.tipo === "dialogo"){
+
+        body.innerHTML = `
+
+            <div class="grid-2">
+
+                <div class="field">
+
+                    <label>
+                        PERSONAJE
+                    </label>
+
+                    <input
+                        type="text"
+                        class="block-input"
+                        data-field="personaje"
+                        data-index="${index}"
+                        placeholder="Nombre del personaje"
+                    >
+
+                </div>
+
+                <div class="field">
+
+                    <label>
+                        CONTEXTO
+                    </label>
+
+                    <input
+                        type="text"
+                        class="block-input"
+                        data-field="contexto"
+                        data-index="${index}"
+                        placeholder="Opcional"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    DIÁLOGO
+                </label>
+
+                <textarea
+                    class="block-input"
+                    data-field="texto"
+                    data-index="${index}"
+                    placeholder="Escribe aquí el diálogo..."
+                ></textarea>
+
+            </div>
+
+        `;
+
+
+        body.querySelector(
+            '[data-field="personaje"]'
+        ).value =
+            contenido.personaje || "";
+
+
+        body.querySelector(
+            '[data-field="contexto"]'
+        ).value =
+            contenido.contexto || "";
+
+
+        body.querySelector(
+            '[data-field="texto"]'
+        ).value =
+            contenido.texto || "";
+
+        return;
+
+    }
+
+
+    /* PREGUNTA */
+
+    if(bloque.tipo === "pregunta"){
+
+        body.innerHTML = `
+
+            <div class="field">
+
+                <label>
+                    PREGUNTA
+                </label>
+
+                <textarea
+                    class="small block-input"
+                    data-field="pregunta"
+                    data-index="${index}"
+                    placeholder="¿Cuál es la respuesta?"
+                ></textarea>
+
+            </div>
+
+            <div class="grid-2">
+
+                <div class="field">
+
+                    <label>
+                        RESPUESTA ESPERADA
+                    </label>
+
+                    <input
+                        type="text"
+                        class="block-input"
+                        data-field="respuesta"
+                        data-index="${index}"
+                        placeholder="Respuesta"
+                    >
+
+                </div>
+
+                <div class="field">
+
+                    <label>
+                        MENSAJE DE ÉXITO
+                    </label>
+
+                    <input
+                        type="text"
+                        class="block-input"
+                        data-field="mensaje_correcto"
+                        data-index="${index}"
+                        placeholder="Correcto..."
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    PISTA DE AYUDA
+                </label>
+
+                <textarea
+                    class="small block-input"
+                    data-field="pista"
+                    data-index="${index}"
+                    placeholder="Opcional..."
+                ></textarea>
+
+            </div>
+
+        `;
+
+
+        body.querySelector(
+            '[data-field="pregunta"]'
+        ).value =
+            contenido.pregunta || "";
+
+
+        body.querySelector(
+            '[data-field="respuesta"]'
+        ).value =
+            contenido.respuesta || "";
+
+
+        body.querySelector(
+            '[data-field="mensaje_correcto"]'
+        ).value =
+            contenido.mensaje_correcto || "";
+
+
+        body.querySelector(
+            '[data-field="pista"]'
+        ).value =
+            contenido.pista || "";
+
+        return;
+
+    }
+
+
+    /* SEPARADOR */
+
+    if(bloque.tipo === "separador"){
+
+        body.innerHTML = `
+
+            <div class="field">
+
+                <label>
+                    ESTILO
+                </label>
+
+                <select
+                    class="block-input"
+                    data-field="estilo"
+                    data-index="${index}"
+                >
+
+                    <option value="linea">
+                        Línea
+                    </option>
+
+                    <option value="espacio">
+                        Espacio
+                    </option>
+
+                    <option value="alerta">
+                        Separador de alerta
+                    </option>
+
+                </select>
+
+            </div>
+
+        `;
+
+
+        body.querySelector(
+            '[data-field="estilo"]'
+        ).value =
+            contenido.estilo || "linea";
+
+        return;
+
+    }
+
 
 }
 
@@ -2062,78 +2148,53 @@ function renderBlock(
    AGREGAR BLOQUE
 ========================================================= */
 
-function toggleBlockMenu(){
+function agregarBloque(tipo){
 
-  blockMenu.classList.toggle(
-    "hidden"
-  );
+    const nuevo = {
 
-}
+        id:null,
 
+        chapter_id:chapterId,
 
-function addBlock(type){
+        tipo:tipo,
 
-  blockMenu.classList.add(
-    "hidden"
-  );
+        orden:bloques.length + 1,
 
+        contenido:
+            contenidoInicial(tipo),
 
-  const temporaryId =
-    "new-" +
-    Date.now() +
-    "-" +
-    Math.random()
-      .toString(36)
-      .substring(2,8);
+        visible:true,
+
+        nuevo:true
+
+    };
 
 
-  const newBlock = {
-
-    id:temporaryId,
-
-    chapter_id:chapterId,
-
-    tipo:type,
-
-    orden:blocks.length + 1,
-
-    contenido:getDefaultContent(type),
-
-    visible:true,
-
-    nuevo:true
-
-  };
+    bloques.push(nuevo);
 
 
-  blocks.push(
-    newBlock
-  );
+    renderBlocks();
 
 
-  renderBlocks();
+    setTimeout(() => {
 
+        const elementos =
+            document.querySelectorAll(
+                ".block"
+            );
 
-  const element =
-    document.querySelector(
-      `[data-block-id="${temporaryId}"]`
-    );
+        if(elementos.length){
 
+            elementos[
+                elementos.length - 1
+            ].scrollIntoView({
+                behavior:"smooth",
+                block:"center"
+            });
 
-  if(element){
+        }
 
-    element.scrollIntoView({
-      behavior:"smooth",
-      block:"center"
-    });
-
-  }
-
-
-  showMessage(
-    "Bloque agregado. Recuerda guardar.",
-    "info"
-  );
+    },50);
 
 }
 
@@ -2142,127 +2203,135 @@ function addBlock(type){
    CONTENIDO INICIAL
 ========================================================= */
 
-function getDefaultContent(type){
+function contenidoInicial(tipo){
 
-  switch(type){
+    switch(tipo){
 
-    case "texto":
+        case "texto":
+            return {
+                texto:""
+            };
 
-      return {
-        texto:""
-      };
+        case "imagen":
+            return {
+                url:"",
+                alt:"",
+                caption:""
+            };
 
+        case "video":
+            return {
+                url:"",
+                titulo:"",
+                descripcion:""
+            };
 
-    case "imagen":
+        case "pista":
+            return {
+                titulo:"Pista",
+                texto:"",
+                nivel:"normal"
+            };
 
-      return {
-        url:"",
-        alt:"",
-        caption:""
-      };
+        case "documento":
+            return {
+                titulo:"",
+                url:"",
+                descripcion:""
+            };
 
+        case "dialogo":
+            return {
+                personaje:"",
+                contexto:"",
+                texto:""
+            };
 
-    case "video":
+        case "pregunta":
+            return {
+                pregunta:"",
+                respuesta:"",
+                mensaje_correcto:"",
+                pista:""
+            };
 
-      return {
-        url:"",
-        titulo:""
-      };
+        case "separador":
+            return {
+                estilo:"linea"
+            };
 
+        default:
+            return {};
 
-    case "pista":
-
-      return {
-        titulo:"PISTA",
-        texto:""
-      };
-
-
-    case "documento":
-
-      return {
-        nombre:"",
-        url:"",
-        descripcion:""
-      };
-
-
-    case "dialogo":
-
-      return {
-        personaje:"",
-        texto:""
-      };
-
-
-    case "pregunta":
-
-      return {
-        texto:"",
-        respuesta:""
-      };
-
-
-    case "separador":
-
-      return {};
-
-
-    default:
-
-      return {};
-
-  }
+    }
 
 }
 
 
 /* =========================================================
-   ACTUALIZAR DATOS DESDE EL DOM
+   LEER CAMPOS DEL DOM
 ========================================================= */
 
-function collectBlockData(block){
+function leerBloquesDesdePantalla(){
 
-  if(block.tipo === "separador"){
+    const elementos =
+        document.querySelectorAll(
+            ".block"
+        );
 
-    return {};
 
-  }
+    elementos.forEach(
+        (elemento,index) => {
+
+            const bloque =
+                bloques[index];
 
 
-  const element =
-    document.querySelector(
-      `[data-block-id="${block.id}"]`
+            if(!bloque){
+                return;
+            }
+
+
+            const campos =
+                elemento.querySelectorAll(
+                    ".block-input"
+                );
+
+
+            const contenido = {};
+
+
+            campos.forEach(
+                campo => {
+
+                    const field =
+                        campo.dataset.field;
+
+
+                    if(!field){
+                        return;
+                    }
+
+
+                    contenido[field] =
+                        campo.value;
+
+                }
+            );
+
+
+            bloque.contenido =
+                contenido;
+
+
+            bloque.orden =
+                index + 1;
+
+
+            bloque.visible = true;
+
+        }
     );
-
-
-  if(!element){
-
-    return block.contenido || {};
-
-  }
-
-
-  const fields =
-    element.querySelectorAll(
-      "[data-field]"
-    );
-
-
-  const content = {};
-
-
-  fields.forEach(field =>{
-
-    content[
-      field.dataset.field
-    ] =
-      field.value;
-
-  });
-
-
-  return content;
 
 }
 
@@ -2271,52 +2340,38 @@ function collectBlockData(block){
    MOVER BLOQUE
 ========================================================= */
 
-async function moveBlock(
-  index,
-  direction
+function moverBloque(
+    index,
+    direccion
 ){
 
-  const newIndex =
-    index + direction;
+    const nuevoIndex =
+        index + direccion;
 
 
-  if(
-    newIndex < 0 ||
-    newIndex >= blocks.length
-  ){
+    if(
+        nuevoIndex < 0 ||
+        nuevoIndex >= bloques.length
+    ){
 
-    return;
-
-  }
-
-
-  const temp =
-    blocks[index];
-
-  blocks[index] =
-    blocks[newIndex];
-
-  blocks[newIndex] =
-    temp;
-
-
-  blocks.forEach(
-    (block,i) => {
-
-      block.orden =
-        i + 1;
+        return;
 
     }
-  );
 
 
-  renderBlocks();
+    const temporal =
+        bloques[index];
 
 
-  showMessage(
-    "Orden actualizado. Guarda para confirmar los cambios.",
-    "info"
-  );
+    bloques[index] =
+        bloques[nuevoIndex];
+
+
+    bloques[nuevoIndex] =
+        temporal;
+
+
+    renderBlocks();
 
 }
 
@@ -2325,128 +2380,44 @@ async function moveBlock(
    ELIMINAR BLOQUE
 ========================================================= */
 
-async function deleteBlock(
-  blockId
-){
+function eliminarBloque(index){
 
-  const block =
-    blocks.find(
-      b => b.id === blockId
+    const bloque =
+        bloques[index];
+
+
+    const confirmar =
+        confirm(
+            "¿Eliminar este bloque del capítulo?"
+        );
+
+
+    if(!confirmar){
+        return;
+    }
+
+
+    /*
+     * Lo marcamos como eliminado.
+     * El guardado decidirá si debe borrarse
+     * de la base de datos.
+     */
+
+    bloque.__eliminar =
+        true;
+
+
+    /*
+     * No lo mostramos más.
+     */
+
+    bloques.splice(
+        index,
+        1
     );
 
-
-  if(!block){
-
-    return;
-
-  }
-
-
-  if(
-    !confirm(
-      "¿Eliminar este bloque?"
-    )
-  ){
-
-    return;
-
-  }
-
-
-  /* Bloque nuevo:
-     solamente lo quitamos
-  */
-
-  if(
-    String(block.id)
-      .startsWith("new-")
-  ){
-
-    blocks =
-      blocks.filter(
-        b => b.id !== blockId
-      );
-
-
-    normalizeOrder();
 
     renderBlocks();
-
-    showMessage(
-      "Bloque eliminado. Guarda para confirmar.",
-      "info"
-    );
-
-    return;
-
-  }
-
-
-  const {
-    error
-  } =
-    await supabaseClient
-      .rpc(
-        "eliminar_bloque_capitulo",
-        {
-          p_block_id:blockId
-        }
-      );
-
-
-  if(error){
-
-    console.error(error);
-
-    showMessage(
-      "No fue posible eliminar el bloque: " +
-      error.message,
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  blocks =
-    blocks.filter(
-      b => b.id !== blockId
-    );
-
-
-  normalizeOrder();
-
-  renderBlocks();
-
-
-  /* Guardar nuevo orden */
-
-  await saveOrderOnly();
-
-
-  showMessage(
-    "Bloque eliminado correctamente.",
-    "success"
-  );
-
-}
-
-
-/* =========================================================
-   NORMALIZAR ORDEN
-========================================================= */
-
-function normalizeOrder(){
-
-  blocks.forEach(
-    (block,index) => {
-
-      block.orden =
-        index + 1;
-
-    }
-  );
 
 }
 
@@ -2455,269 +2426,494 @@ function normalizeOrder(){
    GUARDAR TODO
 ========================================================= */
 
-async function saveAll(){
+async function guardarTodo(){
 
-  if(saving){
-
-    return;
-
-  }
-
-
-  saving = true;
-
-  saveAllButton.disabled = true;
-
-  saveAllButton.textContent =
-    "GUARDANDO...";
-
-
-  clearMessage();
-
-
-  try{
-
-    normalizeOrder();
-
-
-    for(
-      let index = 0;
-      index < blocks.length;
-      index++
-    ){
-
-      const block =
-        blocks[index];
-
-
-      block.contenido =
-        collectBlockData(
-          block
+    const button =
+        document.getElementById(
+            "saveButton"
         );
 
 
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-          .rpc(
-            "guardar_bloque_capitulo",
-            {
-              p_block_id:
-                String(block.id)
-                  .startsWith("new-")
-                  ? null
-                  : block.id,
+    try{
 
-              p_chapter_id:
-                chapterId,
+        button.disabled = true;
 
-              p_tipo:
-                block.tipo,
-
-              p_orden:
-                index + 1,
-
-              p_contenido:
-                block.contenido,
-
-              p_visible:
-                block.visible !== false
-            }
-          );
+        button.textContent =
+            "GUARDANDO...";
 
 
-      if(error){
+        mostrarStatus(
+            "Guardando contenido del capítulo...",
+            "loading"
+        );
 
-        throw error;
 
-      }
+        /*
+         * Leer contenido actual
+         * desde los campos.
+         */
+
+        leerBloquesDesdePantalla();
 
 
-      if(
-        String(block.id)
-          .startsWith("new-")
-      ){
+        /*
+         * 1. Cargar registros actuales
+         * desde Supabase.
+         */
 
-        if(
-          data &&
-          data.block_id
-        ){
+        const {
+            data: existentes,
+            error: existentesError
+        } = await supabaseClient
+            .from("chapter_blocks")
+            .select("id")
+            .eq("chapter_id",chapterId);
 
-          block.id =
-            data.block_id;
 
-          delete block.nuevo;
+        if(existentesError){
+
+            throw existentesError;
 
         }
 
-      }
+
+        const idsActuales =
+            new Set(
+                bloques
+                    .filter(b => b.id)
+                    .map(b => b.id)
+            );
+
+
+        /*
+         * 2. Eliminar registros que ya no existen
+         * en nuestro editor.
+         */
+
+        const idsEliminar =
+            (existentes || [])
+                .map(row => row.id)
+                .filter(
+                    id => !idsActuales.has(id)
+                );
+
+
+        if(idsEliminar.length > 0){
+
+            const {
+                error
+            } = await supabaseClient
+                .from("chapter_blocks")
+                .delete()
+                .in("id",idsEliminar);
+
+
+            if(error){
+
+                throw error;
+
+            }
+
+        }
+
+
+        /*
+         * 3. Usar órdenes temporales para evitar
+         * conflictos con UNIQUE(chapter_id,orden).
+         */
+
+        const idsExistentes =
+            bloques
+                .filter(b => b.id)
+                .map(b => b.id);
+
+
+        if(idsExistentes.length > 0){
+
+            for(
+                let i=0;
+                i<idsExistentes.length;
+                i++
+            ){
+
+                const id =
+                    idsExistentes[i];
+
+
+                const {
+                    error
+                } = await supabaseClient
+                    .from("chapter_blocks")
+                    .update({
+                        orden:10000 + i
+                    })
+                    .eq("id",id);
+
+
+                if(error){
+
+                    throw error;
+
+                }
+
+            }
+
+        }
+
+
+        /*
+         * 4. Insertar bloques nuevos.
+         */
+
+        const nuevos =
+            bloques.filter(
+                b => !b.id
+            );
+
+
+        for(
+            let i=0;
+            i<nuevos.length;
+            i++
+        ){
+
+            const bloque =
+                nuevos[i];
+
+
+            const {
+                data,
+                error
+            } = await supabaseClient
+                .from("chapter_blocks")
+                .insert({
+
+                    chapter_id:chapterId,
+
+                    tipo:bloque.tipo,
+
+                    orden:20000 + i,
+
+                    contenido:
+                        bloque.contenido || {},
+
+                    visible:
+                        bloque.visible !== false
+
+                })
+                .select()
+                .single();
+
+
+            if(error){
+
+                throw error;
+
+            }
+
+
+            bloque.id =
+                data.id;
+
+        }
+
+
+        /*
+         * 5. Aplicar orden definitivo.
+         */
+
+        for(
+            let i=0;
+            i<bloques.length;
+            i++
+        ){
+
+            const bloque =
+                bloques[i];
+
+
+            const {
+                error
+            } = await supabaseClient
+                .from("chapter_blocks")
+                .update({
+
+                    orden:i + 1,
+
+                    tipo:bloque.tipo,
+
+                    contenido:
+                        bloque.contenido || {},
+
+                    visible:
+                        bloque.visible !== false
+
+                })
+                .eq(
+                    "id",
+                    bloque.id
+                );
+
+
+            if(error){
+
+                throw error;
+
+            }
+
+        }
+
+
+        /*
+         * 6. Recargar.
+         */
+
+        await cargarBloques();
+
+
+        mostrarStatus(
+            "Contenido guardado correctamente.",
+            "success"
+        );
+
 
     }
+    catch(error){
+
+        console.error(
+            "ERROR GUARDANDO:",
+            error
+        );
 
 
-    await loadBlocks();
+        mostrarStatus(
+            "No fue posible guardar: " +
+            (
+                error.message ||
+                "error desconocido"
+            ),
+            "error"
+        );
 
+    }
+    finally{
 
-    showMessage(
-      "Contenido guardado correctamente.",
-      "success"
-    );
+        button.disabled = false;
 
+        button.textContent =
+            "GUARDAR TODO";
 
-  }catch(error){
-
-    console.error(error);
-
-    showMessage(
-      "No fue posible guardar el contenido: " +
-      error.message,
-      "error"
-    );
-
-  }finally{
-
-    saving = false;
-
-    saveAllButton.disabled =
-      false;
-
-    saveAllButton.textContent =
-      "GUARDAR TODO";
-
-  }
+    }
 
 }
 
 
 /* =========================================================
-   GUARDAR SOLO ORDEN
+   RECARGAR
 ========================================================= */
 
-async function saveOrderOnly(){
+async function recargarCapitulo(){
 
-  normalizeOrder();
+    try{
 
-
-  for(
-    let index = 0;
-    index < blocks.length;
-    index++
-  ){
-
-    const block =
-      blocks[index];
+        mostrarStatus(
+            "Recargando capítulo...",
+            "loading"
+        );
 
 
-    if(
-      String(block.id)
-        .startsWith("new-")
-    ){
+        await cargarCapitulo();
 
-      continue;
+
+        mostrarStatus(
+            "Capítulo recargado.",
+            "success"
+        );
 
     }
+    catch(error){
 
-
-    const {
-      error
-    } =
-      await supabaseClient
-        .from("chapter_blocks")
-        .update({
-          orden:index + 1,
-          fecha_actualizacion:
-            new Date().toISOString()
-        })
-        .eq("id",block.id);
-
-
-    if(error){
-
-      console.error(error);
+        mostrarStatus(
+            error.message,
+            "error"
+        );
 
     }
-
-  }
 
 }
 
 
 /* =========================================================
-   EVENTOS
+   STATUS
 ========================================================= */
 
-addButton.addEventListener(
-  "click",
-  toggleBlockMenu
-);
+function mostrarStatus(
+    mensaje,
+    tipo="loading"
+){
 
-addContentToolbar.addEventListener(
-  "click",
-  () => {
-
-    blockMenu.classList.remove(
-      "hidden"
-    );
-
-    addArea.scrollIntoView({
-      behavior:"smooth",
-      block:"center"
-    });
-
-  }
-);
-
-saveAllButton.addEventListener(
-  "click",
-  saveAll
-);
+    const status =
+        document.getElementById(
+            "status"
+        );
 
 
-/* =========================================================
-   CERRAR MENÚ AL HACER CLICK AFUERA
-========================================================= */
-
-document.addEventListener(
-  "click",
-  event => {
-
-    if(
-      !event.target.closest(
-        ".add-area"
-      ) &&
-      !event.target.closest(
-        "#addContentToolbar"
-      )
-    ){
-
-      blockMenu.classList.add(
-        "hidden"
-      );
-
-    }
-
-  }
-);
+    status.textContent =
+        mensaje;
 
 
-/* =========================================================
-   INICIO
-========================================================= */
-
-if(!chapterId){
-
-  showMessage(
-    "URL inválida. Falta el ID del capítulo.",
-    "error"
-  );
-
-}else{
-
-  loadChapter();
+    status.className =
+        "status show " +
+        tipo;
 
 }
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+function mostrarLoading(){
+
+    document
+        .getElementById(
+            "loadingScreen"
+        )
+        .classList.remove(
+            "hidden"
+        );
+
+    document
+        .getElementById(
+            "errorScreen"
+        )
+        .classList.add(
+            "hidden"
+        );
+
+    document
+        .getElementById(
+            "editorScreen"
+        )
+        .classList.add(
+            "hidden"
+        );
+
+}
+
+
+/* =========================================================
+   OCULTAR LOADING
+========================================================= */
+
+function ocultarLoading(){
+
+    document
+        .getElementById(
+            "loadingScreen"
+        )
+        .classList.add(
+            "hidden"
+        );
+
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+function mostrarError(
+    titulo,
+    texto
+){
+
+    document
+        .getElementById(
+            "loadingScreen"
+        )
+        .classList.add(
+            "hidden"
+        );
+
+
+    document
+        .getElementById(
+            "editorScreen"
+        )
+        .classList.add(
+            "hidden"
+        );
+
+
+    document
+        .getElementById(
+            "errorScreen"
+        )
+        .classList.remove(
+            "hidden"
+        );
+
+
+    document
+        .getElementById(
+            "errorTitle"
+        )
+        .textContent =
+            titulo;
+
+
+    document
+        .getElementById(
+            "errorText"
+        )
+        .textContent =
+            texto;
+
+}
+
+
+/* =========================================================
+   VOLVER AL PANEL
+========================================================= */
+
+function volverPanel(){
+
+    window.location.href =
+        "index.html";
+
+}
+
+
+/* =========================================================
+   CAMBIO DE SESIÓN
+========================================================= */
+
+supabaseClient.auth.onAuthStateChange(
+    async (event, session) => {
+
+        /*
+         * No hacemos redirecciones automáticas
+         * durante INITIAL_SESSION.
+         *
+         * Esto evita que el editor se cierre mientras
+         * Supabase está restaurando la sesión.
+         */
+
+        if(
+            event === "SIGNED_OUT" &&
+            !session
+        ){
+
+            mostrarError(
+                "SESIÓN FINALIZADA",
+                "La sesión de administrador ha terminado. Vuelve al panel e inicia sesión nuevamente."
+            );
+
+        }
+
+    }
+);
 
 </script>
 
