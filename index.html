@@ -2657,11 +2657,9 @@ async function toggleChapterVisibility(
 
 function openWriter(chapterId){
 
-  window.open(
+  window.location.href =
     "escribir.html?id=" +
-    encodeURIComponent(chapterId),
-    "_blank"
-  );
+    encodeURIComponent(chapterId);
 
 }
 
