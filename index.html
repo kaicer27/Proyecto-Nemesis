@@ -1,715 +1,3210 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="PROTOCOLO NÉMESIS — Saga de suspenso médico e interactivo">
-  <title>PROTOCOLO NÉMESIS</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta
+  name="description"
+  content="PROTOCOLO NÉMESIS — Saga de suspenso médico e interactivo"
+>
 
-  <style>
-    :root{
-      --bg:#03070a;
-      --panel:#0b1217;
-      --panel2:#0f191f;
-      --line:#26343d;
-      --text:#eef2f4;
-      --muted:#8e9ba3;
-      --red:#a82a2a;
-      --red2:#d33a3a;
-      --green:#4fa66a;
-      --blue:#294b61;
-    }
+<title>PROTOCOLO NÉMESIS</title>
 
-    *{box-sizing:border-box}
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    html,body{
-      margin:0;
-      min-height:100%;
-      background:var(--bg);
-      color:var(--text);
-      font-family:Arial,Helvetica,sans-serif;
-    }
+<style>
 
-    body{
-      min-height:100vh;
-      background:
-        radial-gradient(circle at 50% -10%, #17303e 0%, #091218 35%, #03070a 72%);
-    }
+:root{
+  --bg:#03070a;
+  --bg2:#071015;
+  --panel:#0b1217;
+  --panel2:#0f191f;
+  --panel3:#121e25;
 
-    button,input{font:inherit}
+  --line:#26343d;
+  --line2:#34454f;
 
-    .screen{
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:28px 16px;
-    }
+  --text:#eef2f4;
+  --muted:#8e9ba3;
+  --muted2:#65747d;
 
-    .shell{
-      width:min(100%,760px);
-    }
+  --red:#a82a2a;
+  --red2:#d33a3a;
 
-    .brand{
-      text-align:center;
-      margin-bottom:26px;
-    }
+  --green:#4fa66a;
+  --green2:#7fc092;
 
-    .brand-kicker{
-      font-size:11px;
-      letter-spacing:5px;
-      color:#778791;
-      margin-bottom:10px;
-    }
+  --yellow:#b18b35;
+  --blue:#294b61;
 
-    .brand h1{
-      margin:0;
-      font-size:clamp(32px,8vw,58px);
-      letter-spacing:7px;
-      font-weight:700;
-    }
+  --danger:#713030;
+}
 
-    .brand-sub{
-      margin-top:12px;
-      color:#9ba8af;
-      font-size:13px;
-      letter-spacing:2px;
-    }
+*{
+  box-sizing:border-box;
+}
 
-    .card{
-      background:rgba(9,15,19,.96);
-      border:1px solid var(--line);
-      border-radius:14px;
-      box-shadow:0 25px 70px rgba(0,0,0,.6);
-      overflow:hidden;
-    }
+html,
+body{
+  margin:0;
+  min-height:100%;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+}
 
-    .card-head{
-      padding:24px 26px 18px;
-      border-bottom:1px solid #1d2930;
-    }
+body{
+  min-height:100vh;
 
-    .card-head h2{
-      margin:0;
-      font-size:21px;
-      font-weight:500;
-    }
+  background:
+    radial-gradient(
+      circle at 50% -10%,
+      #17303e 0%,
+      #091218 35%,
+      #03070a 72%
+    );
+}
 
-    .card-head p{
-      margin:8px 0 0;
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.5;
-    }
+button,
+input,
+select,
+textarea{
+  font:inherit;
+}
 
-    .card-body{
-      padding:26px;
-    }
+button{
+  cursor:pointer;
+}
 
-    .field{margin-bottom:17px}
+.hidden{
+  display:none !important;
+}
 
-    .field label{
-      display:block;
-      margin-bottom:7px;
-      color:#9aa7ae;
-      font-size:12px;
-      letter-spacing:.5px;
-    }
+/* =========================================================
+   ESTRUCTURA
+========================================================= */
 
-    .field input{
-      width:100%;
-      padding:13px 14px;
-      color:white;
-      background:#05090c;
-      border:1px solid #34434d;
-      border-radius:7px;
-      outline:none;
-    }
+.screen{
+  min-height:100vh;
 
-    .field input:focus{
-      border-color:#a82a2a;
-      box-shadow:0 0 0 2px rgba(168,42,42,.12);
-    }
+  display:flex;
+  align-items:center;
+  justify-content:center;
 
-    .btn{
-      width:100%;
-      border:0;
-      border-radius:7px;
-      padding:14px 16px;
-      background:var(--red);
-      color:white;
-      font-weight:700;
-      letter-spacing:.5px;
-      cursor:pointer;
-    }
+  padding:28px 16px;
+}
 
-    .btn:hover{background:var(--red2)}
-    .btn:disabled{opacity:.55;cursor:wait}
+.shell{
+  width:min(100%,980px);
+}
 
-    .message{
-      display:none;
-      margin-top:16px;
-      padding:12px 14px;
-      border:1px solid #303d45;
-      border-radius:7px;
-      background:#0a1115;
-      color:#c6d0d5;
-      font-size:13px;
-      line-height:1.5;
-    }
+.narrow{
+  width:min(100%,760px);
+}
 
-    .message.show{display:block}
-    .message.error{border-color:#713030;color:#e7b5b5}
-    .message.success{border-color:#315c3d;color:#a9d8b6}
+/* =========================================================
+   MARCA
+========================================================= */
 
-    .hidden{display:none !important}
+.brand{
+  text-align:center;
+  margin-bottom:26px;
+}
 
-    .userbar{
-      padding:12px 14px;
-      background:#070d11;
-      border:1px solid #202d35;
-      border-radius:8px;
-      color:#aeb9bf;
-      font-size:12px;
-      margin-bottom:20px;
-    }
+.brand-kicker{
+  font-size:11px;
+  letter-spacing:5px;
+  color:#778791;
+  margin-bottom:10px;
+}
 
-    .chapter{
-      border:1px solid #2b3941;
-      border-radius:10px;
-      overflow:hidden;
-      background:#080e12;
-    }
+.brand h1{
+  margin:0;
 
-    .chapter-top{
-      padding:22px;
-      border-bottom:1px solid #202c33;
-    }
+  font-size:clamp(32px,8vw,58px);
 
-    .chapter-number{
-      color:#9b3030;
-      font-size:11px;
-      letter-spacing:3px;
-      margin-bottom:8px;
-    }
+  letter-spacing:7px;
+  font-weight:700;
+}
 
-    .chapter h3{
-      margin:0;
-      font-size:25px;
-      font-weight:500;
-    }
+.brand-sub{
+  margin-top:12px;
 
-    .chapter-sub{
-      margin:7px 0 0;
-      color:#8f9ca3;
-      font-size:14px;
-    }
+  color:#9ba8af;
 
-    .chapter-body{
-      padding:22px;
-    }
+  font-size:13px;
+  letter-spacing:2px;
+}
 
-    .status{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      color:#7fc092;
-      font-size:13px;
-      margin-bottom:20px;
-    }
+/* =========================================================
+   TARJETAS
+========================================================= */
 
-    .dot{
-      width:8px;
-      height:8px;
-      border-radius:50%;
-      background:var(--green);
-    }
+.card{
+  background:rgba(9,15,19,.96);
 
-    .test-note{
-      margin-top:20px;
-      padding:12px 14px;
-      border-left:3px solid #4a6575;
-      background:#0b151b;
-      color:#83929a;
-      font-size:12px;
-      line-height:1.5;
-    }
+  border:1px solid var(--line);
 
-    .footer{
-      text-align:center;
-      color:#52616a;
-      font-size:11px;
-      margin-top:20px;
-      letter-spacing:1px;
-    }
+  border-radius:14px;
 
-    @media(max-width:600px){
-      .screen{padding:18px 12px}
-      .card-body,.card-head{padding:20px}
-      .brand h1{letter-spacing:4px}
-    }
-  </style>
+  box-shadow:
+    0 25px 70px rgba(0,0,0,.6);
+
+  overflow:hidden;
+}
+
+.card-head{
+  padding:24px 26px 18px;
+
+  border-bottom:1px solid #1d2930;
+}
+
+.card-head h2{
+  margin:0;
+
+  font-size:21px;
+  font-weight:500;
+}
+
+.card-head p{
+  margin:8px 0 0;
+
+  color:var(--muted);
+
+  font-size:13px;
+  line-height:1.5;
+}
+
+.card-body{
+  padding:26px;
+}
+
+/* =========================================================
+   CAMPOS
+========================================================= */
+
+.field{
+  margin-bottom:17px;
+}
+
+.field label{
+  display:block;
+
+  margin-bottom:7px;
+
+  color:#9aa7ae;
+
+  font-size:12px;
+
+  letter-spacing:.5px;
+}
+
+.field input,
+.field select,
+.field textarea{
+  width:100%;
+
+  padding:13px 14px;
+
+  color:white;
+
+  background:#05090c;
+
+  border:1px solid #34434d;
+
+  border-radius:7px;
+
+  outline:none;
+}
+
+.field textarea{
+  min-height:130px;
+  resize:vertical;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+  border-color:var(--red);
+
+  box-shadow:
+    0 0 0 2px rgba(168,42,42,.12);
+}
+
+/* =========================================================
+   BOTONES
+========================================================= */
+
+.btn{
+  border:0;
+
+  border-radius:7px;
+
+  padding:13px 16px;
+
+  background:var(--red);
+
+  color:white;
+
+  font-weight:700;
+
+  letter-spacing:.5px;
+
+  cursor:pointer;
+
+  transition:.15s ease;
+}
+
+.btn:hover{
+  background:var(--red2);
+}
+
+.btn:disabled{
+  opacity:.55;
+  cursor:wait;
+}
+
+.btn-secondary{
+  background:#252f35;
+}
+
+.btn-secondary:hover{
+  background:#344149;
+}
+
+.btn-green{
+  background:#245b38;
+}
+
+.btn-green:hover{
+  background:#32734a;
+}
+
+.btn-small{
+  padding:9px 12px;
+  font-size:12px;
+}
+
+.btn-danger{
+  background:#572323;
+}
+
+.btn-danger:hover{
+  background:#743030;
+}
+
+/* =========================================================
+   MENSAJES
+========================================================= */
+
+.message{
+  display:none;
+
+  margin-top:16px;
+
+  padding:12px 14px;
+
+  border:1px solid #303d45;
+
+  border-radius:7px;
+
+  background:#0a1115;
+
+  color:#c6d0d5;
+
+  font-size:13px;
+
+  line-height:1.5;
+}
+
+.message.show{
+  display:block;
+}
+
+.message.error{
+  border-color:#713030;
+  color:#e7b5b5;
+}
+
+.message.success{
+  border-color:#315c3d;
+  color:#a9d8b6;
+}
+
+/* =========================================================
+   BARRA DE USUARIO
+========================================================= */
+
+.userbar{
+  padding:13px 15px;
+
+  background:#070d11;
+
+  border:1px solid #202d35;
+
+  border-radius:8px;
+
+  color:#aeb9bf;
+
+  font-size:12px;
+
+  margin-bottom:20px;
+}
+
+.userbar strong{
+  color:white;
+}
+
+/* =========================================================
+   HEADER DE APP
+========================================================= */
+
+.app-header{
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+  gap:15px;
+
+  margin-bottom:20px;
+}
+
+.app-header-title{
+  font-size:12px;
+
+  letter-spacing:3px;
+
+  color:#788891;
+}
+
+.app-header-right{
+  display:flex;
+
+  align-items:center;
+
+  gap:8px;
+}
+
+/* =========================================================
+   ETIQUETAS
+========================================================= */
+
+.badge{
+  display:inline-flex;
+
+  align-items:center;
+
+  gap:6px;
+
+  padding:6px 9px;
+
+  border-radius:5px;
+
+  font-size:10px;
+
+  letter-spacing:1px;
+
+  font-weight:700;
+
+  text-transform:uppercase;
+}
+
+.badge-green{
+  background:#173b26;
+  color:#8ed09f;
+}
+
+.badge-red{
+  background:#421c1c;
+  color:#df9b9b;
+}
+
+.badge-yellow{
+  background:#3e3218;
+  color:#d8bd72;
+}
+
+.badge-blue{
+  background:#172d3a;
+  color:#86aec5;
+}
+
+.badge-gray{
+  background:#20292e;
+  color:#9daab1;
+}
+
+/* =========================================================
+   CAPÍTULOS
+========================================================= */
+
+.chapter-list{
+  display:grid;
+
+  gap:12px;
+}
+
+.chapter-card{
+  background:#080e12;
+
+  border:1px solid #2b3941;
+
+  border-radius:10px;
+
+  overflow:hidden;
+
+  transition:
+    border-color .15s ease,
+    transform .15s ease;
+}
+
+.chapter-card:hover{
+  border-color:#41535e;
+}
+
+.chapter-card.available{
+  cursor:pointer;
+}
+
+.chapter-card.available:hover{
+  transform:translateY(-1px);
+}
+
+.chapter-card-head{
+  display:flex;
+
+  align-items:flex-start;
+
+  justify-content:space-between;
+
+  gap:15px;
+
+  padding:19px 20px;
+
+  border-bottom:1px solid #202c33;
+}
+
+.chapter-number{
+  color:#9b3030;
+
+  font-size:11px;
+
+  letter-spacing:3px;
+
+  margin-bottom:7px;
+}
+
+.chapter-title{
+  margin:0;
+
+  font-size:20px;
+
+  font-weight:500;
+}
+
+.chapter-subtitle{
+  margin-top:6px;
+
+  color:#84939b;
+
+  font-size:13px;
+}
+
+.chapter-card-body{
+  padding:16px 20px;
+}
+
+.chapter-card-footer{
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+  gap:10px;
+
+  color:#6f7d84;
+
+  font-size:11px;
+}
+
+/* =========================================================
+   ESTADOS
+========================================================= */
+
+.status-line{
+  display:flex;
+
+  align-items:center;
+
+  gap:8px;
+
+  color:#8e9ba3;
+
+  font-size:12px;
+}
+
+.dot{
+  width:8px;
+  height:8px;
+
+  border-radius:50%;
+
+  background:#5c6870;
+}
+
+.dot.green{
+  background:var(--green);
+}
+
+.dot.red{
+  background:var(--red2);
+}
+
+.dot.yellow{
+  background:#b18b35;
+}
+
+/* =========================================================
+   ADMIN
+========================================================= */
+
+.admin-grid{
+  display:grid;
+
+  grid-template-columns:
+    minmax(0,1.15fr)
+    minmax(280px,.85fr);
+
+  gap:18px;
+}
+
+.admin-section{
+  background:#080e12;
+
+  border:1px solid #2b3941;
+
+  border-radius:10px;
+
+  overflow:hidden;
+}
+
+.admin-section-head{
+  padding:17px 19px;
+
+  border-bottom:1px solid #202c33;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+  gap:12px;
+}
+
+.admin-section-head h3{
+  margin:0;
+
+  font-size:15px;
+
+  font-weight:500;
+}
+
+.admin-section-body{
+  padding:19px;
+}
+
+.admin-chapter{
+  padding:14px 0;
+
+  border-bottom:1px solid #1e2a31;
+}
+
+.admin-chapter:first-child{
+  padding-top:0;
+}
+
+.admin-chapter:last-child{
+  border-bottom:0;
+  padding-bottom:0;
+}
+
+.admin-chapter-main{
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:flex-start;
+
+  gap:15px;
+}
+
+.admin-chapter-title{
+  font-size:14px;
+  font-weight:600;
+}
+
+.admin-chapter-meta{
+  margin-top:5px;
+
+  display:flex;
+
+  flex-wrap:wrap;
+
+  gap:6px;
+}
+
+.admin-actions{
+  display:flex;
+
+  flex-wrap:wrap;
+
+  gap:7px;
+
+  margin-top:12px;
+}
+
+.key-status{
+  margin-top:8px;
+
+  color:#7f8e96;
+
+  font-size:11px;
+}
+
+.admin-form{
+  display:grid;
+  gap:2px;
+}
+
+/* =========================================================
+   ESTADÍSTICAS
+========================================================= */
+
+.stats{
+  display:grid;
+
+  grid-template-columns:
+    repeat(3,1fr);
+
+  gap:10px;
+
+  margin-bottom:20px;
+}
+
+.stat{
+  background:#080e12;
+
+  border:1px solid #28363e;
+
+  border-radius:8px;
+
+  padding:15px;
+}
+
+.stat-label{
+  color:#718089;
+
+  font-size:10px;
+
+  letter-spacing:1.5px;
+}
+
+.stat-value{
+  margin-top:7px;
+
+  font-size:25px;
+
+  font-weight:600;
+}
+
+/* =========================================================
+   TABLAS
+========================================================= */
+
+.table-wrap{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+
+  border-collapse:collapse;
+
+  font-size:12px;
+}
+
+th,
+td{
+  padding:11px 9px;
+
+  border-bottom:1px solid #202c33;
+
+  text-align:left;
+}
+
+th{
+  color:#718089;
+
+  font-size:10px;
+
+  letter-spacing:1px;
+
+  font-weight:500;
+}
+
+td{
+  color:#c7d0d5;
+}
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+.login-shell{
+  width:min(100%,760px);
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer{
+  text-align:center;
+
+  color:#52616a;
+
+  font-size:11px;
+
+  margin-top:20px;
+
+  letter-spacing:1px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:780px){
+
+  .admin-grid{
+    grid-template-columns:1fr;
+  }
+
+}
+
+@media(max-width:600px){
+
+  .screen{
+    padding:18px 12px;
+  }
+
+  .card-body,
+  .card-head{
+    padding:20px;
+  }
+
+  .brand h1{
+    letter-spacing:4px;
+  }
+
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+  .app-header{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .chapter-card-head{
+    flex-direction:column;
+  }
+
+}
+
+</style>
 </head>
 
 <body>
 
-  <!-- =====================================================
-       LOGIN
-  ====================================================== -->
-  <main id="loginScreen" class="screen">
-    <div class="shell">
+<!-- =========================================================
+     LOGIN
+========================================================= -->
 
-      <header class="brand">
-        <div class="brand-kicker">ARCHIVO CONFIDENCIAL</div>
-        <h1>PROTOCOLO NÉMESIS</h1>
-        <div class="brand-sub">SAGA DE SUSPENSO MÉDICO E INTERACTIVO</div>
-      </header>
+<main id="loginScreen" class="screen">
 
-      <section class="card">
-        <div class="card-head">
-          <h2>Acceso al protocolo</h2>
-          <p>Ingresa con tu cuenta para continuar la investigación.</p>
+  <div class="login-shell">
+
+    <header class="brand">
+
+      <div class="brand-kicker">
+        ARCHIVO CONFIDENCIAL
+      </div>
+
+      <h1>
+        PROTOCOLO NÉMESIS
+      </h1>
+
+      <div class="brand-sub">
+        SAGA DE SUSPENSO MÉDICO E INTERACTIVO
+      </div>
+
+    </header>
+
+    <section class="card">
+
+      <div class="card-head">
+
+        <h2>
+          Acceso al protocolo
+        </h2>
+
+        <p>
+          Ingresa con tu cuenta para continuar la investigación.
+        </p>
+
+      </div>
+
+      <div class="card-body">
+
+        <div class="field">
+
+          <label for="email">
+            CORREO ELECTRÓNICO
+          </label>
+
+          <input
+            id="email"
+            type="email"
+            value="prueba@nemesis.cl"
+            autocomplete="email"
+          >
+
         </div>
 
-        <div class="card-body">
-          <div class="field">
-            <label for="email">CORREO ELECTRÓNICO</label>
-            <input id="email" type="email" value="prueba@nemesis.cl" autocomplete="email">
-          </div>
+        <div class="field">
 
-          <div class="field">
-            <label for="password">CONTRASEÑA</label>
-            <input id="password" type="password" autocomplete="current-password">
-          </div>
+          <label for="password">
+            CONTRASEÑA
+          </label>
 
-          <button id="loginButton" class="btn" type="button">
-            INICIAR SESIÓN
-          </button>
+          <input
+            id="password"
+            type="password"
+            autocomplete="current-password"
+          >
 
-          <div id="loginMessage" class="message"></div>
         </div>
-      </section>
 
-      <div class="footer">R. GALLEGUILLOS · PROYECTO NÉMESIS</div>
+        <button
+          id="loginButton"
+          class="btn"
+          type="button"
+        >
+          INICIAR SESIÓN
+        </button>
+
+        <div
+          id="loginMessage"
+          class="message"
+        ></div>
+
+      </div>
+
+    </section>
+
+    <div class="footer">
+      R. GALLEGUILLOS · PROYECTO NÉMESIS
     </div>
-  </main>
+
+  </div>
+
+</main>
 
 
-  <!-- =====================================================
-       APLICACIÓN
-  ====================================================== -->
-  <main id="appScreen" class="screen hidden">
-    <div class="shell">
+<!-- =========================================================
+     APLICACIÓN PRINCIPAL
+========================================================= -->
 
-      <header class="brand">
-        <div class="brand-kicker">ARCHIVO CONFIDENCIAL</div>
-        <h1>NÉMESIS</h1>
-        <div class="brand-sub">SAGA DE SUSPENSO MÉDICO E INTERACTIVO</div>
-      </header>
+<main id="appScreen" class="screen hidden">
 
-      <section class="card">
+  <div class="shell">
 
-        <div class="card-head">
-          <h2>Investigación activa</h2>
-          <p id="userInfo">Sesión iniciada.</p>
+    <header class="brand">
+
+      <div class="brand-kicker">
+        ARCHIVO CONFIDENCIAL
+      </div>
+
+      <h1>
+        NÉMESIS
+      </h1>
+
+      <div class="brand-sub">
+        SAGA DE SUSPENSO MÉDICO E INTERACTIVO
+      </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         CABECERA
+    ====================================================== -->
+
+    <div class="app-header">
+
+      <div class="app-header-title">
+        SISTEMA DE LECTURA
+      </div>
+
+      <div class="app-header-right">
+
+        <span
+          id="roleBadge"
+          class="badge badge-gray"
+        >
+          AUTENTICANDO
+        </span>
+
+        <button
+          id="logoutButton"
+          class="btn btn-secondary btn-small"
+          type="button"
+        >
+          CERRAR SESIÓN
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         LECTOR
+    ====================================================== -->
+
+    <section
+      id="readerView"
+      class="card hidden"
+    >
+
+      <div class="card-head">
+
+        <h2>
+          Mis capítulos
+        </h2>
+
+        <p id="readerUserInfo">
+          Sesión iniciada.
+        </p>
+
+      </div>
+
+      <div class="card-body">
+
+        <div class="userbar">
+
+          Estado de conexión:
+          <strong>autenticado</strong>
+
         </div>
 
-        <div class="card-body">
+        <div
+          id="readerMessage"
+          class="message"
+        ></div>
 
-          <div class="userbar">
-            Estado de conexión: <strong>autenticado</strong>
-          </div>
+        <div
+          id="chapterList"
+          class="chapter-list"
+        ></div>
 
-          <article class="chapter">
+      </div>
 
-            <div class="chapter-top">
-              <div class="chapter-number">CAPÍTULO 01</div>
-              <h3>El comienzo</h3>
-              <div class="chapter-sub">La primera anomalía</div>
+    </section>
+
+
+    <!-- =====================================================
+         ADMINISTRADOR
+    ====================================================== -->
+
+    <section
+      id="adminView"
+      class="card hidden"
+    >
+
+      <div class="card-head">
+
+        <h2>
+          Panel de administración
+        </h2>
+
+        <p>
+          Gestión editorial del Protocolo NÉMESIS.
+        </p>
+
+      </div>
+
+      <div class="card-body">
+
+        <div class="userbar">
+
+          Sesión administrativa:
+          <strong id="adminUserInfo"></strong>
+
+        </div>
+
+
+        <!-- ESTADÍSTICAS -->
+
+        <div class="stats">
+
+          <div class="stat">
+
+            <div class="stat-label">
+              CAPÍTULOS
             </div>
 
-            <div class="chapter-body">
+            <div
+              id="statChapters"
+              class="stat-value"
+            >
+              0
+            </div>
 
-              <div class="status">
-                <span class="dot"></span>
-                <span id="chapterStatus">Consultando progreso...</span>
+          </div>
+
+          <div class="stat">
+
+            <div class="stat-label">
+              PUBLICADOS
+            </div>
+
+            <div
+              id="statPublished"
+              class="stat-value"
+            >
+              0
+            </div>
+
+          </div>
+
+          <div class="stat">
+
+            <div class="stat-label">
+              CON CLAVE
+            </div>
+
+            <div
+              id="statKeys"
+              class="stat-value"
+            >
+              0
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div
+          id="adminMessage"
+          class="message"
+        ></div>
+
+
+        <div class="admin-grid">
+
+          <!-- =================================================
+               LISTA DE CAPÍTULOS
+          ================================================== -->
+
+          <section class="admin-section">
+
+            <div class="admin-section-head">
+
+              <h3>
+                📖 Gestión de capítulos
+              </h3>
+
+            </div>
+
+            <div
+              id="adminChapterList"
+              class="admin-section-body"
+            ></div>
+
+          </section>
+
+
+          <!-- =================================================
+               EDICIÓN
+          ================================================== -->
+
+          <section class="admin-section">
+
+            <div class="admin-section-head">
+
+              <h3>
+                ⚙️ Configuración
+              </h3>
+
+            </div>
+
+            <div class="admin-section-body">
+
+              <div
+                id="adminNoSelection"
+                style="color:#718089;font-size:13px;line-height:1.6;"
+              >
+                Selecciona un capítulo para editar
+                su configuración.
               </div>
 
-              <div class="field">
-                <label for="answer">CLAVE DE DESBLOQUEO</label>
-                <input id="answer" type="text" placeholder="Ingresa tu respuesta">
-              </div>
 
-              <button id="answerButton" class="btn" type="button">
-                VERIFICAR RESPUESTA
-              </button>
+              <div
+                id="adminEditor"
+                class="admin-form hidden"
+              >
 
-              <div id="answerMessage" class="message"></div>
+                <div class="field">
 
-              <div class="test-note">
-                Esta pantalla es una prueba técnica. Primero verificaremos
-                autenticación, progreso y desbloqueo. Después construiremos
-                la experiencia completa del libro.
+                  <label>
+                    NÚMERO
+                  </label>
+
+                  <input
+                    id="editNumero"
+                    type="number"
+                    min="1"
+                  >
+
+                </div>
+
+
+                <div class="field">
+
+                  <label>
+                    TÍTULO
+                  </label>
+
+                  <input
+                    id="editTitulo"
+                    type="text"
+                  >
+
+                </div>
+
+
+                <div class="field">
+
+                  <label>
+                    SUBTÍTULO
+                  </label>
+
+                  <input
+                    id="editSubtitulo"
+                    type="text"
+                  >
+
+                </div>
+
+
+                <div class="field">
+
+                  <label>
+                    ESTADO EDITORIAL
+                  </label>
+
+                  <select id="editEstado">
+
+                    <option value="borrador">
+                      Borrador
+                    </option>
+
+                    <option value="publicado">
+                      Publicado
+                    </option>
+
+                    <option value="oculto">
+                      Oculto
+                    </option>
+
+                  </select>
+
+                </div>
+
+
+                <div class="field">
+
+                  <label>
+                    CLAVE DE DESBLOQUEO
+                  </label>
+
+                  <input
+                    id="editClave"
+                    type="text"
+                    placeholder="Escribe la clave"
+                  >
+
+                </div>
+
+
+                <div class="field">
+
+                  <label>
+                    REQUIERE CLAVE
+                  </label>
+
+                  <select id="editRequiereClave">
+
+                    <option value="true">
+                      Sí
+                    </option>
+
+                    <option value="false">
+                      No
+                    </option>
+
+                  </select>
+
+                </div>
+
+
+                <button
+                  id="saveChapterButton"
+                  class="btn"
+                  type="button"
+                >
+                  GUARDAR CAMBIOS
+                </button>
+
+
+                <button
+                  id="publishChapterButton"
+                  class="btn btn-green"
+                  type="button"
+                >
+                  PUBLICAR CAPÍTULO
+                </button>
+
+
+                <button
+                  id="draftChapterButton"
+                  class="btn btn-secondary"
+                  type="button"
+                >
+                  PASAR A BORRADOR
+                </button>
+
+
+                <div
+                  id="editorMessage"
+                  class="message"
+                ></div>
+
               </div>
 
             </div>
-          </article>
 
-          <button id="logoutButton" class="btn" type="button"
-                  style="margin-top:14px;background:#252f35;">
-            CERRAR SESIÓN
-          </button>
+          </section>
 
         </div>
-      </section>
 
-      <div class="footer">PROTOCOLO NÉMESIS · SISTEMA DE LECTURA</div>
+
+        <!-- =================================================
+             FUTURO EDITOR DE BLOQUES
+        ================================================== -->
+
+        <section
+          class="admin-section"
+          style="margin-top:18px;"
+        >
+
+          <div class="admin-section-head">
+
+            <h3>
+              🧩 Editor de contenido
+            </h3>
+
+            <span class="badge badge-gray">
+              PRÓXIMAMENTE
+            </span>
+
+          </div>
+
+          <div class="admin-section-body">
+
+            <p
+              style="
+                margin:0;
+                color:#819098;
+                font-size:13px;
+                line-height:1.7;
+              "
+            >
+              Aquí construiremos el editor por bloques.
+              Podrás agregar y ordenar elementos como:
+            </p>
+
+            <div
+              style="
+                display:flex;
+                flex-wrap:wrap;
+                gap:7px;
+                margin-top:13px;
+              "
+            >
+
+              <span class="badge badge-blue">
+                TEXTO
+              </span>
+
+              <span class="badge badge-blue">
+                IMAGEN
+              </span>
+
+              <span class="badge badge-blue">
+                VIDEO
+              </span>
+
+              <span class="badge badge-blue">
+                PISTA
+              </span>
+
+              <span class="badge badge-blue">
+                DOCUMENTO
+              </span>
+
+              <span class="badge badge-blue">
+                DIÁLOGO
+              </span>
+
+              <span class="badge badge-blue">
+                PREGUNTA
+              </span>
+
+              <span class="badge badge-blue">
+                SEPARADOR
+              </span>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- =================================================
+             FUTUROS LECTORES
+        ================================================== -->
+
+        <section
+          class="admin-section"
+          style="margin-top:18px;"
+        >
+
+          <div class="admin-section-head">
+
+            <h3>
+              👥 Lectores
+            </h3>
+
+            <span class="badge badge-gray">
+              PRÓXIMAMENTE
+            </span>
+
+          </div>
+
+          <div class="admin-section-body">
+
+            <p
+              style="
+                margin:0;
+                color:#819098;
+                font-size:13px;
+                line-height:1.7;
+              "
+            >
+              En esta sección podrás revisar usuarios,
+              progreso por capítulo, intentos y respuestas.
+            </p>
+
+          </div>
+
+        </section>
+
+      </div>
+
+    </section>
+
+
+    <div class="footer">
+      PROTOCOLO NÉMESIS · SISTEMA DE LECTURA
     </div>
-  </main>
+
+  </div>
+
+</main>
 
 
 <script>
-  /* =========================================================
-     CONFIGURACIÓN
-  ========================================================= */
 
-  const SUPABASE_URL =
-    "https://qogoayvgkyurzugvbbkj.supabase.co";
+/* =========================================================
+   CONFIGURACIÓN SUPABASE
+========================================================= */
 
-  const SUPABASE_ANON_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvZ29heXZna3l1cnp1Z3ZiYmtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0ODcxODIsImV4cCI6MjEwNTA2MzE4Mn0.EOViV3jnDCmirsKk1kuD1u-SRjqDA7SUiLxr-J_OOIo";
+const SUPABASE_URL =
+  "https://qogoayvgkyurzugvbbkj.supabase.co";
 
-  const CAPITULO_1_ID =
-    "22ed80ad-91c4-49b8-92ed-8ece748e92d1";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvZ29heXZna3l1cnp1Z3ZiYmtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0ODcxODIsImV4cCI6MjEwNTA2MzE4Mn0.EOViV3jnDCmirsKk1kuD1u-SRjqDA7SUiLxr-J_OOIo";
 
 
-  /* =========================================================
-     CLIENTE
-  ========================================================= */
+/* =========================================================
+   CLIENTE
+========================================================= */
 
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+
+/* =========================================================
+   ELEMENTOS
+========================================================= */
+
+const loginScreen =
+  document.getElementById("loginScreen");
+
+const appScreen =
+  document.getElementById("appScreen");
+
+const loginButton =
+  document.getElementById("loginButton");
+
+const logoutButton =
+  document.getElementById("logoutButton");
+
+const loginMessage =
+  document.getElementById("loginMessage");
+
+const readerView =
+  document.getElementById("readerView");
+
+const adminView =
+  document.getElementById("adminView");
+
+const readerUserInfo =
+  document.getElementById("readerUserInfo");
+
+const adminUserInfo =
+  document.getElementById("adminUserInfo");
+
+const roleBadge =
+  document.getElementById("roleBadge");
+
+const chapterList =
+  document.getElementById("chapterList");
+
+const adminChapterList =
+  document.getElementById("adminChapterList");
+
+const adminMessage =
+  document.getElementById("adminMessage");
+
+const readerMessage =
+  document.getElementById("readerMessage");
+
+const editorMessage =
+  document.getElementById("editorMessage");
+
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+let currentUser = null;
+let currentProfile = null;
+let chaptersCache = [];
+let selectedChapter = null;
+
+
+/* =========================================================
+   MENSAJES
+========================================================= */
+
+function showMessage(
+  element,
+  text,
+  type = ""
+){
+
+  element.textContent = text;
+
+  element.className =
+    "message show " + type;
+}
+
+
+function clearMessage(element){
+
+  element.textContent = "";
+
+  element.className = "message";
+}
+
+
+/* =========================================================
+   OBTENER PERFIL
+========================================================= */
+
+async function getCurrentProfile(userId){
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("profiles")
+      .select(
+        "id,nombre,rol"
+      )
+      .eq("id", userId)
+      .maybeSingle();
+
+
+  if(error){
+
+    console.error(
+      "Error obteniendo perfil:",
+      error
+    );
+
+    throw error;
+  }
+
+
+  if(!data){
+
+    throw new Error(
+      "No existe un perfil para este usuario."
+    );
+  }
+
+
+  return data;
+}
+
+
+/* =========================================================
+   MOSTRAR APLICACIÓN
+========================================================= */
+
+async function showApp(user){
+
+  currentUser = user;
+
+  loginScreen.classList.add(
+    "hidden"
+  );
+
+  appScreen.classList.remove(
+    "hidden"
+  );
+
+
+  try{
+
+    currentProfile =
+      await getCurrentProfile(
+        user.id
+      );
+
+
+    console.log(
+      "Usuario:",
+      user.email
+    );
+
+    console.log(
+      "Perfil:",
+      currentProfile
     );
 
 
-  /* =========================================================
-     ELEMENTOS
-  ========================================================= */
+    /* =====================================================
+       ADMINISTRADOR
+    ===================================================== */
 
-  const loginScreen =
-    document.getElementById("loginScreen");
+    if(
+      currentProfile.rol ===
+      "administrador"
+    ){
 
-  const appScreen =
-    document.getElementById("appScreen");
+      roleBadge.textContent =
+        "ADMINISTRADOR";
 
-  const loginButton =
-    document.getElementById("loginButton");
+      roleBadge.className =
+        "badge badge-red";
 
-  const logoutButton =
-    document.getElementById("logoutButton");
-
-  const answerButton =
-    document.getElementById("answerButton");
-
-  const loginMessage =
-    document.getElementById("loginMessage");
-
-  const answerMessage =
-    document.getElementById("answerMessage");
-
-  const chapterStatus =
-    document.getElementById("chapterStatus");
-
-  const userInfo =
-    document.getElementById("userInfo");
-
-
-  /* =========================================================
-     MENSAJES
-  ========================================================= */
-
-  function showMessage(element, text, type = "") {
-    element.textContent = text;
-    element.className = "message show " + type;
-  }
-
-  function clearMessage(element) {
-    element.textContent = "";
-    element.className = "message";
-  }
-
-
-  /* =========================================================
-     MOSTRAR APLICACIÓN
-  ========================================================= */
-
-  async function showApp(user) {
-
-    loginScreen.classList.add("hidden");
-    appScreen.classList.remove("hidden");
-
-    userInfo.textContent =
-      "Sesión iniciada: " + user.email;
-
-    await loadProgress();
-  }
-
-
-  /* =========================================================
-     CARGAR PROGRESO
-  ========================================================= */
-
-  async function loadProgress() {
-
-    chapterStatus.textContent =
-      "Consultando progreso...";
-
-    const {
-      data: { user },
-      error: userError
-    } = await supabaseClient.auth.getUser();
-
-    if (userError || !user) {
-      chapterStatus.textContent =
-        "No se pudo identificar al usuario.";
-      return;
-    }
-
-    const { data, error } =
-      await supabaseClient
-        .from("user_chapter_progress")
-        .select("estado, fecha_inicio, fecha_completado")
-        .eq("usuario_id", user.id)
-        .eq("chapter_id", CAPITULO_1_ID)
-        .maybeSingle();
-
-    if (error) {
-
-      console.error("Error de progreso:", error);
-
-      chapterStatus.textContent =
-        "Error al consultar el progreso.";
-
-      showMessage(
-        answerMessage,
-        "Supabase respondió: " + error.message,
-        "error"
+      readerView.classList.add(
+        "hidden"
       );
+
+      adminView.classList.remove(
+        "hidden"
+      );
+
+      adminUserInfo.textContent =
+        user.email;
+
+      await loadAdminData();
 
       return;
     }
 
-    if (!data) {
 
-      chapterStatus.textContent =
-        "No existe progreso para este capítulo.";
+    /* =====================================================
+       LECTOR
+    ===================================================== */
 
-      return;
-    }
+    roleBadge.textContent =
+      "LECTOR";
 
-    chapterStatus.textContent =
-      "Estado: " + data.estado;
-  }
+    roleBadge.className =
+      "badge badge-green";
 
+    adminView.classList.add(
+      "hidden"
+    );
 
-  /* =========================================================
-     LOGIN
-  ========================================================= */
+    readerView.classList.remove(
+      "hidden"
+    );
 
-  async function login() {
+    readerUserInfo.textContent =
+      "Sesión iniciada: " +
+      user.email;
 
-    clearMessage(loginMessage);
+    await loadReaderChapters();
 
-    const email =
-      document.getElementById("email").value.trim();
+  }catch(error){
 
-    const password =
-      document.getElementById("password").value;
+    console.error(
+      "Error cargando aplicación:",
+      error
+    );
 
-    if (!email || !password) {
-
-      showMessage(
-        loginMessage,
-        "Ingresa tu correo y contraseña.",
-        "error"
-      );
-
-      return;
-    }
-
-    loginButton.disabled = true;
-    loginButton.textContent = "CONECTANDO...";
-
-    const { data, error } =
-      await supabaseClient.auth.signInWithPassword({
-        email,
-        password
-      });
-
-    if (error) {
-
-      console.error("Login error:", error);
-
-      showMessage(
-        loginMessage,
-        "Error de inicio de sesión: " + error.message,
-        "error"
-      );
-
-      loginButton.disabled = false;
-      loginButton.textContent = "INICIAR SESIÓN";
-
-      return;
-    }
-
-    await showApp(data.user);
-
-    loginButton.disabled = false;
-    loginButton.textContent = "INICIAR SESIÓN";
-  }
-
-
-  /* =========================================================
-     RESPONDER
-  ========================================================= */
-
-  async function answerChapter() {
-
-    clearMessage(answerMessage);
-
-    const answer =
-      document.getElementById("answer").value.trim();
-
-    if (!answer) {
-
-      showMessage(
-        answerMessage,
-        "Ingresa una respuesta.",
-        "error"
-      );
-
-      return;
-    }
-
-    answerButton.disabled = true;
-    answerButton.textContent = "VERIFICANDO...";
-
-    const { data, error } =
-      await supabaseClient.rpc(
-        "intentar_desbloquear_capitulo",
-        {
-          p_chapter_id: CAPITULO_1_ID,
-          p_respuesta: answer
-        }
-      );
-
-    console.log("Resultado RPC:", data);
-
-    if (error) {
-
-      console.error("RPC error:", error);
-
-      showMessage(
-        answerMessage,
-        "Error al verificar: " + error.message,
-        "error"
-      );
-
-      answerButton.disabled = false;
-      answerButton.textContent = "VERIFICAR RESPUESTA";
-
-      return;
-    }
-
-    if (data && data.correcta) {
-
-      showMessage(
-        answerMessage,
-        data.mensaje || "Respuesta correcta.",
-        "success"
-      );
-
-    } else {
-
-      showMessage(
-        answerMessage,
-        data?.mensaje || "Respuesta incorrecta.",
-        "error"
-      );
-    }
-
-    await loadProgress();
-
-    answerButton.disabled = false;
-    answerButton.textContent = "VERIFICAR RESPUESTA";
-  }
-
-
-  /* =========================================================
-     LOGOUT
-  ========================================================= */
-
-  async function logout() {
+    showMessage(
+      loginMessage,
+      "No se pudo cargar el perfil: " +
+      error.message,
+      "error"
+    );
 
     await supabaseClient.auth.signOut();
 
-    appScreen.classList.add("hidden");
-    loginScreen.classList.remove("hidden");
+    appScreen.classList.add(
+      "hidden"
+    );
 
-    document.getElementById("password").value = "";
-    clearMessage(loginMessage);
-    clearMessage(answerMessage);
+    loginScreen.classList.remove(
+      "hidden"
+    );
+  }
+}
+
+
+/* =========================================================
+   CARGAR CAPÍTULOS DEL LECTOR
+========================================================= */
+
+async function loadReaderChapters(){
+
+  clearMessage(
+    readerMessage
+  );
+
+
+  chapterList.innerHTML =
+    `
+      <div
+        style="
+          color:#718089;
+          font-size:13px;
+          padding:10px 0;
+        "
+      >
+        Cargando capítulos...
+      </div>
+    `;
+
+
+  const {
+    data: chapters,
+    error
+  } =
+    await supabaseClient
+      .from("chapters")
+      .select(
+        `
+          id,
+          book_id,
+          numero,
+          titulo,
+          subtitulo,
+          descripcion,
+          estado,
+          requiere_clave
+        `
+      )
+      .eq(
+        "estado",
+        "publicado"
+      )
+      .order(
+        "numero",
+        {
+          ascending:true
+        }
+      );
+
+
+  if(error){
+
+    console.error(
+      "Error capítulos:",
+      error
+    );
+
+    showMessage(
+      readerMessage,
+      "No se pudieron cargar los capítulos: " +
+      error.message,
+      "error"
+    );
+
+    return;
   }
 
 
-  /* =========================================================
-     EVENTOS
-  ========================================================= */
+  if(!chapters || !chapters.length){
 
-  loginButton.addEventListener("click", login);
+    chapterList.innerHTML =
+      `
+        <div
+          style="
+            color:#718089;
+            padding:20px 0;
+            font-size:13px;
+          "
+        >
+          No hay capítulos publicados.
+        </div>
+      `;
 
-  logoutButton.addEventListener("click", logout);
+    return;
+  }
 
-  answerButton.addEventListener("click", answerChapter);
+
+  const {
+    data: progress,
+    error: progressError
+  } =
+    await supabaseClient
+      .from("user_chapter_progress")
+      .select(
+        "chapter_id,estado"
+      )
+      .eq(
+        "usuario_id",
+        currentUser.id
+      );
+
+
+  if(progressError){
+
+    console.error(
+      "Error progreso:",
+      progressError
+    );
+
+    showMessage(
+      readerMessage,
+      "No se pudo consultar tu progreso: " +
+      progressError.message,
+      "error"
+    );
+
+    return;
+  }
+
+
+  const progressMap =
+    new Map();
+
+
+  (progress || []).forEach(
+    row => {
+
+      progressMap.set(
+        row.chapter_id,
+        row.estado
+      );
+
+    }
+  );
+
+
+  chapterList.innerHTML = "";
+
+
+  chapters.forEach(
+    chapter => {
+
+      const estado =
+        progressMap.get(
+          chapter.id
+        );
+
+
+      const disponible =
+        estado === "disponible" ||
+        estado === "en_progreso" ||
+        estado === "completado";
+
+
+      let badgeHtml = "";
+
+      let statusText = "";
+
+      let actionText = "";
+
+
+      if(
+        estado ===
+        "completado"
+      ){
+
+        badgeHtml =
+          `
+            <span class="badge badge-green">
+              COMPLETADO
+            </span>
+          `;
+
+        statusText =
+          "Investigación completada.";
+
+        actionText =
+          "ABRIR CAPÍTULO →";
+
+      }else if(
+        disponible
+      ){
+
+        badgeHtml =
+          `
+            <span class="badge badge-blue">
+              DISPONIBLE
+            </span>
+          `;
+
+        statusText =
+          "Capítulo disponible.";
+
+        actionText =
+          "ABRIR CAPÍTULO →";
+
+      }else{
+
+        badgeHtml =
+          `
+            <span class="badge badge-gray">
+              BLOQUEADO
+            </span>
+          `;
+
+        statusText =
+          "Completa los capítulos anteriores.";
+
+        actionText =
+          "🔒 BLOQUEADO";
+      }
+
+
+      const article =
+        document.createElement(
+          "article"
+        );
+
+
+      article.className =
+        "chapter-card " +
+        (
+          disponible
+          ? "available"
+          : ""
+        );
+
+
+      article.innerHTML =
+        `
+          <div class="chapter-card-head">
+
+            <div>
+
+              <div class="chapter-number">
+                CAPÍTULO ${String(
+                  chapter.numero
+                ).padStart(2,"0")}
+              </div>
+
+              <h3 class="chapter-title">
+                ${escapeHtml(
+                  chapter.titulo ||
+                  "Sin título"
+                )}
+              </h3>
+
+              <div class="chapter-subtitle">
+                ${escapeHtml(
+                  chapter.subtitulo ||
+                  ""
+                )}
+              </div>
+
+            </div>
+
+            <div>
+              ${badgeHtml}
+            </div>
+
+          </div>
+
+          <div class="chapter-card-body">
+
+            <div class="chapter-card-footer">
+
+              <span>
+                ${statusText}
+              </span>
+
+              <strong>
+                ${actionText}
+              </strong>
+
+            </div>
+
+          </div>
+        `;
+
+
+      if(disponible){
+
+        article.addEventListener(
+          "click",
+          function(){
+
+            /*
+              El capítulo se abrirá
+              en una nueva pestaña.
+
+              Más adelante crearemos
+              capitulo.html.
+            */
+
+            window.open(
+              "capitulo.html?id=" +
+              encodeURIComponent(
+                chapter.id
+              ),
+              "_blank"
+            );
+
+          }
+        );
+
+      }
+
+
+      chapterList.appendChild(
+        article
+      );
+
+    }
+  );
+}
+
+
+/* =========================================================
+   ADMIN — CARGAR DATOS
+========================================================= */
+
+async function loadAdminData(){
+
+  clearMessage(
+    adminMessage
+  );
+
+
+  const {
+    data: chapters,
+    error
+  } =
+    await supabaseClient
+      .from("chapters")
+      .select(
+        `
+          id,
+          book_id,
+          numero,
+          titulo,
+          subtitulo,
+          descripcion,
+          estado,
+          requiere_clave,
+          fecha_publicacion
+        `
+      )
+      .order(
+        "numero",
+        {
+          ascending:true
+        }
+      );
+
+
+  if(error){
+
+    console.error(
+      "Error admin capítulos:",
+      error
+    );
+
+    showMessage(
+      adminMessage,
+      "No se pudieron cargar los capítulos: " +
+      error.message,
+      "error"
+    );
+
+    return;
+  }
+
+
+  chaptersCache =
+    chapters || [];
+
+
+  /* =====================================================
+     CARGAR CLAVES
+  ====================================================== */
+
+  const {
+    data: keys,
+    error: keysError
+  } =
+    await supabaseClient
+      .from("chapter_unlocks")
+      .select(
+        "chapter_id,clave"
+      );
+
+
+  if(keysError){
+
+    console.error(
+      "Error claves:",
+      keysError
+    );
+
+    showMessage(
+      adminMessage,
+      "No se pudieron cargar las claves: " +
+      keysError.message,
+      "error"
+    );
+
+    return;
+  }
+
+
+  const keyMap =
+    new Map();
+
+
+  (keys || []).forEach(
+    key => {
+
+      keyMap.set(
+        key.chapter_id,
+        key.clave
+      );
+
+    }
+  );
+
+
+  renderAdminChapters(
+    keyMap
+  );
+
+
+  updateAdminStats(
+    keyMap
+  );
+}
+
+
+/* =========================================================
+   ADMIN — ESTADÍSTICAS
+========================================================= */
+
+function updateAdminStats(
+  keyMap
+){
+
+  document.getElementById(
+    "statChapters"
+  ).textContent =
+    chaptersCache.length;
+
+
+  document.getElementById(
+    "statPublished"
+  ).textContent =
+    chaptersCache.filter(
+      chapter =>
+        chapter.estado ===
+        "publicado"
+    ).length;
+
+
+  document.getElementById(
+    "statKeys"
+  ).textContent =
+    chaptersCache.filter(
+      chapter =>
+        keyMap.has(
+          chapter.id
+        )
+    ).length;
+}
+
+
+/* =========================================================
+   ADMIN — LISTA
+========================================================= */
+
+function renderAdminChapters(
+  keyMap
+){
+
+  adminChapterList.innerHTML =
+    "";
+
+
+  if(
+    !chaptersCache.length
+  ){
+
+    adminChapterList.innerHTML =
+      `
+        <div
+          style="
+            color:#718089;
+            font-size:13px;
+          "
+        >
+          No existen capítulos.
+        </div>
+      `;
+
+    return;
+  }
+
+
+  chaptersCache.forEach(
+    chapter => {
+
+      const key =
+        keyMap.get(
+          chapter.id
+        );
+
+
+      const wrapper =
+        document.createElement(
+          "div"
+        );
+
+      wrapper.className =
+        "admin-chapter";
+
+
+      let stateBadge = "";
+
+      if(
+        chapter.estado ===
+        "publicado"
+      ){
+
+        stateBadge =
+          `
+            <span class="badge badge-green">
+              PUBLICADO
+            </span>
+          `;
+
+      }else if(
+        chapter.estado ===
+        "borrador"
+      ){
+
+        stateBadge =
+          `
+            <span class="badge badge-yellow">
+              BORRADOR
+            </span>
+          `;
+
+      }else{
+
+        stateBadge =
+          `
+            <span class="badge badge-gray">
+              OCULTO
+            </span>
+          `;
+
+      }
+
+
+      const keyBadge =
+        key
+        ?
+        `
+          <span class="badge badge-blue">
+            CLAVE CONFIGURADA
+          </span>
+        `
+        :
+        `
+          <span class="badge badge-gray">
+            SIN CLAVE
+          </span>
+        `;
+
+
+      wrapper.innerHTML =
+        `
+          <div class="admin-chapter-main">
+
+            <div>
+
+              <div class="chapter-number">
+                CAPÍTULO ${String(
+                  chapter.numero
+                ).padStart(2,"0")}
+              </div>
+
+              <div class="admin-chapter-title">
+                ${escapeHtml(
+                  chapter.titulo ||
+                  "Sin título"
+                )}
+              </div>
+
+              <div class="admin-chapter-meta">
+
+                ${stateBadge}
+
+                ${keyBadge}
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="key-status">
+            ${
+              chapter.requiere_clave
+              ? "Este capítulo requiere clave."
+              : "Este capítulo no requiere clave."
+            }
+          </div>
+
+          <div class="admin-actions">
+
+            <button
+              class="btn btn-small btn-secondary"
+              type="button"
+              data-action="edit"
+            >
+              EDITAR
+            </button>
+
+            ${
+              chapter.estado ===
+              "publicado"
+
+              ?
+
+              `
+                <button
+                  class="btn btn-small btn-danger"
+                  type="button"
+                  data-action="draft"
+                >
+                  OCULTAR
+                </button>
+              `
+
+              :
+
+              `
+                <button
+                  class="btn btn-small btn-green"
+                  type="button"
+                  data-action="publish"
+                >
+                  PUBLICAR
+                </button>
+              `
+            }
+
+          </div>
+        `;
+
+
+      const editButton =
+        wrapper.querySelector(
+          '[data-action="edit"]'
+        );
+
+
+      editButton.addEventListener(
+        "click",
+        function(){
+
+          selectChapter(
+            chapter
+          );
+
+        }
+      );
+
+
+      const stateButton =
+        wrapper.querySelector(
+          '[data-action="publish"], [data-action="draft"]'
+        );
+
+
+      if(stateButton){
+
+        stateButton.addEventListener(
+          "click",
+          async function(){
+
+            if(
+              chapter.estado ===
+              "publicado"
+            ){
+
+              await changeChapterState(
+                chapter,
+                "borrador"
+              );
+
+            }else{
+
+              await changeChapterState(
+                chapter,
+                "publicado"
+              );
+
+            }
+
+          }
+        );
+
+      }
+
+
+      adminChapterList.appendChild(
+        wrapper
+      );
+
+    }
+  );
+}
+
+
+/* =========================================================
+   ADMIN — SELECCIONAR CAPÍTULO
+========================================================= */
+
+async function selectChapter(
+  chapter
+){
+
+  selectedChapter =
+    chapter;
+
 
   document
-    .getElementById("password")
-    .addEventListener("keydown", function(event) {
-      if (event.key === "Enter") {
-        login();
-      }
-    });
+    .getElementById(
+      "adminNoSelection"
+    )
+    .classList.add(
+      "hidden"
+    );
+
 
   document
-    .getElementById("answer")
-    .addEventListener("keydown", function(event) {
-      if (event.key === "Enter") {
-        answerChapter();
-      }
+    .getElementById(
+      "adminEditor"
+    )
+    .classList.remove(
+      "hidden"
+    );
+
+
+  document.getElementById(
+    "editNumero"
+  ).value =
+    chapter.numero;
+
+
+  document.getElementById(
+    "editTitulo"
+  ).value =
+    chapter.titulo || "";
+
+
+  document.getElementById(
+    "editSubtitulo"
+  ).value =
+    chapter.subtitulo || "";
+
+
+  document.getElementById(
+    "editEstado"
+  ).value =
+    chapter.estado;
+
+
+  document.getElementById(
+    "editRequiereClave"
+  ).value =
+    String(
+      chapter.requiere_clave
+    );
+
+
+  document.getElementById(
+    "editClave"
+  ).value =
+    "";
+
+
+  clearMessage(
+    editorMessage
+  );
+
+
+  /*
+    Las claves solo son visibles
+    para administradores por RLS.
+  */
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("chapter_unlocks")
+      .select(
+        "clave"
+      )
+      .eq(
+        "chapter_id",
+        chapter.id
+      )
+      .maybeSingle();
+
+
+  if(error){
+
+    console.error(
+      "Error obteniendo clave:",
+      error
+    );
+
+    return;
+  }
+
+
+  if(data){
+
+    document.getElementById(
+      "editClave"
+    ).value =
+      data.clave;
+  }
+
+
+  document
+    .getElementById(
+      "adminEditor"
+    )
+    .scrollIntoView({
+      behavior:"smooth",
+      block:"start"
     });
+}
 
 
-  /* =========================================================
-     SESIÓN EXISTENTE
-  ========================================================= */
+/* =========================================================
+   ADMIN — GUARDAR CAPÍTULO
+========================================================= */
 
-  async function checkSession() {
+async function saveChapter(){
+
+  if(!selectedChapter){
+
+    return;
+  }
+
+
+  const numero =
+    parseInt(
+      document.getElementById(
+        "editNumero"
+      ).value,
+      10
+    );
+
+
+  const titulo =
+    document.getElementById(
+      "editTitulo"
+    ).value.trim();
+
+
+  const subtitulo =
+    document.getElementById(
+      "editSubtitulo"
+    ).value.trim();
+
+
+  const estado =
+    document.getElementById(
+      "editEstado"
+    ).value;
+
+
+  const requiereClave =
+    document.getElementById(
+      "editRequiereClave"
+    ).value ===
+    "true";
+
+
+  const clave =
+    document.getElementById(
+      "editClave"
+    ).value.trim();
+
+
+  if(!numero || !titulo){
+
+    showMessage(
+      editorMessage,
+      "El número y el título son obligatorios.",
+      "error"
+    );
+
+    return;
+  }
+
+
+  /*
+    REGLA ESPECIAL DEL CAPÍTULO 1
+
+    El Capítulo 1 no requiere clave.
+  */
+
+  const requiereClaveFinal =
+    numero === 1
+      ? false
+      : requiereClave;
+
+
+  const {
+    error: chapterError
+  } =
+    await supabaseClient
+      .from("chapters")
+      .update({
+        numero:numero,
+        titulo:titulo,
+        subtitulo:subtitulo,
+        estado:estado,
+        requiere_clave:
+          requiereClaveFinal,
+        fecha_publicacion:
+          estado === "publicado"
+            ? (
+                selectedChapter.fecha_publicacion ||
+                new Date().toISOString()
+              )
+            : selectedChapter.fecha_publicacion
+      })
+      .eq(
+        "id",
+        selectedChapter.id
+      );
+
+
+  if(chapterError){
+
+    console.error(
+      "Error capítulo:",
+      chapterError
+    );
+
+    showMessage(
+      editorMessage,
+      "No se pudo guardar: " +
+      chapterError.message,
+      "error"
+    );
+
+    return;
+  }
+
+
+  /* =====================================================
+     CLAVE
+  ====================================================== */
+
+  if(
+    numero === 1 ||
+    !requiereClaveFinal
+  ){
+
+    /*
+      Si no requiere clave,
+      eliminamos cualquier clave anterior.
+    */
 
     const {
-      data: { session }
-    } = await supabaseClient.auth.getSession();
+      error: deleteError
+    } =
+      await supabaseClient
+        .from("chapter_unlocks")
+        .delete()
+        .eq(
+          "chapter_id",
+          selectedChapter.id
+        );
 
-    if (session && session.user) {
-      await showApp(session.user);
+
+    if(deleteError){
+
+      console.error(
+        "Error eliminando clave:",
+        deleteError
+      );
+
+      showMessage(
+        editorMessage,
+        "El capítulo se guardó, pero hubo un problema con la clave: " +
+        deleteError.message,
+        "error"
+      );
+
+      return;
     }
+
+  }else{
+
+    if(!clave){
+
+      showMessage(
+        editorMessage,
+        "Este capítulo requiere clave. Debes ingresar una.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    const {
+      error: keyError
+    } =
+      await supabaseClient
+        .from("chapter_unlocks")
+        .upsert(
+          {
+            chapter_id:
+              selectedChapter.id,
+
+            clave:clave,
+
+            fecha_actualizacion:
+              new Date().toISOString()
+          },
+          {
+            onConflict:
+              "chapter_id"
+          }
+        );
+
+
+    if(keyError){
+
+      console.error(
+        "Error clave:",
+        keyError
+      );
+
+      showMessage(
+        editorMessage,
+        "No se pudo guardar la clave: " +
+        keyError.message,
+        "error"
+      );
+
+      return;
+    }
+
   }
 
 
-  checkSession();
+  showMessage(
+    editorMessage,
+    "Capítulo actualizado correctamente.",
+    "success"
+  );
+
+
+  await loadAdminData();
+
+}
+
+
+/* =========================================================
+   ADMIN — CAMBIAR ESTADO
+========================================================= */
+
+async function changeChapterState(
+  chapter,
+  newState
+){
+
+  /*
+    Capítulo 1 puede publicarse,
+    pero nunca requiere clave.
+  */
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("chapters")
+      .update({
+
+        estado:newState,
+
+        requiere_clave:
+          chapter.numero === 1
+            ? false
+            : chapter.requiere_clave,
+
+        fecha_publicacion:
+          newState === "publicado"
+            ? (
+                chapter.fecha_publicacion ||
+                new Date().toISOString()
+              )
+            : chapter.fecha_publicacion
+
+      })
+      .eq(
+        "id",
+        chapter.id
+      );
+
+
+  if(error){
+
+    console.error(
+      "Error cambiando estado:",
+      error
+    );
+
+    showMessage(
+      adminMessage,
+      "No se pudo cambiar el estado: " +
+      error.message,
+      "error"
+    );
+
+    return;
+  }
+
+
+  showMessage(
+    adminMessage,
+    newState === "publicado"
+      ? "Capítulo publicado correctamente."
+      : "Capítulo pasado a borrador.",
+    "success"
+  );
+
+
+  await loadAdminData();
+}
+
+
+/* =========================================================
+   ESCAPAR HTML
+========================================================= */
+
+function escapeHtml(
+  value
+){
+
+  return String(
+    value ?? ""
+  )
+  .replace(
+    /&/g,
+    "&amp;"
+  )
+  .replace(
+    /</g,
+    "&lt;"
+  )
+  .replace(
+    />/g,
+    "&gt;"
+  )
+  .replace(
+    /"/g,
+    "&quot;"
+  )
+  .replace(
+    /'/g,
+    "&#039;"
+  );
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+async function login(){
+
+  clearMessage(
+    loginMessage
+  );
+
+
+  const email =
+    document
+      .getElementById(
+        "email"
+      )
+      .value
+      .trim();
+
+
+  const password =
+    document
+      .getElementById(
+        "password"
+      )
+      .value;
+
+
+  if(!email || !password){
+
+    showMessage(
+      loginMessage,
+      "Ingresa tu correo y contraseña.",
+      "error"
+    );
+
+    return;
+  }
+
+
+  loginButton.disabled =
+    true;
+
+  loginButton.textContent =
+    "CONECTANDO...";
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient.auth
+      .signInWithPassword({
+        email:email,
+        password:password
+      });
+
+
+  if(error){
+
+    console.error(
+      "Login error:",
+      error
+    );
+
+    showMessage(
+      loginMessage,
+      "Error de inicio de sesión: " +
+      error.message,
+      "error"
+    );
+
+    loginButton.disabled =
+      false;
+
+    loginButton.textContent =
+      "INICIAR SESIÓN";
+
+    return;
+  }
+
+
+  await showApp(
+    data.user
+  );
+
+
+  loginButton.disabled =
+    false;
+
+  loginButton.textContent =
+    "INICIAR SESIÓN";
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logout(){
+
+  await supabaseClient.auth.signOut();
+
+
+  currentUser = null;
+  currentProfile = null;
+  selectedChapter = null;
+
+
+  appScreen.classList.add(
+    "hidden"
+  );
+
+  loginScreen.classList.remove(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "password"
+  ).value = "";
+
+
+  clearMessage(
+    loginMessage
+  );
+}
+
+
+/* =========================================================
+   EVENTOS
+========================================================= */
+
+loginButton.addEventListener(
+  "click",
+  login
+);
+
+
+logoutButton.addEventListener(
+  "click",
+  logout
+);
+
+
+document
+  .getElementById(
+    "saveChapterButton"
+  )
+  .addEventListener(
+    "click",
+    saveChapter
+  );
+
+
+document
+  .getElementById(
+    "publishChapterButton"
+  )
+  .addEventListener(
+    "click",
+    async function(){
+
+      if(!selectedChapter){
+        return;
+      }
+
+      await changeChapterState(
+        selectedChapter,
+        "publicado"
+      );
+
+    }
+  );
+
+
+document
+  .getElementById(
+    "draftChapterButton"
+  )
+  .addEventListener(
+    "click",
+    async function(){
+
+      if(!selectedChapter){
+        return;
+      }
+
+      await changeChapterState(
+        selectedChapter,
+        "borrador"
+      );
+
+    }
+  );
+
+
+document
+  .getElementById(
+    "password"
+  )
+  .addEventListener(
+    "keydown",
+    function(event){
+
+      if(
+        event.key ===
+        "Enter"
+      ){
+
+        login();
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   SESIÓN EXISTENTE
+========================================================= */
+
+async function checkSession(){
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient.auth
+      .getSession();
+
+
+  if(error){
+
+    console.error(
+      "Error sesión:",
+      error
+    );
+
+    return;
+  }
+
+
+  if(
+    data.session &&
+    data.session.user
+  ){
+
+    await showApp(
+      data.session.user
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   CAMBIO DE SESIÓN
+========================================================= */
+
+supabaseClient.auth.onAuthStateChange(
+  async function(
+    event,
+    session
+  ){
+
+    if(
+      event ===
+      "SIGNED_IN" &&
+      session &&
+      session.user
+    ){
+
+      await showApp(
+        session.user
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   INICIO
+========================================================= */
+
+checkSession();
+
 </script>
 
 </body>
