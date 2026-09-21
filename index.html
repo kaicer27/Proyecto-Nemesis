@@ -251,6 +251,24 @@ button{
   background:#713032;
 }
 
+.admin-main-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.btn-danger{
+  background:#6f1d1b;
+  color:#fff;
+  border:1px solid #9b2c2c;
+}
+
+.btn-danger:hover{
+  background:#8f2424;
+}
+
 .btn-small{
   padding:9px 12px;
   font-size:12px;
@@ -969,11 +987,22 @@ button{
             </p>
           </div>
 
-          <button
-            id="newChapterButton"
-            class="btn btn-red">
-            + NUEVO CAPÍTULO
-          </button>
+          <div class="admin-main-actions">
+
+            <button
+              id="newChapterButton"
+              class="btn btn-red">
+              + NUEVO CAPÍTULO
+            </button>
+
+            <button
+              class="btn btn-secondary"
+              type="button"
+              onclick="window.location.href='seguimiento.html'">
+              SEGUIMIENTO DE LECTORES
+            </button>
+
+          </div>
 
         </div>
 
@@ -2658,6 +2687,10 @@ async function toggleChapterVisibility(
 
 
 /* =========================================================
+   ESCRIBIR
+========================================================= */
+
+/* =========================================================
    ELIMINAR CAPÍTULO
 ========================================================= */
 
@@ -2666,13 +2699,11 @@ async function deleteChapter(chapterId){
   const {
     data:chapter,
     error:chapterError
-  } =
-    await supabaseClient
-      .from("chapters")
-      .select("id,numero,titulo")
-      .eq("id",chapterId)
-      .single();
-
+  } = await supabaseClient
+    .from("chapters")
+    .select("id,numero,titulo")
+    .eq("id",chapterId)
+    .single();
 
   if(chapterError){
 
@@ -2688,53 +2719,44 @@ async function deleteChapter(chapterId){
     return;
   }
 
-
-  const confirmation =
-    confirm(
-      "¿Estás seguro de eliminar el Capítulo " +
-      chapter.numero +
-      " — " +
-      chapter.titulo +
-      "?\n\n" +
-      "Esta acción es permanente y eliminará también " +
-      "su contenido, clave, progreso e intentos asociados.\n\n" +
-      "No se puede deshacer."
-    );
-
+  const confirmation = confirm(
+    "¿Estás seguro de eliminar el Capítulo " +
+    chapter.numero +
+    " — " +
+    chapter.titulo +
+    "?\\n\\n" +
+    "Esta acción es permanente y eliminará también " +
+    "su contenido, clave, progreso e intentos asociados.\\n\\n" +
+    "No se puede deshacer."
+  );
 
   if(!confirmation){
     return;
   }
 
-
-  const secondConfirmation =
-    confirm(
-      "ÚLTIMA CONFIRMACIÓN\n\n" +
-      "Se eliminará definitivamente el Capítulo " +
-      chapter.numero +
-      " — " +
-      chapter.titulo +
-      ".\n\n" +
-      "¿Continuar?"
-    );
-
+  const secondConfirmation = confirm(
+    "ÚLTIMA CONFIRMACIÓN\\n\\n" +
+    "Se eliminará definitivamente el Capítulo " +
+    chapter.numero +
+    " — " +
+    chapter.titulo +
+    ".\\n\\n" +
+    "¿Continuar?"
+  );
 
   if(!secondConfirmation){
     return;
   }
 
-
   const {
     data,
     error
-  } =
-    await supabaseClient.rpc(
-      "eliminar_capitulo",
-      {
-        p_chapter_id: chapterId
-      }
-    );
-
+  } = await supabaseClient.rpc(
+    "eliminar_capitulo",
+    {
+      p_chapter_id: chapterId
+    }
+  );
 
   if(error){
 
@@ -2744,13 +2766,12 @@ async function deleteChapter(chapterId){
     );
 
     alert(
-      "No fue posible eliminar el capítulo:\n\n" +
+      "No fue posible eliminar el capítulo:\\n\\n" +
       error.message
     );
 
     return;
   }
-
 
   if(data && data.success === false){
 
@@ -2762,9 +2783,7 @@ async function deleteChapter(chapterId){
     return;
   }
 
-
   await loadAdminChapters();
-
 }
 
 
