@@ -1378,12 +1378,12 @@ body{
     </div>
 
 
-    <button
+    <a
         class="back-btn"
-        onclick="volverPanel()"
+        href="index.html"
     >
         ← VOLVER
-    </button>
+    </a>
 
 </header>
 
@@ -1449,13 +1449,12 @@ body{
 
         <div style="margin-top:23px;">
 
-            <button
+            <a
                 class="back-btn"
-                onclick="volverPanel()"
+                href="index.html"
             >
                 VOLVER
-
-            </button>
+            </a>
 
         </div>
 
@@ -1667,11 +1666,21 @@ const SUPABASE_ANON_KEY =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvZ29heXZna3l1cnp1Z3ZiYmtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0ODcxODIsImV4cCI6MjEwNTA2MzE4Mn0.EOViV3jnDCmirsKk1kuD1u-SRjqDA7SUiLxr-J_OOIo";
 
 
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-    );
+let supabaseClient = null;
+
+/*
+ * La navegación del lector no debe quedar bloqueada
+ * si la librería de Supabase tarda o no carga.
+ */
+if (window.supabase && typeof window.supabase.createClient === "function") {
+
+    supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_ANON_KEY
+        );
+
+}
 
 
 
@@ -1704,6 +1713,24 @@ let siguienteCapitulo = null;
 
 
 /* =========================================================
+   CONTROL DE TIEMPO
+========================================================= */
+
+function conTiempoLimite(promesa, milisegundos, mensaje){
+
+    return Promise.race([
+        promesa,
+        new Promise((resolve, reject) => {
+            setTimeout(() => {
+                reject(new Error(mensaje));
+            }, milisegundos);
+        })
+    ]);
+
+}
+
+
+/* =========================================================
    INICIO
 ========================================================= */
 
@@ -1724,6 +1751,25 @@ async function iniciarLectura(){
 
         mostrarLoading();
 
+        if(!supabaseClient){
+
+            throw new Error(
+                "No se pudo cargar la conexión con Supabase. Recarga la página e inténtalo nuevamente."
+            );
+
+        }
+
+        if(!chapterId){
+
+            mostrarError(
+                "CAPÍTULO NO ESPECIFICADO",
+                "La dirección no contiene el identificador del capítulo."
+            );
+
+            return;
+
+        }
+
 
         /*
          * Primero recuperamos la sesión.
@@ -1733,9 +1779,11 @@ async function iniciarLectura(){
             data:sessionData,
             error:sessionError
         } =
-            await supabaseClient
-                .auth
-                .getSession();
+            await conTiempoLimite(
+                supabaseClient.auth.getSession(),
+                10000,
+                "La conexión con Supabase está tardando demasiado. Comprueba tu conexión y vuelve a intentarlo."
+            );
 
 
         if(sessionError){
@@ -1802,22 +1850,6 @@ async function iniciarLectura(){
 
         perfilActual =
             perfil;
-
-
-        /*
-         * Verificar que exista capítulo.
-         */
-
-        if(!chapterId){
-
-            mostrarError(
-                "CAPÍTULO NO ESPECIFICADO",
-                "No se recibió el identificador del capítulo."
-            );
-
-            return;
-
-        }
 
 
         /*
@@ -1899,8 +1931,9 @@ async function iniciarLectura(){
 
         mostrarError(
             "ERROR AL ABRIR EL CAPÍTULO",
-            error.message ||
-            "Ocurrió un error inesperado."
+            error && error.message
+                ? error.message
+                : "Ocurrió un error inesperado."
         );
 
     }
@@ -3851,8 +3884,7 @@ function normalizar(valor){
 
 function volverPanel(){
 
-    window.location.href =
-        "index.html";
+    window.location.assign("index.html");
 
 }
 
@@ -3957,6 +3989,8 @@ function mostrarError(
    AUTH STATE
 ========================================================= */
 
+if(supabaseClient){
+
 supabaseClient.auth.onAuthStateChange(
     async (
         event,
@@ -3983,6 +4017,8 @@ supabaseClient.auth.onAuthStateChange(
 
     }
 );
+
+}
 
 </script>
 
