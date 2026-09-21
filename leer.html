@@ -3888,6 +3888,28 @@ function volverPanel(){
    LOADING
 ========================================================= */
 
+function ocultarLoading(){
+
+    const loadingScreen =
+        document.getElementById(
+            "loadingScreen"
+        );
+
+    if(loadingScreen){
+
+        loadingScreen.classList.add(
+            "hidden"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   MOSTRAR LOADING
+========================================================= */
+
 function mostrarLoading(){
 
     document
