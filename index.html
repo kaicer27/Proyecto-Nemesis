@@ -816,24 +816,17 @@ button{
             autocomplete="current-password">
         </div>
 
-<button
-  id="loginButton"
-  class="btn"
-  type="button">
-  INICIAR SESIÓN
-</button>
+        <button
+          id="loginButton"
+          class="btn"
+          type="button">
+          INICIAR SESIÓN
+        </button>
 
-<button
-  class="btn btn-secondary"
-  type="button"
-  onclick="window.location.href='registro.html'">
-  CREAR NUEVA CUENTA
-</button>
-
-<div
-  id="loginMessage"
-  class="message">
-</div>
+        <div
+          id="loginMessage"
+          class="message">
+        </div>
 
       </div>
 
@@ -1986,6 +1979,12 @@ async function loadAdminChapters(){
                 ESCRIBIR
               </button>
 
+              <button
+                class="btn btn-danger btn-small"
+                onclick="deleteChapter('${chapter.id}')">
+                ELIMINAR
+              </button>
+
             </div>
 
           </div>
@@ -2659,6 +2658,117 @@ async function toggleChapterVisibility(
 
 
 /* =========================================================
+   ELIMINAR CAPÍTULO
+========================================================= */
+
+async function deleteChapter(chapterId){
+
+  const {
+    data:chapter,
+    error:chapterError
+  } =
+    await supabaseClient
+      .from("chapters")
+      .select("id,numero,titulo")
+      .eq("id",chapterId)
+      .single();
+
+
+  if(chapterError){
+
+    console.error(
+      "Error cargando capítulo para eliminar:",
+      chapterError
+    );
+
+    alert(
+      "No fue posible identificar el capítulo."
+    );
+
+    return;
+  }
+
+
+  const confirmation =
+    confirm(
+      "¿Estás seguro de eliminar el Capítulo " +
+      chapter.numero +
+      " — " +
+      chapter.titulo +
+      "?\n\n" +
+      "Esta acción es permanente y eliminará también " +
+      "su contenido, clave, progreso e intentos asociados.\n\n" +
+      "No se puede deshacer."
+    );
+
+
+  if(!confirmation){
+    return;
+  }
+
+
+  const secondConfirmation =
+    confirm(
+      "ÚLTIMA CONFIRMACIÓN\n\n" +
+      "Se eliminará definitivamente el Capítulo " +
+      chapter.numero +
+      " — " +
+      chapter.titulo +
+      ".\n\n" +
+      "¿Continuar?"
+    );
+
+
+  if(!secondConfirmation){
+    return;
+  }
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient.rpc(
+      "eliminar_capitulo",
+      {
+        p_chapter_id: chapterId
+      }
+    );
+
+
+  if(error){
+
+    console.error(
+      "Error eliminando capítulo:",
+      error
+    );
+
+    alert(
+      "No fue posible eliminar el capítulo:\n\n" +
+      error.message
+    );
+
+    return;
+  }
+
+
+  if(data && data.success === false){
+
+    alert(
+      data.message ||
+      "No fue posible eliminar el capítulo."
+    );
+
+    return;
+  }
+
+
+  await loadAdminChapters();
+
+}
+
+
+/* =========================================================
    ESCRIBIR
 ========================================================= */
 
@@ -2873,9 +2983,11 @@ async function loadReaderChapters(){
 
 function openChapter(chapterId){
 
-    window.location.href =
-        "leer.html?id=" +
-        encodeURIComponent(chapterId);
+  window.open(
+    "capitulo.html?id=" +
+    encodeURIComponent(chapterId),
+    "_blank"
+  );
 
 }
 
