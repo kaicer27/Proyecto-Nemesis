@@ -3001,13 +3001,9 @@ async function loadReaderChapters(){
 ========================================================= */
 
 function openChapter(chapterId){
-
-  window.open(
+  window.location.href =
     "leer.html?id=" +
-    encodeURIComponent(chapterId),
-    "_blank"
-  );
-
+    encodeURIComponent(chapterId);
 }
 
 
