@@ -31,8 +31,15 @@
 body{
     min-height:100vh;
     font-family:Arial, Helvetica, sans-serif;
+
     background:
-        radial-gradient(circle at top, #17283d 0%, #07111f 45%, #030810 100%);
+        radial-gradient(
+            circle at top,
+            #17283d 0%,
+            #07111f 45%,
+            #030810 100%
+        );
+
     color:var(--texto);
 
     display:flex;
@@ -69,7 +76,9 @@ body{
 
 .card{
     background:rgba(12,24,40,.94);
+
     border:1px solid var(--borde);
+
     border-radius:18px;
 
     padding:32px;
@@ -87,9 +96,13 @@ body{
 
 .card .descripcion{
     text-align:center;
+
     color:var(--texto-sec);
+
     font-size:14px;
+
     line-height:1.5;
+
     margin-bottom:28px;
 }
 
@@ -99,21 +112,29 @@ body{
 
 .campo label{
     display:block;
+
     font-size:13px;
+
     font-weight:700;
+
     margin-bottom:8px;
+
     color:#dbe2ea;
 }
 
 .campo input{
     width:100%;
+
     padding:13px 14px;
 
     background:#07111f;
+
     border:1px solid var(--borde);
+
     border-radius:10px;
 
     color:#fff;
+
     font-size:15px;
 
     outline:none;
@@ -123,7 +144,9 @@ body{
 
 .campo input:focus{
     border-color:var(--rojo);
-    box-shadow:0 0 0 3px rgba(214,40,40,.12);
+
+    box-shadow:
+        0 0 0 3px rgba(214,40,40,.12);
 }
 
 .campo input::placeholder{
@@ -132,12 +155,15 @@ body{
 
 .btn{
     width:100%;
+
     border:none;
+
     border-radius:10px;
 
     padding:14px;
 
     font-size:15px;
+
     font-weight:800;
 
     cursor:pointer;
@@ -147,18 +173,23 @@ body{
 
 .btn-principal{
     background:var(--rojo);
+
     color:white;
+
     margin-top:5px;
 }
 
 .btn-principal:hover{
     background:#ed3030;
+
     transform:translateY(-1px);
 }
 
 .btn-principal:disabled{
     opacity:.6;
+
     cursor:not-allowed;
+
     transform:none;
 }
 
@@ -172,14 +203,18 @@ body{
     border-radius:10px;
 
     font-size:13px;
+
     line-height:1.5;
 }
 
 .mensaje.error{
     display:block;
 
-    background:rgba(214,40,40,.10);
-    border:1px solid rgba(214,40,40,.35);
+    background:
+        rgba(214,40,40,.10);
+
+    border:
+        1px solid rgba(214,40,40,.35);
 
     color:#ffb4b4;
 }
@@ -187,8 +222,11 @@ body{
 .mensaje.exito{
     display:block;
 
-    background:rgba(22,128,60,.12);
-    border:1px solid rgba(22,128,60,.4);
+    background:
+        rgba(22,128,60,.12);
+
+    border:
+        1px solid rgba(22,128,60,.4);
 
     color:#9ee6b8;
 }
@@ -197,9 +235,11 @@ body{
     margin-top:20px;
 
     font-size:12px;
+
     line-height:1.5;
 
     color:#78879a;
+
     text-align:center;
 }
 
@@ -211,6 +251,7 @@ body{
     text-align:center;
 
     color:#aab6c5;
+
     text-decoration:none;
 
     font-size:13px;
@@ -222,22 +263,29 @@ body{
 
 .separador{
     height:1px;
+
     background:var(--borde);
+
     margin:25px 0 20px;
 }
 
 .footer{
     text-align:center;
+
     margin-top:20px;
 
     color:#526174;
+
     font-size:11px;
+
     letter-spacing:1px;
 }
 
 .password-info{
     margin-top:6px;
+
     color:#657487;
+
     font-size:11px;
 }
 
@@ -249,14 +297,23 @@ body{
 <div class="container">
 
     <div class="logo">
-        <h1>PROTOCOLO NÉMESIS</h1>
-        <p>Acceso al archivo</p>
+
+        <h1>
+            PROTOCOLO NÉMESIS
+        </h1>
+
+        <p>
+            Acceso al archivo
+        </p>
+
     </div>
 
 
     <div class="card">
 
-        <h2>Crear nueva cuenta</h2>
+        <h2>
+            Crear nueva cuenta
+        </h2>
 
         <p class="descripcion">
             Regístrate para comenzar tu investigación y guardar
@@ -264,10 +321,15 @@ body{
         </p>
 
 
-        <div id="mensaje" class="mensaje"></div>
+        <div
+            id="mensaje"
+            class="mensaje">
+        </div>
 
 
         <form id="registroForm">
+
+            <!-- NOMBRE -->
 
             <div class="campo">
 
@@ -287,6 +349,8 @@ body{
             </div>
 
 
+            <!-- EMAIL -->
+
             <div class="campo">
 
                 <label for="email">
@@ -303,6 +367,8 @@ body{
 
             </div>
 
+
+            <!-- PASSWORD -->
 
             <div class="campo">
 
@@ -326,6 +392,8 @@ body{
             </div>
 
 
+            <!-- CONFIRM PASSWORD -->
+
             <div class="campo">
 
                 <label for="confirmPassword">
@@ -343,6 +411,8 @@ body{
 
             </div>
 
+
+            <!-- BOTÓN -->
 
             <button
                 type="submit"
@@ -369,13 +439,17 @@ body{
 
 
     <div class="condiciones">
+
         Al crear una cuenta podrás guardar tu progreso
         y continuar la investigación desde donde la dejaste.
+
     </div>
 
 
     <div class="footer">
+
         PROTOCOLO NÉMESIS · ARCHIVO RESTRINGIDO
+
     </div>
 
 </div>
@@ -394,7 +468,7 @@ const SUPABASE_ANON_KEY =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvZ29heXZna3l1cnp1Z3ZiYmtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0ODcxODIsImV4cCI6MjEwNTA2MzE4Mn0.EOViV3jnDCmirsKk1kuD1u-SRjqDA7SUiLxr-J_OOIo";
 
 
-const { createClient } =
+const supabaseClient =
     supabase.createClient(
         SUPABASE_URL,
         SUPABASE_ANON_KEY
@@ -445,285 +519,418 @@ function mostrarMensaje(texto, tipo){
    CREAR CUENTA
 ========================================================= */
 
-formulario.addEventListener("submit", async function(event){
+formulario.addEventListener(
+    "submit",
+    async function(event){
 
-    event.preventDefault();
-
-
-    const nombre =
-        nombreInput.value.trim();
-
-    const email =
-        emailInput.value.trim();
-
-    const password =
-        passwordInput.value;
-
-    const confirmPassword =
-        confirmPasswordInput.value;
-
-
-    /* -----------------------------------------------------
-       LIMPIAR MENSAJE
-    ----------------------------------------------------- */
-
-    mensaje.className = "mensaje";
-    mensaje.textContent = "";
-
-
-    /* -----------------------------------------------------
-       VALIDAR NOMBRE
-    ----------------------------------------------------- */
-
-    if(!nombre){
-
-        mostrarMensaje(
-            "Debes ingresar tu nombre.",
-            "error"
-        );
-
-        nombreInput.focus();
-
-        return;
-    }
-
-
-    /* -----------------------------------------------------
-       VALIDAR EMAIL
-    ----------------------------------------------------- */
-
-    if(!email){
-
-        mostrarMensaje(
-            "Debes ingresar un correo electrónico.",
-            "error"
-        );
-
-        emailInput.focus();
-
-        return;
-    }
-
-
-    /* -----------------------------------------------------
-       VALIDAR CONTRASEÑA
-    ----------------------------------------------------- */
-
-    if(password.length < 6){
-
-        mostrarMensaje(
-            "La contraseña debe tener al menos 6 caracteres.",
-            "error"
-        );
-
-        passwordInput.focus();
-
-        return;
-    }
-
-
-    /* -----------------------------------------------------
-       CONFIRMAR CONTRASEÑA
-    ----------------------------------------------------- */
-
-    if(password !== confirmPassword){
-
-        mostrarMensaje(
-            "Las contraseñas no coinciden.",
-            "error"
-        );
-
-        confirmPasswordInput.focus();
-
-        return;
-    }
-
-
-    /* -----------------------------------------------------
-       ESTADO BOTÓN
-    ----------------------------------------------------- */
-
-    btnCrearCuenta.disabled = true;
-
-    btnCrearCuenta.textContent =
-        "CREANDO CUENTA...";
-
-
-    try{
-
-        /* -------------------------------------------------
-           CREAR USUARIO EN SUPABASE AUTH
-        ------------------------------------------------- */
-
-        const { data, error } =
-            await supabase.auth.signUp({
-
-                email: email,
-
-                password: password,
-
-                options: {
-
-                    data: {
-                        nombre: nombre
-                    }
-
-                }
-
-            });
+        event.preventDefault();
 
 
         /* -------------------------------------------------
-           ERROR
+           OBTENER DATOS
         ------------------------------------------------- */
 
-        if(error){
+        const nombre =
+            nombreInput.value.trim();
 
-            console.error(
-                "Error al crear cuenta:",
-                error
-            );
+        const email =
+            emailInput.value.trim();
 
-            let textoError =
-                "No fue posible crear la cuenta.";
+        const password =
+            passwordInput.value;
 
-            if(
-                error.message &&
-                error.message.toLowerCase().includes("already registered")
-            ){
+        const confirmPassword =
+            confirmPasswordInput.value;
 
-                textoError =
-                    "Este correo ya tiene una cuenta registrada.";
 
-            }
+        /* -------------------------------------------------
+           LIMPIAR MENSAJE
+        ------------------------------------------------- */
 
-            else if(
-                error.message &&
-                error.message.toLowerCase().includes("invalid")
-            ){
+        mensaje.className =
+            "mensaje";
 
-                textoError =
-                    "El correo electrónico ingresado no es válido.";
+        mensaje.textContent =
+            "";
 
-            }
 
-            else if(
-                error.message &&
-                error.message.toLowerCase().includes("password")
-            ){
+        /* -------------------------------------------------
+           VALIDAR NOMBRE
+        ------------------------------------------------- */
 
-                textoError =
-                    "La contraseña no cumple los requisitos.";
-
-            }
-
-            else if(error.message){
-
-                textoError =
-                    error.message;
-            }
-
+        if(!nombre){
 
             mostrarMensaje(
-                textoError,
+                "Debes ingresar tu nombre.",
                 "error"
             );
 
-            btnCrearCuenta.disabled = false;
-
-            btnCrearCuenta.textContent =
-                "CREAR CUENTA";
+            nombreInput.focus();
 
             return;
         }
 
 
         /* -------------------------------------------------
-           CUENTA CREADA
+           VALIDAR EMAIL
         ------------------------------------------------- */
 
-        console.log(
-            "Usuario creado:",
-            data.user
-        );
+        if(!email){
+
+            mostrarMensaje(
+                "Debes ingresar un correo electrónico.",
+                "error"
+            );
+
+            emailInput.focus();
+
+            return;
+        }
 
 
         /* -------------------------------------------------
-           CASO 1:
-           CONFIRMACIÓN DE EMAIL ACTIVADA
+           VALIDAR CONTRASEÑA
         ------------------------------------------------- */
 
-        if(!data.session){
+        if(password.length < 6){
 
             mostrarMensaje(
-                "Cuenta creada correctamente. Revisa tu correo electrónico para confirmar tu cuenta antes de iniciar sesión.",
+                "La contraseña debe tener al menos 6 caracteres.",
+                "error"
+            );
+
+            passwordInput.focus();
+
+            return;
+        }
+
+
+        /* -------------------------------------------------
+           CONFIRMAR CONTRASEÑA
+        ------------------------------------------------- */
+
+        if(password !== confirmPassword){
+
+            mostrarMensaje(
+                "Las contraseñas no coinciden.",
+                "error"
+            );
+
+            confirmPasswordInput.focus();
+
+            return;
+        }
+
+
+        /* -------------------------------------------------
+           ESTADO DEL BOTÓN
+        ------------------------------------------------- */
+
+        btnCrearCuenta.disabled =
+            true;
+
+        btnCrearCuenta.textContent =
+            "CREANDO CUENTA...";
+
+
+        /* =================================================
+           INTENTAR CREAR CUENTA
+        ================================================= */
+
+        try{
+
+            console.log(
+                "Iniciando registro:",
+                email
+            );
+
+
+            /* ---------------------------------------------
+               CREAR USUARIO EN SUPABASE AUTH
+            --------------------------------------------- */
+
+            const resultado =
+                await supabaseClient.auth.signUp({
+
+                    email: email,
+
+                    password: password,
+
+                    options: {
+
+                        data: {
+                            nombre: nombre
+                        }
+
+                    }
+
+                });
+
+
+            const data =
+                resultado.data;
+
+            const error =
+                resultado.error;
+
+
+            /* ---------------------------------------------
+               ERROR DE SUPABASE
+            --------------------------------------------- */
+
+            if(error){
+
+                console.error(
+                    "ERROR SUPABASE:",
+                    error
+                );
+
+                console.error(
+                    "Mensaje:",
+                    error.message
+                );
+
+                console.error(
+                    "Código:",
+                    error.code
+                );
+
+                console.error(
+                    "Detalles:",
+                    error.details
+                );
+
+
+                let textoError =
+                    "No fue posible crear la cuenta.";
+
+
+                const mensajeError =
+                    (
+                        error.message || ""
+                    ).toLowerCase();
+
+
+                if(
+                    mensajeError.includes(
+                        "already registered"
+                    ) ||
+                    mensajeError.includes(
+                        "already been registered"
+                    )
+                ){
+
+                    textoError =
+                        "Este correo ya tiene una cuenta registrada.";
+
+                }
+
+                else if(
+                    mensajeError.includes(
+                        "invalid"
+                    ) &&
+                    mensajeError.includes(
+                        "email"
+                    )
+                ){
+
+                    textoError =
+                        "El correo electrónico ingresado no es válido.";
+
+                }
+
+                else if(
+                    mensajeError.includes(
+                        "password"
+                    )
+                ){
+
+                    textoError =
+                        "La contraseña no cumple los requisitos.";
+
+                }
+
+                else if(
+                    error.message
+                ){
+
+                    textoError =
+                        "Error de Supabase: " +
+                        error.message;
+
+                }
+
+
+                mostrarMensaje(
+                    textoError,
+                    "error"
+                );
+
+
+                btnCrearCuenta.disabled =
+                    false;
+
+                btnCrearCuenta.textContent =
+                    "CREAR CUENTA";
+
+
+                return;
+            }
+
+
+            /* ---------------------------------------------
+               VERIFICAR QUE SUPABASE DEVOLVIÓ USUARIO
+            --------------------------------------------- */
+
+            if(!data || !data.user){
+
+                console.error(
+                    "Supabase no devolvió un usuario:",
+                    data
+                );
+
+                mostrarMensaje(
+                    "Supabase no confirmó la creación de la cuenta. Revisa la configuración de autenticación.",
+                    "error"
+                );
+
+
+                btnCrearCuenta.disabled =
+                    false;
+
+                btnCrearCuenta.textContent =
+                    "CREAR CUENTA";
+
+
+                return;
+            }
+
+
+            /* ---------------------------------------------
+               USUARIO CREADO
+            --------------------------------------------- */
+
+            console.log(
+                "USUARIO CREADO CORRECTAMENTE:",
+                data.user
+            );
+
+
+            console.log(
+                "ID DEL USUARIO:",
+                data.user.id
+            );
+
+
+            /* =================================================
+               CASO 1
+               CONFIRMACIÓN DE EMAIL ACTIVADA
+            ================================================= */
+
+            if(!data.session){
+
+                mostrarMensaje(
+                    "Cuenta creada correctamente. Revisa tu correo electrónico para confirmar tu cuenta antes de iniciar sesión.",
+                    "exito"
+                );
+
+
+                formulario.reset();
+
+
+                btnCrearCuenta.disabled =
+                    false;
+
+                btnCrearCuenta.textContent =
+                    "CUENTA CREADA";
+
+
+                return;
+            }
+
+
+            /* =================================================
+               CASO 2
+               SESIÓN CREADA AUTOMÁTICAMENTE
+            ================================================= */
+
+            mostrarMensaje(
+                "Cuenta creada correctamente. Preparando tu acceso...",
                 "exito"
             );
 
-            formulario.reset();
-
-            btnCrearCuenta.disabled = false;
 
             btnCrearCuenta.textContent =
                 "CUENTA CREADA";
 
-            return;
+
+            /* ---------------------------------------------
+               EL TRIGGER DE SUPABASE SE ENCARGA DE:
+
+               1. Crear profiles
+               2. Asignar rol lector
+               3. Crear progreso del capítulo 1
+            --------------------------------------------- */
+
+
+            setTimeout(
+                function(){
+
+                    window.location.href =
+                        "index.html";
+
+                },
+                1200
+            );
+
         }
 
+        /* =================================================
+           ERROR INESPERADO DE JAVASCRIPT
+        ================================================= */
 
-        /* -------------------------------------------------
-           CASO 2:
-           SESIÓN CREADA AUTOMÁTICAMENTE
-        ------------------------------------------------- */
+        catch(error){
 
-        mostrarMensaje(
-            "Cuenta creada correctamente. Preparando tu acceso...",
-            "exito"
-        );
-
-
-        btnCrearCuenta.textContent =
-            "CUENTA CREADA";
+            console.error(
+                "ERROR COMPLETO:",
+                error
+            );
 
 
-        /*
-         * El trigger crear_perfil_usuario()
-         * ya se encarga de:
-         *
-         * 1. Crear profiles
-         * 2. Asignar rol lector
-         * 3. Crear progreso del capítulo 1
-         */
+            console.error(
+                "Mensaje:",
+                error?.message
+            );
 
 
-        setTimeout(function(){
-
-            window.location.href =
-                "index.html";
-
-        }, 1200);
+            console.error(
+                "Stack:",
+                error?.stack
+            );
 
 
-    }
+            const textoError =
+                error?.message ||
+                "Error desconocido";
 
-    catch (error) {
-    console.error("ERROR COMPLETO:", error);
 
-    const mensaje = error?.message || "Error desconocido";
+            mostrarMensaje(
+                "Error inesperado: " +
+                textoError,
+                "error"
+            );
 
-    mostrarMensaje(
-        "Error: " + mensaje,
-        "error"
-    );
-}
-        btnCrearCuenta.disabled = false;
 
-        btnCrearCuenta.textContent =
-            "CREAR CUENTA";
+            btnCrearCuenta.disabled =
+                false;
+
+            btnCrearCuenta.textContent =
+                "CREAR CUENTA";
+
+        }
 
     }
-
-});
+);
 
 </script>
 
