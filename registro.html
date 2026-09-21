@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Crear cuenta | PROTOCOLO NÉMESIS</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+:root{
+    --rojo:#d62828;
+    --rojo-oscuro:#8f1515;
+    --azul:#07111f;
+    --azul-2:#0c1828;
+    --azul-3:#122235;
+    --texto:#f1f4f8;
+    --texto-sec:#9da9b8;
+    --borde:#26364a;
+    --verde:#16803c;
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    min-height:100vh;
+    font-family:Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at top, #17283d 0%, #07111f 45%, #030810 100%);
+    color:var(--texto);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:30px 15px;
+}
+
+.container{
+    width:100%;
+    max-width:460px;
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:28px;
+}
+
+.logo h1{
+    font-size:30px;
+    letter-spacing:5px;
+    font-weight:800;
+    color:#ffffff;
+}
+
+.logo p{
+    margin-top:8px;
+    color:var(--texto-sec);
+    font-size:13px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+}
+
+.card{
+    background:rgba(12,24,40,.94);
+    border:1px solid var(--borde);
+    border-radius:18px;
+
+    padding:32px;
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.45),
+        inset 0 1px 0 rgba(255,255,255,.03);
+}
+
+.card h2{
+    text-align:center;
+    font-size:22px;
+    margin-bottom:8px;
+}
+
+.card .descripcion{
+    text-align:center;
+    color:var(--texto-sec);
+    font-size:14px;
+    line-height:1.5;
+    margin-bottom:28px;
+}
+
+.campo{
+    margin-bottom:18px;
+}
+
+.campo label{
+    display:block;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:8px;
+    color:#dbe2ea;
+}
+
+.campo input{
+    width:100%;
+    padding:13px 14px;
+
+    background:#07111f;
+    border:1px solid var(--borde);
+    border-radius:10px;
+
+    color:#fff;
+    font-size:15px;
+
+    outline:none;
+
+    transition:.2s;
+}
+
+.campo input:focus{
+    border-color:var(--rojo);
+    box-shadow:0 0 0 3px rgba(214,40,40,.12);
+}
+
+.campo input::placeholder{
+    color:#637083;
+}
+
+.btn{
+    width:100%;
+    border:none;
+    border-radius:10px;
+
+    padding:14px;
+
+    font-size:15px;
+    font-weight:800;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.btn-principal{
+    background:var(--rojo);
+    color:white;
+    margin-top:5px;
+}
+
+.btn-principal:hover{
+    background:#ed3030;
+    transform:translateY(-1px);
+}
+
+.btn-principal:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+    transform:none;
+}
+
+.mensaje{
+    display:none;
+
+    margin-bottom:20px;
+
+    padding:13px 14px;
+
+    border-radius:10px;
+
+    font-size:13px;
+    line-height:1.5;
+}
+
+.mensaje.error{
+    display:block;
+
+    background:rgba(214,40,40,.10);
+    border:1px solid rgba(214,40,40,.35);
+
+    color:#ffb4b4;
+}
+
+.mensaje.exito{
+    display:block;
+
+    background:rgba(22,128,60,.12);
+    border:1px solid rgba(22,128,60,.4);
+
+    color:#9ee6b8;
+}
+
+.condiciones{
+    margin-top:20px;
+
+    font-size:12px;
+    line-height:1.5;
+
+    color:#78879a;
+    text-align:center;
+}
+
+.volver{
+    display:block;
+
+    margin-top:22px;
+
+    text-align:center;
+
+    color:#aab6c5;
+    text-decoration:none;
+
+    font-size:13px;
+}
+
+.volver:hover{
+    color:white;
+}
+
+.separador{
+    height:1px;
+    background:var(--borde);
+    margin:25px 0 20px;
+}
+
+.footer{
+    text-align:center;
+    margin-top:20px;
+
+    color:#526174;
+    font-size:11px;
+    letter-spacing:1px;
+}
+
+.password-info{
+    margin-top:6px;
+    color:#657487;
+    font-size:11px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="logo">
+        <h1>PROTOCOLO NÉMESIS</h1>
+        <p>Acceso al archivo</p>
+    </div>
+
+
+    <div class="card">
+
+        <h2>Crear nueva cuenta</h2>
+
+        <p class="descripcion">
+            Regístrate para comenzar tu investigación y guardar
+            tu progreso dentro del protocolo.
+        </p>
+
+
+        <div id="mensaje" class="mensaje"></div>
+
+
+        <form id="registroForm">
+
+            <div class="campo">
+
+                <label for="nombre">
+                    Nombre
+                </label>
+
+                <input
+                    type="text"
+                    id="nombre"
+                    placeholder="Ingresa tu nombre"
+                    autocomplete="name"
+                    maxlength="100"
+                    required
+                >
+
+            </div>
+
+
+            <div class="campo">
+
+                <label for="email">
+                    Correo electrónico
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="correo@ejemplo.com"
+                    autocomplete="email"
+                    required
+                >
+
+            </div>
+
+
+            <div class="campo">
+
+                <label for="password">
+                    Contraseña
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Mínimo 6 caracteres"
+                    autocomplete="new-password"
+                    minlength="6"
+                    required
+                >
+
+                <div class="password-info">
+                    La contraseña debe tener al menos 6 caracteres.
+                </div>
+
+            </div>
+
+
+            <div class="campo">
+
+                <label for="confirmPassword">
+                    Confirmar contraseña
+                </label>
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="Repite tu contraseña"
+                    autocomplete="new-password"
+                    minlength="6"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                id="btnCrearCuenta"
+                class="btn btn-principal"
+            >
+                CREAR CUENTA
+            </button>
+
+        </form>
+
+
+        <div class="separador"></div>
+
+
+        <a
+            href="index.html"
+            class="volver"
+        >
+            ← Volver a iniciar sesión
+        </a>
+
+    </div>
+
+
+    <div class="condiciones">
+        Al crear una cuenta podrás guardar tu progreso
+        y continuar la investigación desde donde la dejaste.
+    </div>
+
+
+    <div class="footer">
+        PROTOCOLO NÉMESIS · ARCHIVO RESTRINGIDO
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   CONFIGURACIÓN SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+    "https://qogoayvgkyurzugvbbkj.supabase.co";
+
+const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvZ29heXZna3l1cnp1Z3ZiYmtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0ODcxODIsImV4cCI6MjEwNTA2MzE4Mn0.EOViV3jnDCmirsKk1kuD1u-SRjqDA7SUiLxr-J_OOIo";
+
+
+const { createClient } =
+    supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+
+/* =========================================================
+   ELEMENTOS
+========================================================= */
+
+const formulario =
+    document.getElementById("registroForm");
+
+const nombreInput =
+    document.getElementById("nombre");
+
+const emailInput =
+    document.getElementById("email");
+
+const passwordInput =
+    document.getElementById("password");
+
+const confirmPasswordInput =
+    document.getElementById("confirmPassword");
+
+const btnCrearCuenta =
+    document.getElementById("btnCrearCuenta");
+
+const mensaje =
+    document.getElementById("mensaje");
+
+
+/* =========================================================
+   MOSTRAR MENSAJE
+========================================================= */
+
+function mostrarMensaje(texto, tipo){
+
+    mensaje.textContent = texto;
+
+    mensaje.className =
+        "mensaje " + tipo;
+
+}
+
+
+/* =========================================================
+   CREAR CUENTA
+========================================================= */
+
+formulario.addEventListener("submit", async function(event){
+
+    event.preventDefault();
+
+
+    const nombre =
+        nombreInput.value.trim();
+
+    const email =
+        emailInput.value.trim();
+
+    const password =
+        passwordInput.value;
+
+    const confirmPassword =
+        confirmPasswordInput.value;
+
+
+    /* -----------------------------------------------------
+       LIMPIAR MENSAJE
+    ----------------------------------------------------- */
+
+    mensaje.className = "mensaje";
+    mensaje.textContent = "";
+
+
+    /* -----------------------------------------------------
+       VALIDAR NOMBRE
+    ----------------------------------------------------- */
+
+    if(!nombre){
+
+        mostrarMensaje(
+            "Debes ingresar tu nombre.",
+            "error"
+        );
+
+        nombreInput.focus();
+
+        return;
+    }
+
+
+    /* -----------------------------------------------------
+       VALIDAR EMAIL
+    ----------------------------------------------------- */
+
+    if(!email){
+
+        mostrarMensaje(
+            "Debes ingresar un correo electrónico.",
+            "error"
+        );
+
+        emailInput.focus();
+
+        return;
+    }
+
+
+    /* -----------------------------------------------------
+       VALIDAR CONTRASEÑA
+    ----------------------------------------------------- */
+
+    if(password.length < 6){
+
+        mostrarMensaje(
+            "La contraseña debe tener al menos 6 caracteres.",
+            "error"
+        );
+
+        passwordInput.focus();
+
+        return;
+    }
+
+
+    /* -----------------------------------------------------
+       CONFIRMAR CONTRASEÑA
+    ----------------------------------------------------- */
+
+    if(password !== confirmPassword){
+
+        mostrarMensaje(
+            "Las contraseñas no coinciden.",
+            "error"
+        );
+
+        confirmPasswordInput.focus();
+
+        return;
+    }
+
+
+    /* -----------------------------------------------------
+       ESTADO BOTÓN
+    ----------------------------------------------------- */
+
+    btnCrearCuenta.disabled = true;
+
+    btnCrearCuenta.textContent =
+        "CREANDO CUENTA...";
+
+
+    try{
+
+        /* -------------------------------------------------
+           CREAR USUARIO EN SUPABASE AUTH
+        ------------------------------------------------- */
+
+        const { data, error } =
+            await supabase.auth.signUp({
+
+                email: email,
+
+                password: password,
+
+                options: {
+
+                    data: {
+                        nombre: nombre
+                    }
+
+                }
+
+            });
+
+
+        /* -------------------------------------------------
+           ERROR
+        ------------------------------------------------- */
+
+        if(error){
+
+            console.error(
+                "Error al crear cuenta:",
+                error
+            );
+
+            let textoError =
+                "No fue posible crear la cuenta.";
+
+            if(
+                error.message &&
+                error.message.toLowerCase().includes("already registered")
+            ){
+
+                textoError =
+                    "Este correo ya tiene una cuenta registrada.";
+
+            }
+
+            else if(
+                error.message &&
+                error.message.toLowerCase().includes("invalid")
+            ){
+
+                textoError =
+                    "El correo electrónico ingresado no es válido.";
+
+            }
+
+            else if(
+                error.message &&
+                error.message.toLowerCase().includes("password")
+            ){
+
+                textoError =
+                    "La contraseña no cumple los requisitos.";
+
+            }
+
+            else if(error.message){
+
+                textoError =
+                    error.message;
+            }
+
+
+            mostrarMensaje(
+                textoError,
+                "error"
+            );
+
+            btnCrearCuenta.disabled = false;
+
+            btnCrearCuenta.textContent =
+                "CREAR CUENTA";
+
+            return;
+        }
+
+
+        /* -------------------------------------------------
+           CUENTA CREADA
+        ------------------------------------------------- */
+
+        console.log(
+            "Usuario creado:",
+            data.user
+        );
+
+
+        /* -------------------------------------------------
+           CASO 1:
+           CONFIRMACIÓN DE EMAIL ACTIVADA
+        ------------------------------------------------- */
+
+        if(!data.session){
+
+            mostrarMensaje(
+                "Cuenta creada correctamente. Revisa tu correo electrónico para confirmar tu cuenta antes de iniciar sesión.",
+                "exito"
+            );
+
+            formulario.reset();
+
+            btnCrearCuenta.disabled = false;
+
+            btnCrearCuenta.textContent =
+                "CUENTA CREADA";
+
+            return;
+        }
+
+
+        /* -------------------------------------------------
+           CASO 2:
+           SESIÓN CREADA AUTOMÁTICAMENTE
+        ------------------------------------------------- */
+
+        mostrarMensaje(
+            "Cuenta creada correctamente. Preparando tu acceso...",
+            "exito"
+        );
+
+
+        btnCrearCuenta.textContent =
+            "CUENTA CREADA";
+
+
+        /*
+         * El trigger crear_perfil_usuario()
+         * ya se encarga de:
+         *
+         * 1. Crear profiles
+         * 2. Asignar rol lector
+         * 3. Crear progreso del capítulo 1
+         */
+
+
+        setTimeout(function(){
+
+            window.location.href =
+                "index.html";
+
+        }, 1200);
+
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Error inesperado:",
+            error
+        );
+
+        mostrarMensaje(
+            "Ocurrió un error inesperado. Inténtalo nuevamente.",
+            "error"
+        );
+
+        btnCrearCuenta.disabled = false;
+
+        btnCrearCuenta.textContent =
+            "CREAR CUENTA";
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
