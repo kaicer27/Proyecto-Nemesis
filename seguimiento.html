@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -8,22 +9,17 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Seguimiento de lectores — PROTOCOLO NÉMESIS</title>
-
-    <!-- =========================================================
-         SUPABASE
-    ========================================================== -->
+    <title>
+        Seguimiento de lectores — PROTOCOLO NÉMESIS
+    </title>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
-    <!-- =========================================================
-         ESTILOS
-    ========================================================== -->
-
     <style>
 
         :root {
+
             --bg: #05070a;
             --bg-soft: #0a0e13;
             --panel: #0d1218;
@@ -42,10 +38,10 @@
             --yellow: #d4a017;
             --blue: #2563eb;
 
+            --radius: 14px;
+
             --shadow:
                 0 20px 60px rgba(0,0,0,.45);
-
-            --radius: 14px;
         }
 
 
@@ -117,12 +113,15 @@
         #loadingScreen {
 
             position: fixed;
+
             inset: 0;
 
             display: flex;
+
             flex-direction: column;
 
             align-items: center;
+
             justify-content: center;
 
             background: #05070a;
@@ -134,11 +133,14 @@
         .loading-symbol {
 
             width: 56px;
+
             height: 56px;
 
-            border: 3px solid rgba(255,255,255,.1);
+            border:
+                3px solid rgba(255,255,255,.1);
 
-            border-top-color: var(--red-bright);
+            border-top-color:
+                var(--red-bright);
 
             border-radius: 50%;
 
@@ -181,6 +183,7 @@
             display: flex;
 
             align-items: center;
+
             justify-content: center;
 
             padding: 30px;
@@ -190,6 +193,7 @@
         .access-card {
 
             width: 100%;
+
             max-width: 620px;
 
             background:
@@ -215,11 +219,13 @@
         .access-icon {
 
             width: 72px;
+
             height: 72px;
 
             display: flex;
 
             align-items: center;
+
             justify-content: center;
 
             margin: 0 auto 22px;
@@ -260,7 +266,8 @@
 
             padding: 14px;
 
-            background: rgba(220,38,38,.08);
+            background:
+                rgba(220,38,38,.08);
 
             border:
                 1px solid rgba(220,38,38,.18);
@@ -308,7 +315,7 @@
 
 
         /* =====================================================
-           APPLICATION
+           APP
         ====================================================== */
 
         #appContent {
@@ -326,6 +333,7 @@
         .topbar {
 
             position: sticky;
+
             top: 0;
 
             z-index: 100;
@@ -345,7 +353,8 @@
 
         .topbar-inner {
 
-            width: min(1400px, calc(100% - 40px));
+            width:
+                min(1400px, calc(100% - 40px));
 
             min-height: 76px;
 
@@ -374,11 +383,13 @@
         .brand-mark {
 
             width: 38px;
+
             height: 38px;
 
             display: flex;
 
             align-items: center;
+
             justify-content: center;
 
             border-radius: 8px;
@@ -444,12 +455,12 @@
             display: inline-flex;
 
             align-items: center;
+
             justify-content: center;
 
             min-height: 40px;
 
-            padding:
-                0 15px;
+            padding: 0 15px;
 
             border-radius: 9px;
 
@@ -512,10 +523,8 @@
 
         .container {
 
-            width: min(
-                1400px,
-                calc(100% - 40px)
-            );
+            width:
+                min(1400px, calc(100% - 40px));
 
             margin:
                 0 auto;
@@ -642,7 +651,7 @@
 
 
         /* =====================================================
-           SECTION
+           SECTIONS
         ====================================================== */
 
         .section {
@@ -716,7 +725,7 @@
 
             width: 100%;
 
-            min-width: 900px;
+            min-width: 1050px;
 
             border-collapse: collapse;
         }
@@ -892,7 +901,7 @@
 
         .progress-wrap {
 
-            min-width: 150px;
+            min-width: 155px;
         }
 
 
@@ -960,6 +969,71 @@
 
 
         /* =====================================================
+           ACTIVITY
+        ====================================================== */
+
+        .activity-list {
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+
+        .activity-item {
+
+            display: grid;
+
+            grid-template-columns:
+                170px 1fr auto;
+
+            gap: 20px;
+
+            align-items: center;
+
+            padding:
+                15px 22px;
+
+            border-bottom:
+                1px solid rgba(255,255,255,.055);
+        }
+
+
+        .activity-item:last-child {
+
+            border-bottom: none;
+        }
+
+
+        .activity-reader {
+
+            font-weight: 700;
+
+            color: #e5e7eb;
+
+            font-size: 12px;
+        }
+
+
+        .activity-date {
+
+            color: #65707c;
+
+            font-size: 10px;
+
+            margin-top: 3px;
+        }
+
+
+        .activity-description {
+
+            color: #aeb7c1;
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
            EMPTY
         ====================================================== */
 
@@ -995,7 +1069,7 @@
 
 
         /* =====================================================
-           DEBUG
+           ERROR / DEBUG
         ====================================================== */
 
         #debugPanel {
@@ -1060,6 +1134,15 @@
                     repeat(2, minmax(0, 1fr));
             }
 
+
+            .activity-item {
+
+                grid-template-columns:
+                    1fr;
+                
+                gap: 7px;
+            }
+
         }
 
 
@@ -1117,7 +1200,8 @@
 
             .access-card {
 
-                padding: 28px 20px;
+                padding:
+                    28px 20px;
             }
 
         }
@@ -1146,7 +1230,7 @@
 
 
     <!-- =========================================================
-         ACCESO DENEGADO
+         ACCESS DENIED
     ========================================================== -->
 
     <div
@@ -1189,7 +1273,7 @@
 
 
     <!-- =========================================================
-         APLICACIÓN
+         APP
     ========================================================== -->
 
     <div
@@ -1471,7 +1555,7 @@
 
 
             <!-- =================================================
-                 ACTIVIDAD
+                 ACTIVIDAD RECIENTE
             ================================================== -->
 
             <section class="section">
@@ -1493,22 +1577,23 @@
                 </div>
 
 
-                <div
-                    id="activityContainer"
-                    class="empty"
-                >
+                <div id="activityContainer">
 
-                    <div class="empty-icon">
-                        ◌
+                    <div class="empty">
+
+                        <div class="empty-icon">
+                            ◌
+                        </div>
+
+                        <strong>
+                            Cargando actividad...
+                        </strong>
+
+                        <span>
+                            Obteniendo últimos movimientos.
+                        </span>
+
                     </div>
-
-                    <strong>
-                        Preparando actividad...
-                    </strong>
-
-                    <span>
-                        Esta sección mostrará los últimos movimientos.
-                    </span>
 
                 </div>
 
@@ -1541,8 +1626,9 @@
 
     <script>
 
+
         /* =======================================================
-           CONFIGURACIÓN SUPABASE
+           CONFIGURACIÓN
         ======================================================== */
 
         const SUPABASE_URL =
@@ -1552,9 +1638,8 @@
         /*
          * IMPORTANTE:
          *
-         * PEGA AQUÍ EXACTAMENTE EL MISMO
-         * SUPABASE_ANON_KEY QUE FUNCIONA EN index.html
-         *
+         * PEGA AQUÍ EXACTAMENTE EL MISMO ANON KEY
+         * QUE TIENES EN index.html.
          */
 
         const SUPABASE_ANON_KEY =
@@ -1573,381 +1658,37 @@
         ======================================================== */
 
         const loadingScreen =
-            document.getElementById("loadingScreen");
-
-        const accessDenied =
-            document.getElementById("accessDenied");
-
-        const accessMessage =
-            document.getElementById("accessMessage");
-
-        const appContent =
-            document.getElementById("appContent");
-
-        const debugPanel =
-            document.getElementById("debugPanel");
-
-        const debugOutput =
-            document.getElementById("debugOutput");
-
-
-        /* =======================================================
-           DEBUG
-        ======================================================== */
-
-        function mostrarDebug(datos) {
-
-            console.log(
-                "NÉMESIS DEBUG:",
-                datos
+            document.getElementById(
+                "loadingScreen"
             );
 
-            if (debugOutput) {
+        const accessDenied =
+            document.getElementById(
+                "accessDenied"
+            );
 
-                try {
+        const accessMessage =
+            document.getElementById(
+                "accessMessage"
+            );
 
-                    debugOutput.textContent =
-                        typeof datos === "string"
-                            ? datos
-                            : JSON.stringify(
-                                datos,
-                                null,
-                                2
-                            );
-
-                } catch (error) {
-
-                    debugOutput.textContent =
-                        String(datos);
-
-                }
-
-            }
-
-        }
+        const appContent =
+            document.getElementById(
+                "appContent"
+            );
 
 
         /* =======================================================
-           OCULTAR LOADING
+           VARIABLES DE DATOS
         ======================================================== */
 
-        function ocultarLoading() {
+        let todosLosLectores = [];
 
-            if (loadingScreen) {
+        let todosLosCapitulos = [];
 
-                loadingScreen.classList.add(
-                    "hidden"
-                );
+        let todosLosProgresos = [];
 
-            }
-
-        }
-
-
-        /* =======================================================
-           MOSTRAR ACCESO DENEGADO
-        ======================================================== */
-
-        function mostrarAccesoDenegado(mensaje) {
-
-            ocultarLoading();
-
-            if (appContent) {
-
-                appContent.classList.add(
-                    "hidden"
-                );
-
-            }
-
-            if (accessDenied) {
-
-                accessDenied.classList.remove(
-                    "hidden"
-                );
-
-            }
-
-            if (accessMessage) {
-
-                accessMessage.innerHTML =
-                    mensaje;
-
-            }
-
-        }
-
-
-        /* =======================================================
-           MOSTRAR APLICACIÓN
-        ======================================================== */
-
-        function mostrarAplicacion() {
-
-            ocultarLoading();
-
-            if (accessDenied) {
-
-                accessDenied.classList.add(
-                    "hidden"
-                );
-
-            }
-
-            if (appContent) {
-
-                appContent.classList.remove(
-                    "hidden"
-                );
-
-            }
-
-        }
-
-
-        /* =======================================================
-           VERIFICAR ADMINISTRADOR
-        ======================================================== */
-
-        async function verificarAdministrador() {
-
-            try {
-
-                console.log(
-                    "================================="
-                );
-
-                console.log(
-                    "NÉMESIS — VERIFICACIÓN ADMIN"
-                );
-
-                console.log(
-                    "================================="
-                );
-
-
-                /* -------------------------------------------------
-                   1. OBTENER USUARIO AUTENTICADO
-                -------------------------------------------------- */
-
-                const {
-                    data: userData,
-                    error: userError
-                } =
-                    await supabaseClient.auth.getUser();
-
-
-                console.log(
-                    "USER DATA:",
-                    userData
-                );
-
-
-                console.log(
-                    "USER ERROR:",
-                    userError
-                );
-
-
-                if (userError) {
-
-                    throw new Error(
-                        "Error obteniendo usuario autenticado: " +
-                        userError.message
-                    );
-
-                }
-
-
-                const user =
-                    userData?.user;
-
-
-                if (!user) {
-
-                    throw new Error(
-                        "No existe una sesión autenticada."
-                    );
-
-                }
-
-
-                console.log(
-                    "Usuario autenticado:",
-                    user.email
-                );
-
-
-                console.log(
-                    "UID:",
-                    user.id
-                );
-
-
-                /* -------------------------------------------------
-                   2. CONSULTAR PROFILE
-                -------------------------------------------------- */
-
-                const {
-                    data: profile,
-                    error: profileError
-                } =
-                    await supabaseClient
-                        .from("profiles")
-                        .select(
-                            "id, nombre, rol"
-                        )
-                        .eq(
-                            "id",
-                            user.id
-                        )
-                        .maybeSingle();
-
-
-                console.log(
-                    "PROFILE:",
-                    profile
-                );
-
-
-                console.log(
-                    "PROFILE ERROR:",
-                    profileError
-                );
-
-
-                if (profileError) {
-
-                    throw new Error(
-                        "Error consultando profiles: " +
-                        profileError.message
-                    );
-
-                }
-
-
-                if (!profile) {
-
-                    throw new Error(
-                        "El usuario está autenticado, " +
-                        "pero no existe un registro correspondiente " +
-                        "en la tabla profiles."
-                    );
-
-                }
-
-
-                console.log(
-                    "Nombre:",
-                    profile.nombre
-                );
-
-
-                console.log(
-                    "Rol:",
-                    profile.rol
-                );
-
-
-                /* -------------------------------------------------
-                   3. VERIFICAR ROL
-                -------------------------------------------------- */
-
-                if (
-                    profile.rol !==
-                    "administrador"
-                ) {
-
-                    throw new Error(
-                        "El usuario está autenticado, " +
-                        "pero su rol actual es: " +
-                        profile.rol
-                    );
-
-                }
-
-
-                /* -------------------------------------------------
-                   4. ADMINISTRADOR CONFIRMADO
-                -------------------------------------------------- */
-
-                console.log(
-                    "================================="
-                );
-
-                console.log(
-                    "✅ ADMINISTRADOR VERIFICADO"
-                );
-
-                console.log(
-                    "================================="
-                );
-
-
-                mostrarDebug({
-
-                    usuario: user.email,
-
-                    uid: user.id,
-
-                    nombre: profile.nombre,
-
-                    rol: profile.rol,
-
-                    mensaje:
-                        "Administrador correctamente verificado."
-
-                });
-
-
-                /* -------------------------------------------------
-                   5. MOSTRAR APLICACIÓN
-                -------------------------------------------------- */
-
-                mostrarAplicacion();
-
-
-                /* -------------------------------------------------
-                   6. CARGAR DATOS
-                -------------------------------------------------- */
-
-                await cargarSeguimiento();
-
-
-            } catch (error) {
-
-                console.error(
-                    "❌ ERROR DE VERIFICACIÓN:",
-                    error
-                );
-
-
-                mostrarDebug({
-
-                    error:
-                        error?.message ||
-                        String(error),
-
-                    detalle:
-                        error
-
-                });
-
-
-                mostrarAccesoDenegado(
-                    `
-                    <strong>
-                        ${escapeHTML(
-                            error?.message ||
-                            "No fue posible verificar tu perfil."
-                        )}
-                    </strong>
-                    `
-                );
-
-            }
-
-        }
+        let todosLosIntentos = [];
 
 
         /* =======================================================
@@ -1984,39 +1725,265 @@
 
 
         /* =======================================================
+           FORMATEAR FECHA
+        ======================================================== */
+
+        function formatearFecha(
+            fecha
+        ) {
+
+            if (!fecha) {
+
+                return "Sin actividad";
+
+            }
+
+
+            const d =
+                new Date(fecha);
+
+
+            if (
+                Number.isNaN(
+                    d.getTime()
+                )
+            ) {
+
+                return "Sin actividad";
+
+            }
+
+
+            return d.toLocaleString(
+                "es-CL",
+                {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit"
+                }
+            );
+
+        }
+
+
+        /* =======================================================
+           OCULTAR LOADING
+        ======================================================== */
+
+        function ocultarLoading() {
+
+            if (loadingScreen) {
+
+                loadingScreen.classList.add(
+                    "hidden"
+                );
+
+            }
+
+        }
+
+
+        /* =======================================================
+           MOSTRAR APP
+        ======================================================== */
+
+        function mostrarAplicacion() {
+
+            ocultarLoading();
+
+            accessDenied.classList.add(
+                "hidden"
+            );
+
+            appContent.classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        /* =======================================================
+           MOSTRAR ERROR
+        ======================================================== */
+
+        function mostrarAccesoDenegado(
+            mensaje
+        ) {
+
+            ocultarLoading();
+
+            appContent.classList.add(
+                "hidden"
+            );
+
+            accessDenied.classList.remove(
+                "hidden"
+            );
+
+            accessMessage.innerHTML =
+                `<strong>${escapeHTML(
+                    mensaje
+                )}</strong>`;
+
+        }
+
+
+        /* =======================================================
+           VERIFICAR ADMINISTRADOR
+        ======================================================== */
+
+        async function verificarAdministrador() {
+
+            try {
+
+                console.log(
+                    "NÉMESIS: verificando administrador..."
+                );
+
+
+                const {
+                    data: userData,
+                    error: userError
+                } =
+                    await supabaseClient.auth.getUser();
+
+
+                if (userError) {
+
+                    throw new Error(
+                        "Error obteniendo usuario: " +
+                        userError.message
+                    );
+
+                }
+
+
+                const user =
+                    userData?.user;
+
+
+                if (!user) {
+
+                    throw new Error(
+                        "No existe una sesión autenticada."
+                    );
+
+                }
+
+
+                console.log(
+                    "Usuario:",
+                    user.email
+                );
+
+
+                console.log(
+                    "UID:",
+                    user.id
+                );
+
+
+                const {
+                    data: profile,
+                    error: profileError
+                } =
+                    await supabaseClient
+                        .from("profiles")
+                        .select(
+                            "id, nombre, rol"
+                        )
+                        .eq(
+                            "id",
+                            user.id
+                        )
+                        .maybeSingle();
+
+
+                if (profileError) {
+
+                    throw new Error(
+                        "Error consultando profiles: " +
+                        profileError.message
+                    );
+
+                }
+
+
+                if (!profile) {
+
+                    throw new Error(
+                        "No existe un perfil para este usuario."
+                    );
+
+                }
+
+
+                console.log(
+                    "Perfil:",
+                    profile
+                );
+
+
+                if (
+                    profile.rol !==
+                    "administrador"
+                ) {
+
+                    throw new Error(
+                        "El usuario tiene el rol: " +
+                        profile.rol
+                    );
+
+                }
+
+
+                console.log(
+                    "Administrador confirmado."
+                );
+
+
+                mostrarAplicacion();
+
+
+                await cargarSeguimiento();
+
+
+            } catch (error) {
+
+                console.error(
+                    "ERROR:",
+                    error
+                );
+
+
+                mostrarAccesoDenegado(
+                    error?.message ||
+                    "No fue posible verificar tu perfil."
+                );
+
+            }
+
+        }
+
+
+        /* =======================================================
            CARGAR SEGUIMIENTO
         ======================================================== */
 
         async function cargarSeguimiento() {
 
-            /*
-             * ESTA PARTE ES INTENCIONALMENTE SEGURA.
-             *
-             * Primero comprobamos que el acceso administrativo
-             * funciona correctamente.
-             *
-             * Luego iremos incorporando:
-             *
-             * - lectores
-             * - capítulos
-             * - progreso
-             * - intentos
-             * - actividad
-             *
-             * sin modificar la lógica existente.
-             */
-
-
             try {
 
                 console.log(
-                    "Cargando información de seguimiento..."
+                    "Cargando datos de seguimiento..."
                 );
 
 
-                /*
-                 * Obtener perfiles lectores.
-                 */
+                /* =================================================
+                   1. LECTORES
+                ================================================== */
 
                 const {
                     data: lectores,
@@ -2041,115 +2008,172 @@
 
                 if (lectoresError) {
 
-                    console.error(
-                        "Error cargando lectores:",
-                        lectoresError
-                    );
-
-                    /*
-                     * No bloqueamos el acceso administrativo.
-                     */
-
-                    mostrarDebug({
-
-                        advertencia:
-                            "Administrador verificado correctamente, " +
-                            "pero ocurrió un problema al cargar lectores.",
-
-                        error:
-                            lectoresError.message
-
-                    });
-
-                    actualizarTablaVacia(
-                        "No fue posible cargar los lectores."
-                    );
-
-                    return;
+                    throw lectoresError;
 
                 }
+
+
+                todosLosLectores =
+                    lectores || [];
+
+
+                /* =================================================
+                   2. CAPÍTULOS
+                ================================================== */
+
+                const {
+                    data: capitulos,
+                    error: capitulosError
+                } =
+                    await supabaseClient
+                        .from("chapters")
+                        .select(
+                            "id, numero, titulo, estado, book_id"
+                        )
+                        .eq(
+                            "book_id",
+                            "2351c209-9889-4bb9-91d0-0493c6214d30"
+                        )
+                        .order(
+                            "numero",
+                            {
+                                ascending: true
+                            }
+                        );
+
+
+                if (capitulosError) {
+
+                    throw capitulosError;
+
+                }
+
+
+                todosLosCapitulos =
+                    capitulos || [];
+
+
+                /* =================================================
+                   3. PROGRESO DE LECTORES
+                ================================================== */
+
+                const {
+                    data: progresos,
+                    error: progresosError
+                } =
+                    await supabaseClient
+                        .from(
+                            "user_chapter_progress"
+                        )
+                        .select(
+                            `
+                            id,
+                            usuario_id,
+                            chapter_id,
+                            estado,
+                            fecha_inicio,
+                            fecha_completado,
+                            ultimo_bloque_id,
+                            fecha_actualizacion
+                            `
+                        );
+
+
+                if (progresosError) {
+
+                    throw progresosError;
+
+                }
+
+
+                todosLosProgresos =
+                    progresos || [];
+
+
+                /* =================================================
+                   4. INTENTOS
+                ================================================== */
+
+                const {
+                    data: intentos,
+                    error: intentosError
+                } =
+                    await supabaseClient
+                        .from(
+                            "chapter_attempts"
+                        )
+                        .select(
+                            `
+                            id,
+                            usuario_id,
+                            chapter_id,
+                            respuesta_ingresada,
+                            correcta,
+                            fecha_intento
+                            `
+                        )
+                        .order(
+                            "fecha_intento",
+                            {
+                                ascending: false
+                            }
+                        );
+
+
+                if (intentosError) {
+
+                    throw intentosError;
+
+                }
+
+
+                todosLosIntentos =
+                    intentos || [];
 
 
                 console.log(
-                    "Lectores encontrados:",
-                    lectores
+                    "Lectores:",
+                    todosLosLectores
                 );
 
 
-                /*
-                 * Estadística básica.
-                 */
-
-                const totalLectores =
-                    lectores?.length || 0;
-
-
-                const statReaders =
-                    document.getElementById(
-                        "statReaders"
-                    );
-
-
-                if (statReaders) {
-
-                    statReaders.textContent =
-                        totalLectores;
-
-                }
-
-
-                /*
-                 * Por ahora dejamos las demás estadísticas
-                 * preparadas para la siguiente etapa.
-                 */
-
-                const statChapter =
-                    document.getElementById(
-                        "statChapter"
-                    );
-
-                const statProgress =
-                    document.getElementById(
-                        "statProgress"
-                    );
-
-                const statAttempts =
-                    document.getElementById(
-                        "statAttempts"
-                    );
-
-
-                if (statChapter) {
-
-                    statChapter.textContent =
-                        "—";
-
-                }
-
-
-                if (statProgress) {
-
-                    statProgress.textContent =
-                        "—";
-
-                }
-
-
-                if (statAttempts) {
-
-                    statAttempts.textContent =
-                        "—";
-
-                }
-
-
-                /*
-                 * Renderizar lectores básicos.
-                 */
-
-                renderizarLectoresBasicos(
-                    lectores || []
+                console.log(
+                    "Capítulos:",
+                    todosLosCapitulos
                 );
+
+
+                console.log(
+                    "Progresos:",
+                    todosLosProgresos
+                );
+
+
+                console.log(
+                    "Intentos:",
+                    todosLosIntentos
+                );
+
+
+                /* =================================================
+                   5. ACTUALIZAR ESTADÍSTICAS
+                ================================================== */
+
+                actualizarEstadisticas();
+
+
+                /* =================================================
+                   6. TABLA
+                ================================================== */
+
+                renderizarLectores();
+
+
+                /* =================================================
+                   7. ACTIVIDAD
+                ================================================== */
+
+                renderizarActividad();
 
 
             } catch (error) {
@@ -2159,11 +2183,47 @@
                     error
                 );
 
-                mostrarDebug({
-                    error:
-                        error?.message ||
-                        String(error)
-                });
+
+                const tbody =
+                    document.getElementById(
+                        "readersTableBody"
+                    );
+
+
+                if (tbody) {
+
+                    tbody.innerHTML = `
+
+                        <tr>
+
+                            <td colspan="7">
+
+                                <div class="empty">
+
+                                    <div class="empty-icon">
+                                        ⚠
+                                    </div>
+
+                                    <strong>
+                                        Error al cargar el seguimiento
+                                    </strong>
+
+                                    <span>
+                                        ${escapeHTML(
+                                            error?.message ||
+                                            "Error desconocido"
+                                        )}
+                                    </span>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                }
 
             }
 
@@ -2171,12 +2231,461 @@
 
 
         /* =======================================================
-           RENDERIZAR LECTORES BÁSICOS
+           OBTENER PROGRESO DE LECTOR
         ======================================================== */
 
-        function renderizarLectoresBasicos(
-            lectores
+        function obtenerProgresoLector(
+            usuarioId
         ) {
+
+            return todosLosProgresos.filter(
+                progreso =>
+                    progreso.usuario_id ===
+                    usuarioId
+            );
+
+        }
+
+
+        /* =======================================================
+           OBTENER INTENTOS DE LECTOR
+        ======================================================== */
+
+        function obtenerIntentosLector(
+            usuarioId
+        ) {
+
+            return todosLosIntentos.filter(
+                intento =>
+                    intento.usuario_id ===
+                    usuarioId
+            );
+
+        }
+
+
+        /* =======================================================
+           CAPÍTULO ACTUAL
+        ======================================================== */
+
+        function obtenerCapituloActual(
+            usuarioId
+        ) {
+
+            const progresos =
+                obtenerProgresoLector(
+                    usuarioId
+                );
+
+
+            if (!progresos.length) {
+
+                return null;
+
+            }
+
+
+            /*
+             * Primero buscamos el capítulo disponible
+             * o en progreso con mayor número.
+             */
+
+            const activos =
+                progresos
+                    .filter(
+                        p =>
+                            p.estado ===
+                                "disponible" ||
+                            p.estado ===
+                                "en_progreso"
+                    )
+                    .map(
+                        p => {
+
+                            const cap =
+                                todosLosCapitulos.find(
+                                    c =>
+                                        c.id ===
+                                        p.chapter_id
+                                );
+
+                            return {
+                                progreso: p,
+                                capitulo: cap
+                            };
+
+                        }
+                    )
+                    .filter(
+                        item =>
+                            item.capitulo
+                    )
+                    .sort(
+                        (a,b) =>
+                            b.capitulo.numero -
+                            a.capitulo.numero
+                    );
+
+
+            if (activos.length) {
+
+                return activos[0].capitulo;
+
+            }
+
+
+            /*
+             * Si no hay capítulo disponible/en progreso,
+             * buscamos el último completado.
+             */
+
+            const completados =
+                progresos
+                    .filter(
+                        p =>
+                            p.estado ===
+                            "completado"
+                    )
+                    .map(
+                        p => {
+
+                            const cap =
+                                todosLosCapitulos.find(
+                                    c =>
+                                        c.id ===
+                                        p.chapter_id
+                                );
+
+                            return cap;
+
+                        }
+                    )
+                    .filter(
+                        cap =>
+                            cap
+                    )
+                    .sort(
+                        (a,b) =>
+                            b.numero -
+                            a.numero
+                    );
+
+
+            return (
+                completados[0] ||
+                null
+            );
+
+        }
+
+
+        /* =======================================================
+           CAPÍTULOS COMPLETADOS
+        ======================================================== */
+
+        function obtenerCompletados(
+            usuarioId
+        ) {
+
+            return obtenerProgresoLector(
+                usuarioId
+            )
+            .filter(
+                p =>
+                    p.estado ===
+                    "completado"
+            )
+            .map(
+                p =>
+                    todosLosCapitulos.find(
+                        c =>
+                            c.id ===
+                            p.chapter_id
+                    )
+            )
+            .filter(
+                c =>
+                    c
+            );
+
+        }
+
+
+        /* =======================================================
+           ÚLTIMA ACTIVIDAD
+        ======================================================== */
+
+        function obtenerUltimaActividad(
+            usuarioId
+        ) {
+
+            const progresos =
+                obtenerProgresoLector(
+                    usuarioId
+                );
+
+
+            const intentos =
+                obtenerIntentosLector(
+                    usuarioId
+                );
+
+
+            const fechas = [];
+
+
+            progresos.forEach(
+                p => {
+
+                    if (
+                        p.fecha_actualizacion
+                    ) {
+
+                        fechas.push(
+                            new Date(
+                                p.fecha_actualizacion
+                            )
+                        );
+
+                    }
+
+                    if (
+                        p.fecha_completado
+                    ) {
+
+                        fechas.push(
+                            new Date(
+                                p.fecha_completado
+                            )
+                        );
+
+                    }
+
+                    if (
+                        p.fecha_inicio
+                    ) {
+
+                        fechas.push(
+                            new Date(
+                                p.fecha_inicio
+                            )
+                        );
+
+                    }
+
+                }
+            );
+
+
+            intentos.forEach(
+                i => {
+
+                    if (
+                        i.fecha_intento
+                    ) {
+
+                        fechas.push(
+                            new Date(
+                                i.fecha_intento
+                            )
+                        );
+
+                    }
+
+                }
+            );
+
+
+            if (!fechas.length) {
+
+                return null;
+
+            }
+
+
+            fechas.sort(
+                (a,b) =>
+                    b.getTime() -
+                    a.getTime()
+            );
+
+
+            return fechas[0];
+
+        }
+
+
+        /* =======================================================
+           PORCENTAJE DE AVANCE
+        ======================================================== */
+
+        function calcularPorcentaje(
+            usuarioId
+        ) {
+
+            const total =
+                todosLosCapitulos.length;
+
+
+            if (!total) {
+
+                return 0;
+
+            }
+
+
+            const completados =
+                obtenerCompletados(
+                    usuarioId
+                ).length;
+
+
+            return Math.round(
+                (
+                    completados /
+                    total
+                ) * 100
+            );
+
+        }
+
+
+        /* =======================================================
+           ACTUALIZAR ESTADÍSTICAS
+        ======================================================== */
+
+        function actualizarEstadisticas() {
+
+            const totalLectores =
+                todosLosLectores.length;
+
+
+            document.getElementById(
+                "statReaders"
+            ).textContent =
+                totalLectores;
+
+
+            /*
+             * Promedio de capítulo actual.
+             */
+
+            if (totalLectores) {
+
+                let sumaCapitulos = 0;
+
+                let lectoresConCapitulo = 0;
+
+
+                todosLosLectores.forEach(
+                    lector => {
+
+                        const capitulo =
+                            obtenerCapituloActual(
+                                lector.id
+                            );
+
+
+                        if (capitulo) {
+
+                            sumaCapitulos +=
+                                capitulo.numero;
+
+                            lectoresConCapitulo++;
+
+                        }
+
+                    }
+                );
+
+
+                if (lectoresConCapitulo) {
+
+                    const promedio =
+                        (
+                            sumaCapitulos /
+                            lectoresConCapitulo
+                        ).toFixed(1);
+
+
+                    document.getElementById(
+                        "statChapter"
+                    ).textContent =
+                        "Cap. " +
+                        promedio;
+
+                } else {
+
+                    document.getElementById(
+                        "statChapter"
+                    ).textContent =
+                        "—";
+
+                }
+
+            }
+
+
+            /*
+             * Progreso promedio.
+             */
+
+            if (totalLectores) {
+
+                let suma = 0;
+
+
+                todosLosLectores.forEach(
+                    lector => {
+
+                        suma +=
+                            calcularPorcentaje(
+                                lector.id
+                            );
+
+                    }
+                );
+
+
+                const promedio =
+                    Math.round(
+                        suma /
+                        totalLectores
+                    );
+
+
+                document.getElementById(
+                    "statProgress"
+                ).textContent =
+                    promedio + "%";
+
+            } else {
+
+                document.getElementById(
+                    "statProgress"
+                ).textContent =
+                    "0%";
+
+            }
+
+
+            /*
+             * Total de intentos.
+             */
+
+            document.getElementById(
+                "statAttempts"
+            ).textContent =
+                todosLosIntentos.length;
+
+        }
+
+
+        /* =======================================================
+           RENDERIZAR LECTORES
+        ======================================================== */
+
+        function renderizarLectores() {
 
             const tbody =
                 document.getElementById(
@@ -2185,15 +2694,41 @@
 
 
             if (!tbody) {
+
                 return;
+
             }
 
 
-            if (!lectores.length) {
+            if (!todosLosLectores.length) {
 
-                actualizarTablaVacia(
-                    "Todavía no existen lectores registrados."
-                );
+                tbody.innerHTML = `
+
+                    <tr>
+
+                        <td colspan="7">
+
+                            <div class="empty">
+
+                                <div class="empty-icon">
+                                    ◌
+                                </div>
+
+                                <strong>
+                                    No hay lectores registrados
+                                </strong>
+
+                                <span>
+                                    Todavía no existen perfiles con rol lector.
+                                </span>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                `;
 
                 return;
 
@@ -2201,122 +2736,12 @@
 
 
             tbody.innerHTML =
-                lectores
+                todosLosLectores
                     .map(
-                        lector => `
-
-                        <tr>
-
-                            <td>
-
-                                <div class="reader-name">
-
-                                    ${escapeHTML(
-                                        lector.nombre ||
-                                        "Sin nombre"
-                                    )}
-
-                                </div>
-
-                                <div class="reader-email">
-
-                                    Usuario registrado
-
-                                </div>
-
-                            </td>
-
-
-                            <td>
-
-                                <span
-                                    class="badge badge-gray"
-                                >
-                                    Pendiente
-                                </span>
-
-                            </td>
-
-
-                            <td>
-
-                                <div class="progress-wrap">
-
-                                    <div class="progress-info">
-
-                                        <span>
-                                            Sin datos
-                                        </span>
-
-                                        <span>
-                                            —
-                                        </span>
-
-                                    </div>
-
-                                    <div class="progress-bar">
-
-                                        <div
-                                            class="progress-fill"
-                                            style="width:0%"
-                                        ></div>
-
-                                    </div>
-
-                                </div>
-
-                            </td>
-
-
-                            <td>
-
-                                <span
-                                    class="badge badge-gray"
-                                >
-                                    0
-                                </span>
-
-                            </td>
-
-
-                            <td>
-
-                                <span
-                                    class="badge badge-gray"
-                                >
-                                    0
-                                </span>
-
-                            </td>
-
-
-                            <td>
-
-                                <span
-                                    class="badge badge-gray"
-                                >
-                                    —
-                                </span>
-
-                            </td>
-
-
-                            <td>
-
-                                <span
-                                    style="
-                                        color:#6f7984;
-                                        font-size:12px;
-                                    "
-                                >
-                                    Sin actividad
-                                </span>
-
-                            </td>
-
-                        </tr>
-
-                    `
+                        lector =>
+                            renderizarFilaLector(
+                                lector
+                            )
                     )
                     .join("");
 
@@ -2324,47 +2749,287 @@
 
 
         /* =======================================================
-           TABLA VACÍA
+           FILA DE LECTOR
         ======================================================== */
 
-        function actualizarTablaVacia(
-            mensaje
+        function renderizarFilaLector(
+            lector
         ) {
 
-            const tbody =
-                document.getElementById(
-                    "readersTableBody"
+            const progresos =
+                obtenerProgresoLector(
+                    lector.id
                 );
 
 
-            if (!tbody) {
-                return;
+            const intentos =
+                obtenerIntentosLector(
+                    lector.id
+                );
+
+
+            const completados =
+                obtenerCompletados(
+                    lector.id
+                );
+
+
+            const capituloActual =
+                obtenerCapituloActual(
+                    lector.id
+                );
+
+
+            const porcentaje =
+                calcularPorcentaje(
+                    lector.id
+                );
+
+
+            const ultimaActividad =
+                obtenerUltimaActividad(
+                    lector.id
+                );
+
+
+            const correctos =
+                intentos.filter(
+                    i =>
+                        i.correcta === true
+                ).length;
+
+
+            const incorrectos =
+                intentos.filter(
+                    i =>
+                        i.correcta === false
+                ).length;
+
+
+            let estadoTexto =
+                "Sin actividad";
+
+
+            let estadoClase =
+                "badge-gray";
+
+
+            if (progresos.length) {
+
+                const tieneEnProgreso =
+                    progresos.some(
+                        p =>
+                            p.estado ===
+                            "en_progreso"
+                    );
+
+
+                const tieneDisponible =
+                    progresos.some(
+                        p =>
+                            p.estado ===
+                            "disponible"
+                    );
+
+
+                if (
+                    porcentaje >= 100
+                ) {
+
+                    estadoTexto =
+                        "Completado";
+
+                    estadoClase =
+                        "badge-green";
+
+                } else if (
+                    tieneEnProgreso
+                ) {
+
+                    estadoTexto =
+                        "En progreso";
+
+                    estadoClase =
+                        "badge-blue";
+
+                } else if (
+                    tieneDisponible
+                ) {
+
+                    estadoTexto =
+                        "Disponible";
+
+                    estadoClase =
+                        "badge-yellow";
+
+                } else if (
+                    completados.length
+                ) {
+
+                    estadoTexto =
+                        "Avanzando";
+
+                    estadoClase =
+                        "badge-blue";
+
+                }
+
             }
 
 
-            tbody.innerHTML = `
+            const capituloTexto =
+                capituloActual
+                    ? `
+                        <span class="badge badge-blue">
+                            Cap. ${escapeHTML(
+                                capituloActual.numero
+                            )}
+                        </span>
+
+                        <div
+                            style="
+                                margin-top:5px;
+                                color:#78838f;
+                                font-size:10px;
+                            "
+                        >
+                            ${escapeHTML(
+                                capituloActual.titulo
+                            )}
+                        </div>
+                    `
+                    : `
+                        <span class="badge badge-gray">
+                            Sin avance
+                        </span>
+                    `;
+
+
+            return `
 
                 <tr>
 
-                    <td colspan="7">
+                    <td>
 
-                        <div class="empty">
+                        <div class="reader-name">
+                            ${escapeHTML(
+                                lector.nombre ||
+                                "Sin nombre"
+                            )}
+                        </div>
 
-                            <div class="empty-icon">
-                                ◌
+                        <div class="reader-email">
+                            Lector
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        ${capituloTexto}
+
+                    </td>
+
+
+                    <td>
+
+                        <div class="progress-wrap">
+
+                            <div class="progress-info">
+
+                                <span>
+                                    ${completados.length}
+                                    de
+                                    ${todosLosCapitulos.length}
+                                    capítulos
+                                </span>
+
+                                <span>
+                                    ${porcentaje}%
+                                </span>
+
                             </div>
 
-                            <strong>
-                                ${escapeHTML(
-                                    mensaje
-                                )}
-                            </strong>
+                            <div class="progress-bar">
 
-                            <span>
-                                El acceso administrativo continúa activo.
-                            </span>
+                                <div
+                                    class="progress-fill"
+                                    style="
+                                        width:${porcentaje}%;
+                                    "
+                                ></div>
+
+                            </div>
 
                         </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="badge badge-green">
+
+                            ${completados.length}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="badge badge-gray">
+
+                            ${intentos.length}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <span
+                            class="badge ${estadoClase}"
+                        >
+                            ${estadoTexto}
+                        </span>
+
+                        <div
+                            style="
+                                margin-top:5px;
+                                color:#65707c;
+                                font-size:10px;
+                            "
+                        >
+                            ✓ ${correctos}
+                            &nbsp;·&nbsp;
+                            ✕ ${incorrectos}
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <span
+                            style="
+                                color:#9ca3af;
+                                font-size:11px;
+                            "
+                        >
+
+                            ${
+                                ultimaActividad
+                                    ? formatearFecha(
+                                        ultimaActividad
+                                    )
+                                    : "Sin actividad"
+                            }
+
+                        </span>
 
                     </td>
 
@@ -2376,81 +3041,227 @@
 
 
         /* =======================================================
-           CERRAR SESIÓN
+           ACTIVIDAD RECIENTE
+        ======================================================== */
+
+        function renderizarActividad() {
+
+            const container =
+                document.getElementById(
+                    "activityContainer"
+                );
+
+
+            if (!container) {
+
+                return;
+
+            }
+
+
+            if (!todosLosIntentos.length) {
+
+                container.innerHTML = `
+
+                    <div class="empty">
+
+                        <div class="empty-icon">
+                            ◌
+                        </div>
+
+                        <strong>
+                            No hay intentos registrados
+                        </strong>
+
+                        <span>
+                            Todavía no se han registrado intentos de claves.
+                        </span>
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+
+            const ultimos =
+                todosLosIntentos
+                    .slice(0, 15);
+
+
+            container.innerHTML = `
+
+                <div class="activity-list">
+
+                    ${ultimos
+                        .map(
+                            intento =>
+                                renderizarActividadItem(
+                                    intento
+                                )
+                        )
+                        .join("")
+                    }
+
+                </div>
+
+            `;
+
+        }
+
+
+        /* =======================================================
+           ACTIVIDAD ITEM
+        ======================================================== */
+
+        function renderizarActividadItem(
+            intento
+        ) {
+
+            const lector =
+                todosLosLectores.find(
+                    l =>
+                        l.id ===
+                        intento.usuario_id
+                );
+
+
+            const capitulo =
+                todosLosCapitulos.find(
+                    c =>
+                        c.id ===
+                        intento.chapter_id
+                );
+
+
+            const nombre =
+                lector?.nombre ||
+                "Lector desconocido";
+
+
+            const resultado =
+                intento.correcta === true
+                    ? `
+                        <span
+                            class="badge badge-green"
+                        >
+                            ✓ CORRECTA
+                        </span>
+                    `
+                    : `
+                        <span
+                            class="badge badge-red"
+                        >
+                            ✕ INCORRECTA
+                        </span>
+                    `;
+
+
+            return `
+
+                <div class="activity-item">
+
+                    <div>
+
+                        <div class="activity-reader">
+
+                            ${escapeHTML(
+                                nombre
+                            )}
+
+                        </div>
+
+                        <div class="activity-date">
+
+                            ${formatearFecha(
+                                intento.fecha_intento
+                            )}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="activity-description">
+
+                        Intento de clave en
+
+                        <strong>
+                            ${
+                                capitulo
+                                    ? "Capítulo " +
+                                      capitulo.numero +
+                                      " — " +
+                                      escapeHTML(
+                                          capitulo.titulo
+                                      )
+                                    : "capítulo desconocido"
+                            }
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        ${resultado}
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }
+
+
+        /* =======================================================
+           LOGOUT
         ======================================================== */
 
         async function cerrarSesion() {
 
             try {
 
-                const {
-                    error
-                } =
-                    await supabaseClient
-                        .auth
-                        .signOut();
-
-
-                if (error) {
-
-                    console.error(
-                        "Error cerrando sesión:",
-                        error
-                    );
-
-                }
-
-
-                window.location.href =
-                    "index.html";
-
+                await supabaseClient
+                    .auth
+                    .signOut();
 
             } catch (error) {
 
                 console.error(
+                    "Error cerrando sesión:",
                     error
                 );
 
-                window.location.href =
-                    "index.html";
-
             }
+
+
+            window.location.href =
+                "index.html";
 
         }
 
 
-        /* =======================================================
-           EVENTO LOGOUT
-        ======================================================== */
-
-        const logoutButton =
-            document.getElementById(
+        document
+            .getElementById(
                 "logoutButton"
-            );
-
-
-        if (logoutButton) {
-
-            logoutButton.addEventListener(
+            )
+            .addEventListener(
                 "click",
                 cerrarSesion
             );
 
-        }
-
 
         /* =======================================================
-           INICIAR
+           INICIO
         ======================================================== */
 
         document.addEventListener(
             "DOMContentLoaded",
             async () => {
-
-                console.log(
-                    "NÉMESIS Seguimiento iniciado."
-                );
-
 
                 await verificarAdministrador();
 
