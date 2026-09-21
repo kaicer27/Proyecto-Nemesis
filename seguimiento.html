@@ -1,800 +1,1128 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
+    <meta charset="UTF-8">
 
-<meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    <title>Seguimiento de lectores — PROTOCOLO NÉMESIS</title>
 
-<title>Seguimiento | PROTOCOLO NÉMESIS</title>
+    <!-- =========================================================
+         SUPABASE
+    ========================================================== -->
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
-<style>
+    <!-- =========================================================
+         ESTILOS
+    ========================================================== -->
 
-/* =========================================================
-   VARIABLES
-========================================================= */
+    <style>
 
-:root{
+        :root {
+            --bg: #05070a;
+            --bg-soft: #0a0e13;
+            --panel: #0d1218;
+            --panel-2: #111820;
 
-    --rojo:#d62828;
-    --rojo-oscuro:#8f1515;
+            --border: rgba(255,255,255,.09);
+            --border-strong: rgba(255,255,255,.15);
 
-    --azul:#07111f;
-    --azul-2:#0c1828;
-    --azul-3:#122235;
+            --text: #f1f3f5;
+            --muted: #89939f;
 
-    --texto:#f1f4f8;
-    --texto-sec:#9da9b8;
+            --red: #b91c1c;
+            --red-bright: #dc2626;
 
-    --borde:#26364a;
+            --green: #16a34a;
+            --yellow: #d4a017;
+            --blue: #2563eb;
 
-    --verde:#16803c;
-    --amarillo:#f2c94c;
+            --shadow:
+                0 20px 60px rgba(0,0,0,.45);
 
-}
+            --radius: 14px;
+        }
 
 
-/* =========================================================
-   RESET
-========================================================= */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-*{
 
-    box-sizing:border-box;
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+        }
 
-    margin:0;
 
-    padding:0;
+        body {
 
-}
+            background:
+                radial-gradient(
+                    circle at top,
+                    rgba(185,28,28,.08),
+                    transparent 35%
+                ),
+                var(--bg);
 
+            color: var(--text);
 
-/* =========================================================
-   BODY
-========================================================= */
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
 
-body{
+            line-height: 1.5;
+        }
 
-    min-height:100vh;
 
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
+        button,
+        input,
+        select {
+            font: inherit;
+        }
 
-    background:
 
-        radial-gradient(
-            circle at top,
-            #17283d 0%,
-            #07111f 45%,
-            #030810 100%
-        );
+        button {
+            cursor: pointer;
+        }
 
-    color:var(--texto);
 
-}
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
 
 
-/* =========================================================
-   CONTENEDOR
-========================================================= */
+        .hidden {
+            display: none !important;
+        }
 
-.container{
 
-    width:100%;
+        /* =====================================================
+           LOADING
+        ====================================================== */
 
-    max-width:1250px;
+        #loadingScreen {
 
-    margin:0 auto;
+            position: fixed;
+            inset: 0;
 
-    padding:30px 20px 60px;
+            display: flex;
+            flex-direction: column;
 
-}
+            align-items: center;
+            justify-content: center;
 
+            background: #05070a;
 
-/* =========================================================
-   LOADING
-========================================================= */
+            z-index: 9999;
+        }
 
-#loadingScreen{
 
-    position:fixed;
+        .loading-symbol {
 
-    inset:0;
+            width: 56px;
+            height: 56px;
 
-    background:#030810;
+            border: 3px solid rgba(255,255,255,.1);
 
-    display:flex;
+            border-top-color: var(--red-bright);
 
-    justify-content:center;
+            border-radius: 50%;
 
-    align-items:center;
+            animation:
+                spin .9s linear infinite;
 
-    z-index:9999;
+            margin-bottom: 22px;
+        }
 
-    transition:.3s;
 
-}
+        @keyframes spin {
 
+            to {
+                transform: rotate(360deg);
+            }
 
-#loadingScreen.hidden{
+        }
 
-    opacity:0;
 
-    pointer-events:none;
+        .loading-title {
 
-}
+            font-size: 14px;
 
+            letter-spacing: .22em;
 
-.loading-box{
+            text-transform: uppercase;
 
-    text-align:center;
+            color: #b7bec7;
+        }
 
-}
 
+        /* =====================================================
+           ACCESS DENIED
+        ====================================================== */
 
-.loading-title{
+        #accessDenied {
 
-    font-size:25px;
+            min-height: 100vh;
 
-    font-weight:800;
+            display: flex;
 
-    letter-spacing:5px;
+            align-items: center;
+            justify-content: center;
 
-}
+            padding: 30px;
+        }
 
 
-.loading-text{
+        .access-card {
 
-    margin-top:12px;
+            width: 100%;
+            max-width: 620px;
 
-    color:var(--texto-sec);
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,.035),
+                    rgba(255,255,255,.015)
+                );
 
-    font-size:13px;
+            border:
+                1px solid rgba(220,38,38,.25);
 
-    letter-spacing:1px;
+            border-radius: 18px;
 
-}
+            padding: 42px;
 
+            text-align: center;
 
-/* =========================================================
-   ERROR / ACCESO DENEGADO
-========================================================= */
+            box-shadow: var(--shadow);
+        }
 
-#accessDenied{
 
-    display:none;
+        .access-icon {
 
-    min-height:100vh;
+            width: 72px;
+            height: 72px;
 
-    justify-content:center;
+            display: flex;
 
-    align-items:center;
+            align-items: center;
+            justify-content: center;
 
-    padding:30px;
+            margin: 0 auto 22px;
 
-}
+            border-radius: 50%;
 
+            background:
+                rgba(220,38,38,.1);
 
-.denied-card{
+            border:
+                1px solid rgba(220,38,38,.3);
 
-    width:100%;
+            color: #ef4444;
 
-    max-width:500px;
+            font-size: 30px;
+        }
 
-    background:rgba(12,24,40,.95);
 
-    border:1px solid var(--borde);
+        .access-card h1 {
 
-    border-radius:18px;
+            font-size: 25px;
 
-    padding:40px;
+            margin-bottom: 12px;
+        }
 
-    text-align:center;
 
-    box-shadow:
-        0 25px 70px rgba(0,0,0,.45);
+        .access-card p {
 
-}
+            color: var(--muted);
 
+            margin-bottom: 10px;
+        }
 
-.denied-icon{
 
-    font-size:45px;
+        .access-message {
 
-    margin-bottom:20px;
+            margin-top: 18px;
 
-}
+            padding: 14px;
 
+            background: rgba(220,38,38,.08);
 
-.denied-card h2{
+            border:
+                1px solid rgba(220,38,38,.18);
 
-    font-size:24px;
+            border-radius: 10px;
 
-    margin-bottom:12px;
+            color: #fca5a5;
 
-}
+            font-size: 13px;
 
+            word-break: break-word;
+        }
 
-.denied-card p{
 
-    color:var(--texto-sec);
+        .back-link {
 
-    line-height:1.6;
+            display: inline-flex;
 
-    font-size:14px;
+            margin-top: 24px;
 
-}
+            padding: 11px 18px;
 
+            border-radius: 9px;
 
-.denied-card .btn{
+            border:
+                1px solid var(--border-strong);
 
-    margin-top:25px;
+            background:
+                rgba(255,255,255,.035);
 
-}
+            color: #dce1e6;
 
+            transition: .2s ease;
+        }
 
-/* =========================================================
-   BOTONES
-========================================================= */
 
-.btn{
+        .back-link:hover {
 
-    display:inline-flex;
+            background:
+                rgba(255,255,255,.08);
 
-    align-items:center;
+            border-color:
+                rgba(255,255,255,.25);
+        }
 
-    justify-content:center;
 
-    gap:8px;
+        /* =====================================================
+           APPLICATION
+        ====================================================== */
 
-    border:none;
+        #appContent {
 
-    border-radius:9px;
+            min-height: 100vh;
 
-    padding:12px 18px;
+            padding-bottom: 60px;
+        }
 
-    font-size:13px;
 
-    font-weight:800;
+        /* =====================================================
+           TOPBAR
+        ====================================================== */
 
-    cursor:pointer;
+        .topbar {
 
-    text-decoration:none;
+            position: sticky;
+            top: 0;
 
-    transition:.2s;
+            z-index: 100;
 
-}
+            width: 100%;
 
+            border-bottom:
+                1px solid var(--border);
 
-.btn:hover{
+            background:
+                rgba(5,7,10,.88);
 
-    transform:translateY(-1px);
+            backdrop-filter:
+                blur(14px);
+        }
 
-}
 
+        .topbar-inner {
 
-.btn-secondary{
+            width: min(1400px, calc(100% - 40px));
 
-    background:#17283d;
+            min-height: 76px;
 
-    border:1px solid var(--borde);
+            margin: 0 auto;
 
-    color:#dbe2ea;
+            display: flex;
 
-}
+            align-items: center;
 
+            justify-content: space-between;
 
-.btn-secondary:hover{
+            gap: 20px;
+        }
 
-    background:#20334b;
 
-}
+        .brand {
 
+            display: flex;
 
-.btn-danger{
+            align-items: center;
 
-    background:var(--rojo);
+            gap: 13px;
+        }
 
-    color:white;
 
-}
+        .brand-mark {
 
+            width: 38px;
+            height: 38px;
 
-.btn-danger:hover{
+            display: flex;
 
-    background:#ed3030;
+            align-items: center;
+            justify-content: center;
 
-}
+            border-radius: 8px;
 
+            background:
+                linear-gradient(
+                    135deg,
+                    #7f1d1d,
+                    #dc2626
+                );
 
-/* =========================================================
-   HEADER
-========================================================= */
+            color: white;
 
-.topbar{
+            font-weight: 900;
 
-    display:flex;
+            font-size: 15px;
 
-    justify-content:space-between;
+            box-shadow:
+                0 6px 20px rgba(220,38,38,.2);
+        }
 
-    align-items:center;
 
-    gap:20px;
+        .brand-text strong {
 
-    padding:18px 22px;
+            display: block;
 
-    background:rgba(7,17,31,.88);
+            font-size: 14px;
 
-    border:1px solid var(--borde);
+            letter-spacing: .18em;
 
-    border-radius:14px;
+            text-transform: uppercase;
+        }
 
-    margin-bottom:30px;
 
-}
+        .brand-text span {
 
+            display: block;
 
-.brand{
+            margin-top: 2px;
 
-    display:flex;
+            color: var(--muted);
 
-    align-items:center;
+            font-size: 11px;
 
-    gap:15px;
+            letter-spacing: .08em;
 
-}
+            text-transform: uppercase;
+        }
 
 
-.brand-mark{
+        .top-actions {
 
-    width:42px;
+            display: flex;
 
-    height:42px;
+            align-items: center;
 
-    border-radius:10px;
+            gap: 10px;
+        }
 
-    background:var(--rojo);
 
-    display:flex;
+        .btn {
 
-    justify-content:center;
+            display: inline-flex;
 
-    align-items:center;
+            align-items: center;
+            justify-content: center;
 
-    font-size:18px;
+            min-height: 40px;
 
-    font-weight:900;
+            padding:
+                0 15px;
 
-}
+            border-radius: 9px;
 
+            border:
+                1px solid var(--border-strong);
 
-.brand-text h1{
+            background:
+                rgba(255,255,255,.035);
 
-    font-size:18px;
+            color: #e5e7eb;
 
-    letter-spacing:3px;
+            font-size: 12px;
 
-}
+            font-weight: 700;
 
+            letter-spacing: .04em;
 
-.brand-text p{
+            transition: .2s ease;
+        }
 
-    margin-top:4px;
 
-    font-size:11px;
+        .btn:hover {
 
-    color:var(--texto-sec);
+            background:
+                rgba(255,255,255,.08);
 
-    letter-spacing:1px;
+            border-color:
+                rgba(255,255,255,.25);
 
-}
+            transform:
+                translateY(-1px);
+        }
 
 
-.topbar-actions{
+        .btn-danger {
 
-    display:flex;
+            border-color:
+                rgba(220,38,38,.3);
 
-    gap:10px;
+            background:
+                rgba(220,38,38,.08);
 
-    flex-wrap:wrap;
+            color: #fca5a5;
+        }
 
-}
 
+        .btn-danger:hover {
 
-/* =========================================================
-   TITULO
-========================================================= */
+            background:
+                rgba(220,38,38,.16);
 
-.page-header{
+            border-color:
+                rgba(220,38,38,.5);
+        }
 
-    margin-bottom:28px;
 
-}
+        /* =====================================================
+           MAIN
+        ====================================================== */
 
+        .container {
 
-.page-label{
+            width: min(
+                1400px,
+                calc(100% - 40px)
+            );
 
-    color:var(--rojo);
+            margin:
+                0 auto;
+        }
 
-    font-size:11px;
 
-    font-weight:800;
+        .page-header {
 
-    letter-spacing:2px;
+            padding:
+                45px 0 30px;
+        }
 
-    text-transform:uppercase;
 
-    margin-bottom:8px;
+        .eyebrow {
 
-}
+            color: #ef4444;
 
+            font-size: 11px;
 
-.page-header h2{
+            font-weight: 800;
 
-    font-size:30px;
+            letter-spacing: .2em;
 
-    margin-bottom:8px;
+            text-transform: uppercase;
 
-}
+            margin-bottom: 9px;
+        }
 
 
-.page-header p{
+        .page-header h1 {
 
-    color:var(--texto-sec);
+            font-size:
+                clamp(28px, 4vw, 42px);
 
-    font-size:14px;
+            line-height: 1.1;
 
-    line-height:1.5;
+            margin-bottom: 10px;
+        }
 
-}
 
+        .page-header p {
 
-/* =========================================================
-   CARDS DE RESUMEN
-========================================================= */
+            max-width: 760px;
 
-.stats-grid{
+            color: var(--muted);
 
-    display:grid;
+            font-size: 14px;
+        }
 
-    grid-template-columns:
-        repeat(4, 1fr);
 
-    gap:15px;
+        /* =====================================================
+           STATS
+        ====================================================== */
 
-    margin-bottom:30px;
+        .stats-grid {
 
-}
+            display: grid;
 
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
 
-.stat-card{
+            gap: 14px;
 
-    background:rgba(12,24,40,.94);
+            margin-bottom: 28px;
+        }
 
-    border:1px solid var(--borde);
 
-    border-radius:14px;
+        .stat-card {
 
-    padding:22px;
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,.035),
+                    rgba(255,255,255,.015)
+                );
 
-}
+            border:
+                1px solid var(--border);
 
+            border-radius:
+                var(--radius);
 
-.stat-label{
+            padding: 22px;
 
-    color:var(--texto-sec);
+            box-shadow:
+                0 10px 30px rgba(0,0,0,.18);
+        }
 
-    font-size:11px;
 
-    letter-spacing:1px;
+        .stat-label {
 
-    text-transform:uppercase;
+            color: var(--muted);
 
-}
+            font-size: 11px;
 
+            font-weight: 700;
 
-.stat-value{
+            letter-spacing: .12em;
 
-    margin-top:10px;
+            text-transform: uppercase;
 
-    font-size:30px;
+            margin-bottom: 9px;
+        }
 
-    font-weight:800;
 
-}
+        .stat-value {
 
+            font-size: 30px;
 
-.stat-description{
+            font-weight: 800;
 
-    margin-top:6px;
+            line-height: 1.1;
+        }
 
-    color:#687789;
 
-    font-size:11px;
+        .stat-sub {
 
-}
+            margin-top: 6px;
 
+            color: #65707c;
 
-/* =========================================================
-   SECCION
-========================================================= */
+            font-size: 11px;
+        }
 
-.section{
 
-    background:rgba(12,24,40,.94);
+        /* =====================================================
+           SECTION
+        ====================================================== */
 
-    border:1px solid var(--borde);
+        .section {
 
-    border-radius:16px;
+            margin-top: 25px;
 
-    overflow:hidden;
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,.025),
+                    rgba(255,255,255,.012)
+                );
 
-    margin-bottom:25px;
+            border:
+                1px solid var(--border);
 
-}
+            border-radius:
+                var(--radius);
 
+            overflow: hidden;
+        }
 
-.section-header{
 
-    padding:20px 22px;
+        .section-header {
 
-    border-bottom:1px solid var(--borde);
+            display: flex;
 
-}
+            align-items: center;
 
+            justify-content: space-between;
 
-.section-header h3{
+            gap: 20px;
 
-    font-size:17px;
+            padding:
+                20px 22px;
 
-}
+            border-bottom:
+                1px solid var(--border);
+        }
 
 
-.section-header p{
+        .section-title h2 {
 
-    margin-top:5px;
+            font-size: 17px;
 
-    color:var(--texto-sec);
+            margin-bottom: 3px;
+        }
 
-    font-size:12px;
 
-}
+        .section-title p {
 
+            color: var(--muted);
 
-/* =========================================================
-   TABLA PREPARADA
-========================================================= */
+            font-size: 12px;
+        }
 
-.table-container{
 
-    width:100%;
+        /* =====================================================
+           TABLE
+        ====================================================== */
 
-    overflow-x:auto;
+        .table-wrapper {
 
-}
+            width: 100%;
 
+            overflow-x: auto;
+        }
 
-table{
 
-    width:100%;
+        table {
 
-    border-collapse:collapse;
+            width: 100%;
 
-}
+            min-width: 900px;
 
+            border-collapse: collapse;
+        }
 
-th{
 
-    text-align:left;
+        th {
 
-    padding:15px 18px;
+            padding:
+                14px 18px;
 
-    color:#7f8da0;
+            text-align: left;
 
-    font-size:10px;
+            color: #69737e;
 
-    letter-spacing:1px;
+            font-size: 10px;
 
-    text-transform:uppercase;
+            font-weight: 800;
 
-    border-bottom:1px solid var(--borde);
+            letter-spacing: .12em;
 
-    white-space:nowrap;
+            text-transform: uppercase;
 
-}
+            border-bottom:
+                1px solid var(--border);
 
+            background:
+                rgba(0,0,0,.12);
+        }
 
-td{
 
-    padding:17px 18px;
+        td {
 
-    border-bottom:1px solid rgba(38,54,74,.55);
+            padding:
+                16px 18px;
 
-    font-size:13px;
+            border-bottom:
+                1px solid rgba(255,255,255,.055);
 
-    color:#dbe2ea;
+            font-size: 13px;
 
-}
+            vertical-align: middle;
+        }
 
 
-tbody tr:hover{
+        tr:last-child td {
 
-    background:rgba(255,255,255,.02);
+            border-bottom: none;
+        }
 
-}
 
+        tbody tr {
 
-/* =========================================================
-   ESTADO
-========================================================= */
+            transition:
+                background .15s ease;
+        }
 
-.estado{
 
-    display:inline-flex;
+        tbody tr:hover {
 
-    align-items:center;
+            background:
+                rgba(255,255,255,.025);
+        }
 
-    gap:6px;
 
-    padding:6px 9px;
+        .reader-name {
 
-    border-radius:20px;
+            font-weight: 700;
 
-    font-size:10px;
+            color: #f3f4f6;
+        }
 
-    font-weight:800;
 
-    text-transform:uppercase;
+        .reader-email {
 
-}
+            color: #78838f;
 
+            font-size: 11px;
 
-.estado-activo{
+            margin-top: 2px;
+        }
 
-    background:rgba(22,128,60,.12);
 
-    color:#8de0a8;
+        /* =====================================================
+           BADGES
+        ====================================================== */
 
-}
+        .badge {
 
+            display: inline-flex;
 
-.estado-pendiente{
+            align-items: center;
 
-    background:rgba(242,201,76,.10);
+            min-height: 25px;
 
-    color:#f2d878;
+            padding:
+                0 9px;
 
-}
+            border-radius: 999px;
 
+            font-size: 10px;
 
-.estado-bloqueado{
+            font-weight: 800;
 
-    background:rgba(214,40,40,.10);
+            letter-spacing: .05em;
 
-    color:#ff9e9e;
+            text-transform: uppercase;
+        }
 
-}
 
+        .badge-green {
 
-/* =========================================================
-   MENSAJE
-========================================================= */
+            background:
+                rgba(22,163,74,.12);
 
-.message{
+            border:
+                1px solid rgba(22,163,74,.22);
 
-    padding:18px;
+            color: #86efac;
+        }
 
-    text-align:center;
 
-    color:var(--texto-sec);
+        .badge-yellow {
 
-    font-size:13px;
+            background:
+                rgba(212,160,23,.12);
 
-}
+            border:
+                1px solid rgba(212,160,23,.22);
 
+            color: #fde68a;
+        }
 
-/* =========================================================
-   FOOTER
-========================================================= */
 
-.footer{
+        .badge-blue {
 
-    text-align:center;
+            background:
+                rgba(37,99,235,.12);
 
-    margin-top:35px;
+            border:
+                1px solid rgba(37,99,235,.22);
 
-    color:#465467;
+            color: #93c5fd;
+        }
 
-    font-size:10px;
 
-    letter-spacing:1.5px;
+        .badge-red {
 
-}
+            background:
+                rgba(220,38,38,.12);
 
+            border:
+                1px solid rgba(220,38,38,.22);
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
+            color: #fca5a5;
+        }
 
-@media(max-width:900px){
 
-    .stats-grid{
+        .badge-gray {
 
-        grid-template-columns:
-            repeat(2,1fr);
+            background:
+                rgba(255,255,255,.06);
 
-    }
+            border:
+                1px solid rgba(255,255,255,.08);
 
-}
+            color: #9ca3af;
+        }
 
 
-@media(max-width:600px){
+        /* =====================================================
+           PROGRESS
+        ====================================================== */
 
-    .container{
+        .progress-wrap {
 
-        padding:
-            18px
-            12px
-            40px;
+            min-width: 150px;
+        }
 
-    }
 
+        .progress-info {
 
-    .topbar{
+            display: flex;
 
-        flex-direction:column;
+            align-items: center;
 
-        align-items:flex-start;
+            justify-content: space-between;
 
-    }
+            gap: 10px;
 
+            margin-bottom: 6px;
 
-    .topbar-actions{
+            font-size: 11px;
+        }
 
-        width:100%;
 
-    }
+        .progress-info span:first-child {
 
+            color: #cbd5e1;
+        }
 
-    .topbar-actions .btn{
 
-        flex:1;
+        .progress-info span:last-child {
 
-    }
+            color: #7c8793;
 
+            font-weight: 700;
+        }
 
-    .page-header h2{
 
-        font-size:25px;
+        .progress-bar {
 
-    }
+            width: 100%;
 
+            height: 6px;
 
-    .stats-grid{
+            overflow: hidden;
 
-        grid-template-columns:1fr;
+            border-radius: 999px;
 
-    }
+            background:
+                rgba(255,255,255,.07);
+        }
 
 
-    .stat-card{
+        .progress-fill {
 
-        padding:18px;
+            height: 100%;
 
-    }
+            border-radius: inherit;
 
-}
+            background:
+                linear-gradient(
+                    90deg,
+                    #7f1d1d,
+                    #dc2626
+                );
 
-</style>
+            transition:
+                width .3s ease;
+        }
+
+
+        /* =====================================================
+           EMPTY
+        ====================================================== */
+
+        .empty {
+
+            padding:
+                45px 25px;
+
+            text-align: center;
+
+            color: var(--muted);
+        }
+
+
+        .empty-icon {
+
+            font-size: 28px;
+
+            opacity: .55;
+
+            margin-bottom: 10px;
+        }
+
+
+        .empty strong {
+
+            display: block;
+
+            color: #b8c0c8;
+
+            margin-bottom: 5px;
+        }
+
+
+        /* =====================================================
+           DEBUG
+        ====================================================== */
+
+        #debugPanel {
+
+            display: none;
+
+            margin-top: 25px;
+
+            padding: 18px;
+
+            border-radius: 12px;
+
+            background: #080b0f;
+
+            border:
+                1px solid rgba(245,158,11,.2);
+        }
+
+
+        #debugPanel h3 {
+
+            color: #fbbf24;
+
+            font-size: 12px;
+
+            text-transform: uppercase;
+
+            letter-spacing: .1em;
+
+            margin-bottom: 12px;
+        }
+
+
+        #debugOutput {
+
+            white-space: pre-wrap;
+
+            word-break: break-word;
+
+            color: #aab3bd;
+
+            font-family:
+                Consolas,
+                Monaco,
+                monospace;
+
+            font-size: 11px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ====================================================== */
+
+        @media (max-width: 900px) {
+
+            .stats-grid {
+
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .container,
+            .topbar-inner {
+
+                width:
+                    min(100% - 24px, 1400px);
+            }
+
+
+            .topbar-inner {
+
+                min-height: 68px;
+            }
+
+
+            .brand-text span {
+
+                display: none;
+            }
+
+
+            .top-actions .btn {
+
+                padding:
+                    0 10px;
+
+                font-size: 10px;
+            }
+
+
+            .page-header {
+
+                padding-top: 32px;
+            }
+
+
+            .stats-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .section-header {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+            }
+
+
+            .access-card {
+
+                padding: 28px 20px;
+            }
+
+        }
+
+    </style>
 
 </head>
 
@@ -802,655 +1130,1334 @@ tbody tr:hover{
 <body>
 
 
-<!-- =========================================================
-     LOADING
-========================================================= -->
+    <!-- =========================================================
+         LOADING
+    ========================================================== -->
 
-<div id="loadingScreen">
+    <div id="loadingScreen">
 
-    <div class="loading-box">
+        <div class="loading-symbol"></div>
 
         <div class="loading-title">
-            NÉMESIS
-        </div>
-
-        <div class="loading-text">
             Verificando autorización...
         </div>
 
     </div>
 
-</div>
 
+    <!-- =========================================================
+         ACCESO DENEGADO
+    ========================================================== -->
 
-<!-- =========================================================
-     ACCESO DENEGADO
-========================================================= -->
+    <div
+        id="accessDenied"
+        class="hidden"
+    >
 
-<div id="accessDenied">
+        <div class="access-card">
 
-    <div class="denied-card">
-
-        <div class="denied-icon">
-            🔒
-        </div>
-
-        <h2>
-            Acceso restringido
-        </h2>
-
-        <p id="deniedMessage">
-            Esta sección está reservada para administradores.
-        </p>
-
-        <a
-            href="index.html"
-            class="btn btn-danger"
-        >
-            ← VOLVER AL PROTOCOLO
-        </a>
-
-    </div>
-
-</div>
-
-
-<!-- =========================================================
-     APLICACIÓN
-========================================================= -->
-
-<div
-    id="app"
-    style="display:none;"
->
-
-
-<div class="container">
-
-
-    <!-- =====================================================
-         TOPBAR
-    ====================================================== -->
-
-    <header class="topbar">
-
-
-        <div class="brand">
-
-
-            <div class="brand-mark">
-                N
+            <div class="access-icon">
+                🔒
             </div>
 
+            <h1>
+                Acceso restringido
+            </h1>
 
-            <div class="brand-text">
+            <p>
+                Esta sección está disponible exclusivamente
+                para administradores de PROTOCOLO NÉMESIS.
+            </p>
 
-                <h1>
-                    PROTOCOLO NÉMESIS
-                </h1>
-
-                <p>
-                    CENTRO DE SEGUIMIENTO
-                </p>
-
+            <div
+                id="accessMessage"
+                class="access-message"
+            >
+                No fue posible verificar tu perfil.
             </div>
-
-
-        </div>
-
-
-        <div class="topbar-actions">
-
 
             <a
                 href="index.html"
-                class="btn btn-secondary"
+                class="back-link"
             >
-                ← VOLVER AL PANEL
+                ← VOLVER AL PROTOCOLO
             </a>
 
-
-            <button
-                id="logoutButton"
-                class="btn btn-danger"
-                type="button"
-            >
-                CERRAR SESIÓN
-            </button>
-
-
         </div>
-
-
-    </header>
-
-
-    <!-- =====================================================
-         TITULO
-    ====================================================== -->
-
-    <section class="page-header">
-
-        <div class="page-label">
-            Área administrativa
-        </div>
-
-        <h2>
-            Seguimiento de lectores
-        </h2>
-
-        <p>
-            Monitorea el avance de los investigadores
-            dentro del protocolo NÉMESIS.
-        </p>
-
-    </section>
-
-
-    <!-- =====================================================
-         ESTADISTICAS
-    ====================================================== -->
-
-    <section class="stats-grid">
-
-
-        <div class="stat-card">
-
-            <div class="stat-label">
-                Lectores registrados
-            </div>
-
-            <div
-                class="stat-value"
-                id="statLectores"
-            >
-                —
-            </div>
-
-            <div class="stat-description">
-                Usuarios con perfil lector
-            </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <div class="stat-label">
-                Lectores activos
-            </div>
-
-            <div
-                class="stat-value"
-                id="statActivos"
-            >
-                —
-            </div>
-
-            <div class="stat-description">
-                Con actividad registrada
-            </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <div class="stat-label">
-                Capítulos publicados
-            </div>
-
-            <div
-                class="stat-value"
-                id="statCapitulos"
-            >
-                —
-            </div>
-
-            <div class="stat-description">
-                Disponibles actualmente
-            </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <div class="stat-label">
-                Avance promedio
-            </div>
-
-            <div
-                class="stat-value"
-                id="statAvance"
-            >
-                —
-            </div>
-
-            <div class="stat-description">
-                Progreso general
-            </div>
-
-        </div>
-
-
-    </section>
-
-
-    <!-- =====================================================
-         LECTORES
-    ====================================================== -->
-
-    <section class="section">
-
-
-        <div class="section-header">
-
-            <h3>
-                Investigadores registrados
-            </h3>
-
-            <p>
-                Seguimiento individual del progreso.
-            </p>
-
-        </div>
-
-
-        <div class="table-container">
-
-            <table>
-
-                <thead>
-
-                    <tr>
-
-                        <th>
-                            Lector
-                        </th>
-
-                        <th>
-                            Correo
-                        </th>
-
-                        <th>
-                            Capítulo
-                        </th>
-
-                        <th>
-                            Progreso
-                        </th>
-
-                        <th>
-                            Estado
-                        </th>
-
-                        <th>
-                            Última actividad
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody id="tablaLectores">
-
-                    <tr>
-
-                        <td
-                            colspan="6"
-                            class="message"
-                        >
-                            Preparando seguimiento...
-
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-
-    </section>
-
-
-    <!-- =====================================================
-         FUTURO DETALLE
-    ====================================================== -->
-
-    <section class="section">
-
-
-        <div class="section-header">
-
-            <h3>
-                Actividad de investigación
-            </h3>
-
-            <p>
-                Esta sección se habilitará en la siguiente etapa.
-            </p>
-
-        </div>
-
-
-        <div class="message">
-
-            Selecciona un lector para consultar
-            sus capítulos, intentos y actividad.
-
-        </div>
-
-
-    </section>
-
-
-    <div class="footer">
-
-        PROTOCOLO NÉMESIS · CENTRO DE SEGUIMIENTO · ACCESO ADMINISTRATIVO
 
     </div>
 
 
-</div>
+    <!-- =========================================================
+         APLICACIÓN
+    ========================================================== -->
 
-</div>
-
-
-<script>
-
-/* =========================================================
-   CONFIGURACIÓN SUPABASE
-========================================================= */
-
-const SUPABASE_URL =
-    "https://qogoayvgkyurzugvbbkj.supabase.co";
+    <div
+        id="appContent"
+        class="hidden"
+    >
 
 
-const SUPABASE_ANON_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvZ29heXZna3l1cnp1Z3ZiYmtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0ODcxODIsImV4cCI6MjEwNTA2MzE4Mn0.EOViV3jnDCmirsKk1kuD1u-SRjqDA7SUiLxr-J_OOIo";
+        <!-- =====================================================
+             TOPBAR
+        ====================================================== -->
+
+        <header class="topbar">
+
+            <div class="topbar-inner">
+
+                <div class="brand">
+
+                    <div class="brand-mark">
+                        N
+                    </div>
+
+                    <div class="brand-text">
+
+                        <strong>
+                            PROTOCOLO NÉMESIS
+                        </strong>
+
+                        <span>
+                            Seguimiento de lectores
+                        </span>
+
+                    </div>
+
+                </div>
 
 
-/*
- * IMPORTANTE:
- *
- * Usa aquí exactamente la misma ANON KEY
- * que ya tienes funcionando en index.html.
- *
- * Si la anterior de tu proyecto es distinta,
- * reemplaza esta variable por la misma de index.html.
- */
+                <div class="top-actions">
+
+                    <a
+                        href="index.html"
+                        class="btn"
+                    >
+                        ← PANEL
+                    </a>
+
+                    <button
+                        id="logoutButton"
+                        class="btn btn-danger"
+                        type="button"
+                    >
+                        CERRAR SESIÓN
+                    </button>
+
+                </div>
+
+            </div>
+
+        </header>
 
 
-const supabaseClient =
-    supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-    );
+        <!-- =====================================================
+             MAIN
+        ====================================================== -->
+
+        <main class="container">
 
 
-/* =========================================================
-   ELEMENTOS
-========================================================= */
+            <!-- =================================================
+                 HEADER
+            ================================================== -->
 
-const loadingScreen =
-    document.getElementById(
-        "loadingScreen"
-    );
+            <section class="page-header">
 
+                <div class="eyebrow">
+                    ADMINISTRACIÓN
+                </div>
 
-const accessDenied =
-    document.getElementById(
-        "accessDenied"
-    );
+                <h1>
+                    Seguimiento de lectores
+                </h1>
 
+                <p>
+                    Consulta el avance de los lectores registrados,
+                    capítulos completados, intentos de claves
+                    y actividad reciente dentro del protocolo.
+                </p>
 
-const app =
-    document.getElementById(
-        "app"
-    );
-
-
-const deniedMessage =
-    document.getElementById(
-        "deniedMessage"
-    );
+            </section>
 
 
-const logoutButton =
-    document.getElementById(
-        "logoutButton"
-    );
+            <!-- =================================================
+                 STATS
+            ================================================== -->
+
+            <section class="stats-grid">
 
 
-/* =========================================================
-   OCULTAR LOADING
-========================================================= */
+                <div class="stat-card">
 
-function ocultarLoading(){
+                    <div class="stat-label">
+                        Lectores registrados
+                    </div>
 
-    loadingScreen.classList.add(
-        "hidden"
-    );
+                    <div
+                        id="statReaders"
+                        class="stat-value"
+                    >
+                        —
+                    </div>
 
-}
+                    <div class="stat-sub">
+                        Usuarios con perfil de lector
+                    </div>
 
-
-/* =========================================================
-   MOSTRAR ACCESO DENEGADO
-========================================================= */
-
-function mostrarAccesoDenegado(
-    mensaje
-){
-
-    if(mensaje){
-
-        deniedMessage.textContent =
-            mensaje;
-
-    }
-
-    app.style.display =
-        "none";
-
-    accessDenied.style.display =
-        "flex";
-
-    ocultarLoading();
-
-}
+                </div>
 
 
-/* =========================================================
-   MOSTRAR APLICACIÓN
-========================================================= */
+                <div class="stat-card">
 
-function mostrarAplicacion(){
+                    <div class="stat-label">
+                        Capítulo actual
+                    </div>
 
-    accessDenied.style.display =
-        "none";
+                    <div
+                        id="statChapter"
+                        class="stat-value"
+                    >
+                        —
+                    </div>
 
-    app.style.display =
-        "block";
+                    <div class="stat-sub">
+                        Promedio entre lectores
+                    </div>
 
-    ocultarLoading();
-
-}
-
-
-/* =========================================================
-   CERRAR SESIÓN
-========================================================= */
-
-logoutButton.addEventListener(
-    "click",
-    async function(){
-
-        await supabaseClient.auth.signOut();
-
-        window.location.href =
-            "index.html";
-
-    }
-);
+                </div>
 
 
-/* =========================================================
-   VERIFICAR AUTORIZACIÓN
-========================================================= */
+                <div class="stat-card">
 
-async function verificarAcceso(){
+                    <div class="stat-label">
+                        Progreso promedio
+                    </div>
 
-    try{
+                    <div
+                        id="statProgress"
+                        class="stat-value"
+                    >
+                        —
+                    </div>
+
+                    <div class="stat-sub">
+                        Avance general
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-label">
+                        Intentos de claves
+                    </div>
+
+                    <div
+                        id="statAttempts"
+                        class="stat-value"
+                    >
+                        —
+                    </div>
+
+                    <div class="stat-sub">
+                        Correctos e incorrectos
+                    </div>
+
+                </div>
+
+
+            </section>
+
+
+            <!-- =================================================
+                 LECTORES
+            ================================================== -->
+
+            <section class="section">
+
+                <div class="section-header">
+
+                    <div class="section-title">
+
+                        <h2>
+                            Lectores registrados
+                        </h2>
+
+                        <p>
+                            Estado individual de progreso
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Lector
+                                </th>
+
+                                <th>
+                                    Capítulo actual
+                                </th>
+
+                                <th>
+                                    Progreso
+                                </th>
+
+                                <th>
+                                    Completados
+                                </th>
+
+                                <th>
+                                    Intentos
+                                </th>
+
+                                <th>
+                                    Resultado
+                                </th>
+
+                                <th>
+                                    Última actividad
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="readersTableBody">
+
+                            <tr>
+
+                                <td colspan="7">
+
+                                    <div class="empty">
+
+                                        <div class="empty-icon">
+                                            ◌
+                                        </div>
+
+                                        <strong>
+                                            Cargando lectores...
+                                        </strong>
+
+                                        <span>
+                                            Obteniendo información del protocolo.
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 ACTIVIDAD
+            ================================================== -->
+
+            <section class="section">
+
+                <div class="section-header">
+
+                    <div class="section-title">
+
+                        <h2>
+                            Actividad reciente
+                        </h2>
+
+                        <p>
+                            Últimos intentos registrados
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="activityContainer"
+                    class="empty"
+                >
+
+                    <div class="empty-icon">
+                        ◌
+                    </div>
+
+                    <strong>
+                        Preparando actividad...
+                    </strong>
+
+                    <span>
+                        Esta sección mostrará los últimos movimientos.
+                    </span>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 DEBUG
+            ================================================== -->
+
+            <section id="debugPanel">
+
+                <h3>
+                    Información técnica
+                </h3>
+
+                <div id="debugOutput"></div>
+
+            </section>
+
+
+        </main>
+
+    </div>
+
+
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================== -->
+
+    <script>
+
+        /* =======================================================
+           CONFIGURACIÓN SUPABASE
+        ======================================================== */
+
+        const SUPABASE_URL =
+            "https://qogoayvgkyurzugvbbkj.supabase.co";
+
 
         /*
-         * 1. COMPROBAR SESIÓN
+         * IMPORTANTE:
+         *
+         * PEGA AQUÍ EXACTAMENTE EL MISMO
+         * SUPABASE_ANON_KEY QUE FUNCIONA EN index.html
+         *
          */
 
-        const {
-            data: sessionData,
-            error: sessionError
-        } =
-            await supabaseClient
-                .auth
-                .getSession();
+        const SUPABASE_ANON_KEY =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvZ29heXZna3l1cnp1Z3ZiYmtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0ODcxODIsImV4cCI6MjEwNTA2MzE4Mn0.EOViV3jnDCmirsKk1kuD1u-SRjqDA7SUiLxr-J_OOIo";
 
 
-        if(sessionError){
-
-            console.error(
-                "Error obteniendo sesión:",
-                sessionError
+        const supabaseClient =
+            supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_ANON_KEY
             );
 
-            mostrarAccesoDenegado(
-                "No fue posible verificar la sesión."
+
+        /* =======================================================
+           ELEMENTOS
+        ======================================================== */
+
+        const loadingScreen =
+            document.getElementById("loadingScreen");
+
+        const accessDenied =
+            document.getElementById("accessDenied");
+
+        const accessMessage =
+            document.getElementById("accessMessage");
+
+        const appContent =
+            document.getElementById("appContent");
+
+        const debugPanel =
+            document.getElementById("debugPanel");
+
+        const debugOutput =
+            document.getElementById("debugOutput");
+
+
+        /* =======================================================
+           DEBUG
+        ======================================================== */
+
+        function mostrarDebug(datos) {
+
+            console.log(
+                "NÉMESIS DEBUG:",
+                datos
             );
 
-            return;
+            if (debugOutput) {
+
+                try {
+
+                    debugOutput.textContent =
+                        typeof datos === "string"
+                            ? datos
+                            : JSON.stringify(
+                                datos,
+                                null,
+                                2
+                            );
+
+                } catch (error) {
+
+                    debugOutput.textContent =
+                        String(datos);
+
+                }
+
+            }
 
         }
 
 
-        const session =
-            sessionData.session;
+        /* =======================================================
+           OCULTAR LOADING
+        ======================================================== */
 
+        function ocultarLoading() {
 
-        /*
-         * 2. SIN SESIÓN
-         */
+            if (loadingScreen) {
 
-        if(!session){
+                loadingScreen.classList.add(
+                    "hidden"
+                );
 
-            mostrarAccesoDenegado(
-                "Debes iniciar sesión para acceder a esta sección."
-            );
-
-            return;
+            }
 
         }
 
 
-        /*
-         * 3. OBTENER PERFIL
-         */
+        /* =======================================================
+           MOSTRAR ACCESO DENEGADO
+        ======================================================== */
 
-        const {
-            data: perfil,
-            error: perfilError
-        } =
-            await supabaseClient
-                .from("profiles")
-                .select("id,nombre,rol")
-                .eq("id", session.user.id)
-                .single();
+        function mostrarAccesoDenegado(mensaje) {
 
+            ocultarLoading();
 
-        if(perfilError){
+            if (appContent) {
 
-            console.error(
-                "Error obteniendo perfil:",
-                perfilError
-            );
+                appContent.classList.add(
+                    "hidden"
+                );
 
-            mostrarAccesoDenegado(
-                "No fue posible verificar tu perfil."
-            );
+            }
 
-            return;
+            if (accessDenied) {
 
-        }
+                accessDenied.classList.remove(
+                    "hidden"
+                );
 
+            }
 
-        /*
-         * 4. COMPROBAR ROL
-         */
+            if (accessMessage) {
 
-        if(
-            !perfil ||
-            perfil.rol !== "administrador"
-        ){
+                accessMessage.innerHTML =
+                    mensaje;
 
-            mostrarAccesoDenegado(
-                "Esta sección está reservada exclusivamente para administradores."
-            );
-
-            return;
+            }
 
         }
 
 
-        /*
-         * 5. ACCESO AUTORIZADO
-         */
+        /* =======================================================
+           MOSTRAR APLICACIÓN
+        ======================================================== */
 
-        console.log(
-            "Administrador autorizado:",
-            perfil.nombre
+        function mostrarAplicacion() {
+
+            ocultarLoading();
+
+            if (accessDenied) {
+
+                accessDenied.classList.add(
+                    "hidden"
+                );
+
+            }
+
+            if (appContent) {
+
+                appContent.classList.remove(
+                    "hidden"
+                );
+
+            }
+
+        }
+
+
+        /* =======================================================
+           VERIFICAR ADMINISTRADOR
+        ======================================================== */
+
+        async function verificarAdministrador() {
+
+            try {
+
+                console.log(
+                    "================================="
+                );
+
+                console.log(
+                    "NÉMESIS — VERIFICACIÓN ADMIN"
+                );
+
+                console.log(
+                    "================================="
+                );
+
+
+                /* -------------------------------------------------
+                   1. OBTENER USUARIO AUTENTICADO
+                -------------------------------------------------- */
+
+                const {
+                    data: userData,
+                    error: userError
+                } =
+                    await supabaseClient.auth.getUser();
+
+
+                console.log(
+                    "USER DATA:",
+                    userData
+                );
+
+
+                console.log(
+                    "USER ERROR:",
+                    userError
+                );
+
+
+                if (userError) {
+
+                    throw new Error(
+                        "Error obteniendo usuario autenticado: " +
+                        userError.message
+                    );
+
+                }
+
+
+                const user =
+                    userData?.user;
+
+
+                if (!user) {
+
+                    throw new Error(
+                        "No existe una sesión autenticada."
+                    );
+
+                }
+
+
+                console.log(
+                    "Usuario autenticado:",
+                    user.email
+                );
+
+
+                console.log(
+                    "UID:",
+                    user.id
+                );
+
+
+                /* -------------------------------------------------
+                   2. CONSULTAR PROFILE
+                -------------------------------------------------- */
+
+                const {
+                    data: profile,
+                    error: profileError
+                } =
+                    await supabaseClient
+                        .from("profiles")
+                        .select(
+                            "id, nombre, rol"
+                        )
+                        .eq(
+                            "id",
+                            user.id
+                        )
+                        .maybeSingle();
+
+
+                console.log(
+                    "PROFILE:",
+                    profile
+                );
+
+
+                console.log(
+                    "PROFILE ERROR:",
+                    profileError
+                );
+
+
+                if (profileError) {
+
+                    throw new Error(
+                        "Error consultando profiles: " +
+                        profileError.message
+                    );
+
+                }
+
+
+                if (!profile) {
+
+                    throw new Error(
+                        "El usuario está autenticado, " +
+                        "pero no existe un registro correspondiente " +
+                        "en la tabla profiles."
+                    );
+
+                }
+
+
+                console.log(
+                    "Nombre:",
+                    profile.nombre
+                );
+
+
+                console.log(
+                    "Rol:",
+                    profile.rol
+                );
+
+
+                /* -------------------------------------------------
+                   3. VERIFICAR ROL
+                -------------------------------------------------- */
+
+                if (
+                    profile.rol !==
+                    "administrador"
+                ) {
+
+                    throw new Error(
+                        "El usuario está autenticado, " +
+                        "pero su rol actual es: " +
+                        profile.rol
+                    );
+
+                }
+
+
+                /* -------------------------------------------------
+                   4. ADMINISTRADOR CONFIRMADO
+                -------------------------------------------------- */
+
+                console.log(
+                    "================================="
+                );
+
+                console.log(
+                    "✅ ADMINISTRADOR VERIFICADO"
+                );
+
+                console.log(
+                    "================================="
+                );
+
+
+                mostrarDebug({
+
+                    usuario: user.email,
+
+                    uid: user.id,
+
+                    nombre: profile.nombre,
+
+                    rol: profile.rol,
+
+                    mensaje:
+                        "Administrador correctamente verificado."
+
+                });
+
+
+                /* -------------------------------------------------
+                   5. MOSTRAR APLICACIÓN
+                -------------------------------------------------- */
+
+                mostrarAplicacion();
+
+
+                /* -------------------------------------------------
+                   6. CARGAR DATOS
+                -------------------------------------------------- */
+
+                await cargarSeguimiento();
+
+
+            } catch (error) {
+
+                console.error(
+                    "❌ ERROR DE VERIFICACIÓN:",
+                    error
+                );
+
+
+                mostrarDebug({
+
+                    error:
+                        error?.message ||
+                        String(error),
+
+                    detalle:
+                        error
+
+                });
+
+
+                mostrarAccesoDenegado(
+                    `
+                    <strong>
+                        ${escapeHTML(
+                            error?.message ||
+                            "No fue posible verificar tu perfil."
+                        )}
+                    </strong>
+                    `
+                );
+
+            }
+
+        }
+
+
+        /* =======================================================
+           ESCAPAR HTML
+        ======================================================== */
+
+        function escapeHTML(valor) {
+
+            return String(
+                valor ?? ""
+            )
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+        }
+
+
+        /* =======================================================
+           CARGAR SEGUIMIENTO
+        ======================================================== */
+
+        async function cargarSeguimiento() {
+
+            /*
+             * ESTA PARTE ES INTENCIONALMENTE SEGURA.
+             *
+             * Primero comprobamos que el acceso administrativo
+             * funciona correctamente.
+             *
+             * Luego iremos incorporando:
+             *
+             * - lectores
+             * - capítulos
+             * - progreso
+             * - intentos
+             * - actividad
+             *
+             * sin modificar la lógica existente.
+             */
+
+
+            try {
+
+                console.log(
+                    "Cargando información de seguimiento..."
+                );
+
+
+                /*
+                 * Obtener perfiles lectores.
+                 */
+
+                const {
+                    data: lectores,
+                    error: lectoresError
+                } =
+                    await supabaseClient
+                        .from("profiles")
+                        .select(
+                            "id, nombre, rol"
+                        )
+                        .eq(
+                            "rol",
+                            "lector"
+                        )
+                        .order(
+                            "nombre",
+                            {
+                                ascending: true
+                            }
+                        );
+
+
+                if (lectoresError) {
+
+                    console.error(
+                        "Error cargando lectores:",
+                        lectoresError
+                    );
+
+                    /*
+                     * No bloqueamos el acceso administrativo.
+                     */
+
+                    mostrarDebug({
+
+                        advertencia:
+                            "Administrador verificado correctamente, " +
+                            "pero ocurrió un problema al cargar lectores.",
+
+                        error:
+                            lectoresError.message
+
+                    });
+
+                    actualizarTablaVacia(
+                        "No fue posible cargar los lectores."
+                    );
+
+                    return;
+
+                }
+
+
+                console.log(
+                    "Lectores encontrados:",
+                    lectores
+                );
+
+
+                /*
+                 * Estadística básica.
+                 */
+
+                const totalLectores =
+                    lectores?.length || 0;
+
+
+                const statReaders =
+                    document.getElementById(
+                        "statReaders"
+                    );
+
+
+                if (statReaders) {
+
+                    statReaders.textContent =
+                        totalLectores;
+
+                }
+
+
+                /*
+                 * Por ahora dejamos las demás estadísticas
+                 * preparadas para la siguiente etapa.
+                 */
+
+                const statChapter =
+                    document.getElementById(
+                        "statChapter"
+                    );
+
+                const statProgress =
+                    document.getElementById(
+                        "statProgress"
+                    );
+
+                const statAttempts =
+                    document.getElementById(
+                        "statAttempts"
+                    );
+
+
+                if (statChapter) {
+
+                    statChapter.textContent =
+                        "—";
+
+                }
+
+
+                if (statProgress) {
+
+                    statProgress.textContent =
+                        "—";
+
+                }
+
+
+                if (statAttempts) {
+
+                    statAttempts.textContent =
+                        "—";
+
+                }
+
+
+                /*
+                 * Renderizar lectores básicos.
+                 */
+
+                renderizarLectoresBasicos(
+                    lectores || []
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Error cargando seguimiento:",
+                    error
+                );
+
+                mostrarDebug({
+                    error:
+                        error?.message ||
+                        String(error)
+                });
+
+            }
+
+        }
+
+
+        /* =======================================================
+           RENDERIZAR LECTORES BÁSICOS
+        ======================================================== */
+
+        function renderizarLectoresBasicos(
+            lectores
+        ) {
+
+            const tbody =
+                document.getElementById(
+                    "readersTableBody"
+                );
+
+
+            if (!tbody) {
+                return;
+            }
+
+
+            if (!lectores.length) {
+
+                actualizarTablaVacia(
+                    "Todavía no existen lectores registrados."
+                );
+
+                return;
+
+            }
+
+
+            tbody.innerHTML =
+                lectores
+                    .map(
+                        lector => `
+
+                        <tr>
+
+                            <td>
+
+                                <div class="reader-name">
+
+                                    ${escapeHTML(
+                                        lector.nombre ||
+                                        "Sin nombre"
+                                    )}
+
+                                </div>
+
+                                <div class="reader-email">
+
+                                    Usuario registrado
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <span
+                                    class="badge badge-gray"
+                                >
+                                    Pendiente
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="progress-wrap">
+
+                                    <div class="progress-info">
+
+                                        <span>
+                                            Sin datos
+                                        </span>
+
+                                        <span>
+                                            —
+                                        </span>
+
+                                    </div>
+
+                                    <div class="progress-bar">
+
+                                        <div
+                                            class="progress-fill"
+                                            style="width:0%"
+                                        ></div>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <span
+                                    class="badge badge-gray"
+                                >
+                                    0
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <span
+                                    class="badge badge-gray"
+                                >
+                                    0
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <span
+                                    class="badge badge-gray"
+                                >
+                                    —
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <span
+                                    style="
+                                        color:#6f7984;
+                                        font-size:12px;
+                                    "
+                                >
+                                    Sin actividad
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    `
+                    )
+                    .join("");
+
+        }
+
+
+        /* =======================================================
+           TABLA VACÍA
+        ======================================================== */
+
+        function actualizarTablaVacia(
+            mensaje
+        ) {
+
+            const tbody =
+                document.getElementById(
+                    "readersTableBody"
+                );
+
+
+            if (!tbody) {
+                return;
+            }
+
+
+            tbody.innerHTML = `
+
+                <tr>
+
+                    <td colspan="7">
+
+                        <div class="empty">
+
+                            <div class="empty-icon">
+                                ◌
+                            </div>
+
+                            <strong>
+                                ${escapeHTML(
+                                    mensaje
+                                )}
+                            </strong>
+
+                            <span>
+                                El acceso administrativo continúa activo.
+                            </span>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+
+        /* =======================================================
+           CERRAR SESIÓN
+        ======================================================== */
+
+        async function cerrarSesion() {
+
+            try {
+
+                const {
+                    error
+                } =
+                    await supabaseClient
+                        .auth
+                        .signOut();
+
+
+                if (error) {
+
+                    console.error(
+                        "Error cerrando sesión:",
+                        error
+                    );
+
+                }
+
+
+                window.location.href =
+                    "index.html";
+
+
+            } catch (error) {
+
+                console.error(
+                    error
+                );
+
+                window.location.href =
+                    "index.html";
+
+            }
+
+        }
+
+
+        /* =======================================================
+           EVENTO LOGOUT
+        ======================================================== */
+
+        const logoutButton =
+            document.getElementById(
+                "logoutButton"
+            );
+
+
+        if (logoutButton) {
+
+            logoutButton.addEventListener(
+                "click",
+                cerrarSesion
+            );
+
+        }
+
+
+        /* =======================================================
+           INICIAR
+        ======================================================== */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            async () => {
+
+                console.log(
+                    "NÉMESIS Seguimiento iniciado."
+                );
+
+
+                await verificarAdministrador();
+
+            }
         );
 
-
-        mostrarAplicacion();
-
-
-        /*
-         * En la siguiente parte
-         * cargaremos los datos reales.
-         */
-
-
-    }
-
-    catch(error){
-
-        console.error(
-            "Error inesperado:",
-            error
-        );
-
-        mostrarAccesoDenegado(
-            "Ocurrió un error al verificar el acceso."
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   INICIAR
-========================================================= */
-
-verificarAcceso();
-
-</script>
-
+    </script>
 
 </body>
-
 </html>
