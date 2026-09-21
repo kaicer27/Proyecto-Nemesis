@@ -706,18 +706,16 @@ formulario.addEventListener("submit", async function(event){
 
     }
 
-    catch(error){
+    catch (error) {
+    console.error("ERROR COMPLETO:", error);
 
-        console.error(
-            "Error inesperado:",
-            error
-        );
+    const mensaje = error?.message || "Error desconocido";
 
-        mostrarMensaje(
-            "Ocurrió un error inesperado. Inténtalo nuevamente.",
-            "error"
-        );
-
+    mostrarMensaje(
+        "Error: " + mensaje,
+        "error"
+    );
+}
         btnCrearCuenta.disabled = false;
 
         btnCrearCuenta.textContent =
