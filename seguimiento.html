@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Seguimiento | PROTOCOLO NÉMESIS</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<style>
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+:root{
+
+    --rojo:#d62828;
+    --rojo-oscuro:#8f1515;
+
+    --azul:#07111f;
+    --azul-2:#0c1828;
+    --azul-3:#122235;
+
+    --texto:#f1f4f8;
+    --texto-sec:#9da9b8;
+
+    --borde:#26364a;
+
+    --verde:#16803c;
+    --amarillo:#f2c94c;
+
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+*{
+
+    box-sizing:border-box;
+
+    margin:0;
+
+    padding:0;
+
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+body{
+
+    min-height:100vh;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background:
+
+        radial-gradient(
+            circle at top,
+            #17283d 0%,
+            #07111f 45%,
+            #030810 100%
+        );
+
+    color:var(--texto);
+
+}
+
+
+/* =========================================================
+   CONTENEDOR
+========================================================= */
+
+.container{
+
+    width:100%;
+
+    max-width:1250px;
+
+    margin:0 auto;
+
+    padding:30px 20px 60px;
+
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+#loadingScreen{
+
+    position:fixed;
+
+    inset:0;
+
+    background:#030810;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:9999;
+
+    transition:.3s;
+
+}
+
+
+#loadingScreen.hidden{
+
+    opacity:0;
+
+    pointer-events:none;
+
+}
+
+
+.loading-box{
+
+    text-align:center;
+
+}
+
+
+.loading-title{
+
+    font-size:25px;
+
+    font-weight:800;
+
+    letter-spacing:5px;
+
+}
+
+
+.loading-text{
+
+    margin-top:12px;
+
+    color:var(--texto-sec);
+
+    font-size:13px;
+
+    letter-spacing:1px;
+
+}
+
+
+/* =========================================================
+   ERROR / ACCESO DENEGADO
+========================================================= */
+
+#accessDenied{
+
+    display:none;
+
+    min-height:100vh;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:30px;
+
+}
+
+
+.denied-card{
+
+    width:100%;
+
+    max-width:500px;
+
+    background:rgba(12,24,40,.95);
+
+    border:1px solid var(--borde);
+
+    border-radius:18px;
+
+    padding:40px;
+
+    text-align:center;
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.45);
+
+}
+
+
+.denied-icon{
+
+    font-size:45px;
+
+    margin-bottom:20px;
+
+}
+
+
+.denied-card h2{
+
+    font-size:24px;
+
+    margin-bottom:12px;
+
+}
+
+
+.denied-card p{
+
+    color:var(--texto-sec);
+
+    line-height:1.6;
+
+    font-size:14px;
+
+}
+
+
+.denied-card .btn{
+
+    margin-top:25px;
+
+}
+
+
+/* =========================================================
+   BOTONES
+========================================================= */
+
+.btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    border:none;
+
+    border-radius:9px;
+
+    padding:12px 18px;
+
+    font-size:13px;
+
+    font-weight:800;
+
+    cursor:pointer;
+
+    text-decoration:none;
+
+    transition:.2s;
+
+}
+
+
+.btn:hover{
+
+    transform:translateY(-1px);
+
+}
+
+
+.btn-secondary{
+
+    background:#17283d;
+
+    border:1px solid var(--borde);
+
+    color:#dbe2ea;
+
+}
+
+
+.btn-secondary:hover{
+
+    background:#20334b;
+
+}
+
+
+.btn-danger{
+
+    background:var(--rojo);
+
+    color:white;
+
+}
+
+
+.btn-danger:hover{
+
+    background:#ed3030;
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.topbar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+    padding:18px 22px;
+
+    background:rgba(7,17,31,.88);
+
+    border:1px solid var(--borde);
+
+    border-radius:14px;
+
+    margin-bottom:30px;
+
+}
+
+
+.brand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+}
+
+
+.brand-mark{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:10px;
+
+    background:var(--rojo);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:18px;
+
+    font-weight:900;
+
+}
+
+
+.brand-text h1{
+
+    font-size:18px;
+
+    letter-spacing:3px;
+
+}
+
+
+.brand-text p{
+
+    margin-top:4px;
+
+    font-size:11px;
+
+    color:var(--texto-sec);
+
+    letter-spacing:1px;
+
+}
+
+
+.topbar-actions{
+
+    display:flex;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+}
+
+
+/* =========================================================
+   TITULO
+========================================================= */
+
+.page-header{
+
+    margin-bottom:28px;
+
+}
+
+
+.page-label{
+
+    color:var(--rojo);
+
+    font-size:11px;
+
+    font-weight:800;
+
+    letter-spacing:2px;
+
+    text-transform:uppercase;
+
+    margin-bottom:8px;
+
+}
+
+
+.page-header h2{
+
+    font-size:30px;
+
+    margin-bottom:8px;
+
+}
+
+
+.page-header p{
+
+    color:var(--texto-sec);
+
+    font-size:14px;
+
+    line-height:1.5;
+
+}
+
+
+/* =========================================================
+   CARDS DE RESUMEN
+========================================================= */
+
+.stats-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap:15px;
+
+    margin-bottom:30px;
+
+}
+
+
+.stat-card{
+
+    background:rgba(12,24,40,.94);
+
+    border:1px solid var(--borde);
+
+    border-radius:14px;
+
+    padding:22px;
+
+}
+
+
+.stat-label{
+
+    color:var(--texto-sec);
+
+    font-size:11px;
+
+    letter-spacing:1px;
+
+    text-transform:uppercase;
+
+}
+
+
+.stat-value{
+
+    margin-top:10px;
+
+    font-size:30px;
+
+    font-weight:800;
+
+}
+
+
+.stat-description{
+
+    margin-top:6px;
+
+    color:#687789;
+
+    font-size:11px;
+
+}
+
+
+/* =========================================================
+   SECCION
+========================================================= */
+
+.section{
+
+    background:rgba(12,24,40,.94);
+
+    border:1px solid var(--borde);
+
+    border-radius:16px;
+
+    overflow:hidden;
+
+    margin-bottom:25px;
+
+}
+
+
+.section-header{
+
+    padding:20px 22px;
+
+    border-bottom:1px solid var(--borde);
+
+}
+
+
+.section-header h3{
+
+    font-size:17px;
+
+}
+
+
+.section-header p{
+
+    margin-top:5px;
+
+    color:var(--texto-sec);
+
+    font-size:12px;
+
+}
+
+
+/* =========================================================
+   TABLA PREPARADA
+========================================================= */
+
+.table-container{
+
+    width:100%;
+
+    overflow-x:auto;
+
+}
+
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+
+th{
+
+    text-align:left;
+
+    padding:15px 18px;
+
+    color:#7f8da0;
+
+    font-size:10px;
+
+    letter-spacing:1px;
+
+    text-transform:uppercase;
+
+    border-bottom:1px solid var(--borde);
+
+    white-space:nowrap;
+
+}
+
+
+td{
+
+    padding:17px 18px;
+
+    border-bottom:1px solid rgba(38,54,74,.55);
+
+    font-size:13px;
+
+    color:#dbe2ea;
+
+}
+
+
+tbody tr:hover{
+
+    background:rgba(255,255,255,.02);
+
+}
+
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+.estado{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    padding:6px 9px;
+
+    border-radius:20px;
+
+    font-size:10px;
+
+    font-weight:800;
+
+    text-transform:uppercase;
+
+}
+
+
+.estado-activo{
+
+    background:rgba(22,128,60,.12);
+
+    color:#8de0a8;
+
+}
+
+
+.estado-pendiente{
+
+    background:rgba(242,201,76,.10);
+
+    color:#f2d878;
+
+}
+
+
+.estado-bloqueado{
+
+    background:rgba(214,40,40,.10);
+
+    color:#ff9e9e;
+
+}
+
+
+/* =========================================================
+   MENSAJE
+========================================================= */
+
+.message{
+
+    padding:18px;
+
+    text-align:center;
+
+    color:var(--texto-sec);
+
+    font-size:13px;
+
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer{
+
+    text-align:center;
+
+    margin-top:35px;
+
+    color:#465467;
+
+    font-size:10px;
+
+    letter-spacing:1.5px;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:900px){
+
+    .stats-grid{
+
+        grid-template-columns:
+            repeat(2,1fr);
+
+    }
+
+}
+
+
+@media(max-width:600px){
+
+    .container{
+
+        padding:
+            18px
+            12px
+            40px;
+
+    }
+
+
+    .topbar{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+
+    .topbar-actions{
+
+        width:100%;
+
+    }
+
+
+    .topbar-actions .btn{
+
+        flex:1;
+
+    }
+
+
+    .page-header h2{
+
+        font-size:25px;
+
+    }
+
+
+    .stats-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .stat-card{
+
+        padding:18px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     LOADING
+========================================================= -->
+
+<div id="loadingScreen">
+
+    <div class="loading-box">
+
+        <div class="loading-title">
+            NÉMESIS
+        </div>
+
+        <div class="loading-text">
+            Verificando autorización...
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     ACCESO DENEGADO
+========================================================= -->
+
+<div id="accessDenied">
+
+    <div class="denied-card">
+
+        <div class="denied-icon">
+            🔒
+        </div>
+
+        <h2>
+            Acceso restringido
+        </h2>
+
+        <p id="deniedMessage">
+            Esta sección está reservada para administradores.
+        </p>
+
+        <a
+            href="index.html"
+            class="btn btn-danger"
+        >
+            ← VOLVER AL PROTOCOLO
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     APLICACIÓN
+========================================================= -->
+
+<div
+    id="app"
+    style="display:none;"
+>
+
+
+<div class="container">
+
+
+    <!-- =====================================================
+         TOPBAR
+    ====================================================== -->
+
+    <header class="topbar">
+
+
+        <div class="brand">
+
+
+            <div class="brand-mark">
+                N
+            </div>
+
+
+            <div class="brand-text">
+
+                <h1>
+                    PROTOCOLO NÉMESIS
+                </h1>
+
+                <p>
+                    CENTRO DE SEGUIMIENTO
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="topbar-actions">
+
+
+            <a
+                href="index.html"
+                class="btn btn-secondary"
+            >
+                ← VOLVER AL PANEL
+            </a>
+
+
+            <button
+                id="logoutButton"
+                class="btn btn-danger"
+                type="button"
+            >
+                CERRAR SESIÓN
+            </button>
+
+
+        </div>
+
+
+    </header>
+
+
+    <!-- =====================================================
+         TITULO
+    ====================================================== -->
+
+    <section class="page-header">
+
+        <div class="page-label">
+            Área administrativa
+        </div>
+
+        <h2>
+            Seguimiento de lectores
+        </h2>
+
+        <p>
+            Monitorea el avance de los investigadores
+            dentro del protocolo NÉMESIS.
+        </p>
+
+    </section>
+
+
+    <!-- =====================================================
+         ESTADISTICAS
+    ====================================================== -->
+
+    <section class="stats-grid">
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Lectores registrados
+            </div>
+
+            <div
+                class="stat-value"
+                id="statLectores"
+            >
+                —
+            </div>
+
+            <div class="stat-description">
+                Usuarios con perfil lector
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Lectores activos
+            </div>
+
+            <div
+                class="stat-value"
+                id="statActivos"
+            >
+                —
+            </div>
+
+            <div class="stat-description">
+                Con actividad registrada
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Capítulos publicados
+            </div>
+
+            <div
+                class="stat-value"
+                id="statCapitulos"
+            >
+                —
+            </div>
+
+            <div class="stat-description">
+                Disponibles actualmente
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Avance promedio
+            </div>
+
+            <div
+                class="stat-value"
+                id="statAvance"
+            >
+                —
+            </div>
+
+            <div class="stat-description">
+                Progreso general
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         LECTORES
+    ====================================================== -->
+
+    <section class="section">
+
+
+        <div class="section-header">
+
+            <h3>
+                Investigadores registrados
+            </h3>
+
+            <p>
+                Seguimiento individual del progreso.
+            </p>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Lector
+                        </th>
+
+                        <th>
+                            Correo
+                        </th>
+
+                        <th>
+                            Capítulo
+                        </th>
+
+                        <th>
+                            Progreso
+                        </th>
+
+                        <th>
+                            Estado
+                        </th>
+
+                        <th>
+                            Última actividad
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="tablaLectores">
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            class="message"
+                        >
+                            Preparando seguimiento...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         FUTURO DETALLE
+    ====================================================== -->
+
+    <section class="section">
+
+
+        <div class="section-header">
+
+            <h3>
+                Actividad de investigación
+            </h3>
+
+            <p>
+                Esta sección se habilitará en la siguiente etapa.
+            </p>
+
+        </div>
+
+
+        <div class="message">
+
+            Selecciona un lector para consultar
+            sus capítulos, intentos y actividad.
+
+        </div>
+
+
+    </section>
+
+
+    <div class="footer">
+
+        PROTOCOLO NÉMESIS · CENTRO DE SEGUIMIENTO · ACCESO ADMINISTRATIVO
+
+    </div>
+
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   CONFIGURACIÓN SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+    "https://qogoayvgkyurzugvbbkj.supabase.co";
+
+
+const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzIiwicmVmIjoicW9nb2F5dmdreXVyenVndmJia2oiLCJyb2xlIjoiYW5vbiJ9";
+
+
+/*
+ * IMPORTANTE:
+ *
+ * Usa aquí exactamente la misma ANON KEY
+ * que ya tienes funcionando en index.html.
+ *
+ * Si la anterior de tu proyecto es distinta,
+ * reemplaza esta variable por la misma de index.html.
+ */
+
+
+const supabaseClient =
+    supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+
+/* =========================================================
+   ELEMENTOS
+========================================================= */
+
+const loadingScreen =
+    document.getElementById(
+        "loadingScreen"
+    );
+
+
+const accessDenied =
+    document.getElementById(
+        "accessDenied"
+    );
+
+
+const app =
+    document.getElementById(
+        "app"
+    );
+
+
+const deniedMessage =
+    document.getElementById(
+        "deniedMessage"
+    );
+
+
+const logoutButton =
+    document.getElementById(
+        "logoutButton"
+    );
+
+
+/* =========================================================
+   OCULTAR LOADING
+========================================================= */
+
+function ocultarLoading(){
+
+    loadingScreen.classList.add(
+        "hidden"
+    );
+
+}
+
+
+/* =========================================================
+   MOSTRAR ACCESO DENEGADO
+========================================================= */
+
+function mostrarAccesoDenegado(
+    mensaje
+){
+
+    if(mensaje){
+
+        deniedMessage.textContent =
+            mensaje;
+
+    }
+
+    app.style.display =
+        "none";
+
+    accessDenied.style.display =
+        "flex";
+
+    ocultarLoading();
+
+}
+
+
+/* =========================================================
+   MOSTRAR APLICACIÓN
+========================================================= */
+
+function mostrarAplicacion(){
+
+    accessDenied.style.display =
+        "none";
+
+    app.style.display =
+        "block";
+
+    ocultarLoading();
+
+}
+
+
+/* =========================================================
+   CERRAR SESIÓN
+========================================================= */
+
+logoutButton.addEventListener(
+    "click",
+    async function(){
+
+        await supabaseClient.auth.signOut();
+
+        window.location.href =
+            "index.html";
+
+    }
+);
+
+
+/* =========================================================
+   VERIFICAR AUTORIZACIÓN
+========================================================= */
+
+async function verificarAcceso(){
+
+    try{
+
+        /*
+         * 1. COMPROBAR SESIÓN
+         */
+
+        const {
+            data: sessionData,
+            error: sessionError
+        } =
+            await supabaseClient
+                .auth
+                .getSession();
+
+
+        if(sessionError){
+
+            console.error(
+                "Error obteniendo sesión:",
+                sessionError
+            );
+
+            mostrarAccesoDenegado(
+                "No fue posible verificar la sesión."
+            );
+
+            return;
+
+        }
+
+
+        const session =
+            sessionData.session;
+
+
+        /*
+         * 2. SIN SESIÓN
+         */
+
+        if(!session){
+
+            mostrarAccesoDenegado(
+                "Debes iniciar sesión para acceder a esta sección."
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * 3. OBTENER PERFIL
+         */
+
+        const {
+            data: perfil,
+            error: perfilError
+        } =
+            await supabaseClient
+                .from("profiles")
+                .select("id,nombre,rol")
+                .eq("id", session.user.id)
+                .single();
+
+
+        if(perfilError){
+
+            console.error(
+                "Error obteniendo perfil:",
+                perfilError
+            );
+
+            mostrarAccesoDenegado(
+                "No fue posible verificar tu perfil."
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * 4. COMPROBAR ROL
+         */
+
+        if(
+            !perfil ||
+            perfil.rol !== "administrador"
+        ){
+
+            mostrarAccesoDenegado(
+                "Esta sección está reservada exclusivamente para administradores."
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * 5. ACCESO AUTORIZADO
+         */
+
+        console.log(
+            "Administrador autorizado:",
+            perfil.nombre
+        );
+
+
+        mostrarAplicacion();
+
+
+        /*
+         * En la siguiente parte
+         * cargaremos los datos reales.
+         */
+
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Error inesperado:",
+            error
+        );
+
+        mostrarAccesoDenegado(
+            "Ocurrió un error al verificar el acceso."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   INICIAR
+========================================================= */
+
+verificarAcceso();
+
+</script>
+
+
+</body>
+
+</html>
